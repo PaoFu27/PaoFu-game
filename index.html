@@ -1,11 +1,47 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh">
 <head>
   <meta charset="utf-8">
-  <title>我的第一个网页</title>
+  <title>解谜游戏 · 第一关</title>
+  <style>
+    body {
+      background:#111;
+      color:#eee;
+      font-family: "Microsoft YaHei";
+      text-align:center;
+      padding-top:80px;
+    }
+    input,button {
+      padding:8px;
+      margin-top:10px;
+    }
+  </style>
 </head>
 <body>
-  <h1>🎉 GitHub Pages 成功了！</h1>
-  <p>这是我的解谜游戏首页。</p>
+
+<h1>第一关</h1>
+<p id="story">
+  房间里没有窗户。<br>
+  墙上写着一句话：<br>
+  <b>“我每天都会出现，但你从不记得我。”</b>
+</p>
+
+<input id="answer" placeholder="输入你的答案">
+<br>
+<button onclick="check()">提交</button>
+
+<p id="result"></p>
+
+<script>
+function check() {
+  const v = document.getElementById("answer").value.trim();
+  if (v === "梦") {
+    document.getElementById("result").innerText = "✅ 正确！你听见门开了。";
+  } else {
+    document.getElementById("result").innerText = "❌ 不对，再想想。";
+  }
+}
+</script>
+
 </body>
 </html>
