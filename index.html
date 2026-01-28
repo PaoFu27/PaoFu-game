@@ -1,51 +1,76 @@
 <!DOCTYPE html>
 <html lang="zh">
 <head>
-  <meta charset="utf-8">
-  <title>解谜游戏 · 第一关</title>
+  <meta charset="UTF-8">
+  <title>甜蜜解谜游戏 · 第一关</title>
   <style>
-body {
-  background: url("Watercolor-Heart-Illustration.jpg") no-repeat center center fixed;
-  background-size: cover;
-  color: #eee;
-  font-family: "Microsoft YaHei";
-  text-align: center;
-  padding-top: 80px;
-}
+    /* 页面背景 */
+    body {
+      background: url("Watercolor-Heart-Illustration.jpg") no-repeat center center fixed;
+      background-size: cover;
+      color: #fff;
+      font-family: "Microsoft YaHei";
+      text-align: center;
+      padding-top: 80px;
+    }
 
-p {
-  background: rgba(0,0,0,0.6);
-  padding: 20px;
-  border-radius: 10px;
-}
-</style>
+    /* 半透明文字区 */
+    #story, #result {
+      background: rgba(255, 192, 203, 0.6); /* 粉色半透明 */
+      color: #000;
+      padding: 20px;
+      border-radius: 12px;
+      display: inline-block;
+      max-width: 80%;
+      margin-top: 20px;
+    }
 
+    input, button {
+      padding: 10px;
+      margin-top: 15px;
+      font-size: 16px;
+      border-radius: 8px;
+      border: none;
+    }
+
+    button {
+      background-color: #ff69b4; /* 粉色按钮 */
+      color: white;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #ff85c1;
+    }
+  </style>
 </head>
 <body>
 
-<h1>第一关</h1>
-<p id="story">
-  房间里没有窗户。<br>
-  墙上写着一句话：<br>
-  <b>“我每天都会出现，但你从不记得我。”</b>
-</p>
+  <h1>第一关</h1>
 
-<input id="answer" placeholder="输入你的答案">
-<br>
-<button onclick="check()">提交</button>
+  <p id="story">
+    欢迎来到甜蜜解谜游戏！<br>
+    墙上写着一句话：<br>
+    <b>“我每天都会出现，但你从不记得我。”</b>
+  </p>
 
-<p id="result"></p>
+  <br>
+  <input id="answer" placeholder="输入你的答案">
+  <br>
+  <button onclick="check()">提交</button>
 
-<script>
-function check() {
-  const v = document.getElementById("answer").value.trim();
-  if (v === "梦") {
-    document.getElementById("result").innerText = "✅ 正确！你听见门开了。";
-  } else {
-    document.getElementById("result").innerText = "❌ 不对，再想想。";
-  }
-}
-</script>
+  <p id="result"></p>
+
+  <script>
+    function check() {
+      const v = document.getElementById("answer").value.trim();
+      if (v === "梦") { // 正确答案
+        document.getElementById("result").innerText = "✅ 正确！你听见门开了。";
+      } else {
+        document.getElementById("result").innerText = "❌ 不对，再想想。";
+      }
+    }
+  </script>
 
 </body>
 </html>
