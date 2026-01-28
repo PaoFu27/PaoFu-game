@@ -16,63 +16,83 @@
     overflow: hidden;
   }
 
-  /* 信封样式 + 摇晃动画 */
-  #envelope {
-    width: 150px;
-    height: 100px;
-    background: #ff69b4;
-    border-radius: 8px;
-    cursor: pointer;
+  /* 信封容器 */
+  #envelope-container {
     position: relative;
-    animation: shake 2s infinite;
+    width: 250px;
+    height: 150px;
+    cursor: pointer;
   }
+
+  /* 信封主体 */
+  #envelope {
+    width: 100%;
+    height: 100%;
+    background: #ff69b4;
+    border-radius: 10px;
+    position: relative;
+    z-index: 2;
+    box-shadow: 0 5px 10px rgba(0,0,0,0.3);
+    transition: transform 0.6s;
+  }
+
+  /* 信封盖子 */
   #envelope::before {
     content: "";
     position: absolute;
     top: 0;
     left: 0;
-    border-left: 75px solid transparent;
-    border-right: 75px solid transparent;
-    border-bottom: 50px solid #ff85c1;
+    border-left: 125px solid transparent;
+    border-right: 125px solid transparent;
+    border-bottom: 75px solid #ff85c1;
+    transform-origin: top center;
+    transition: transform 0.6s;
+    z-index: 3;
   }
 
+  /* 信封晃动 */
   @keyframes shake {
-    0%, 100% { transform: rotate(0deg); }
-    25% { transform: rotate(5deg); }
-    75% { transform: rotate(-5deg); }
+    0%,100%{transform: rotate(0deg);}
+    25%{transform: rotate(5deg);}
+    75%{transform: rotate(-5deg);}
+  }
+  #envelope.shake {
+    animation: shake 2s infinite;
   }
 
-  /* 纸张样式，初始隐藏 */
+  /* 纸张 */
   #letter {
     display: none;
-    background: rgba(255, 255, 255, 0.95);
-    color: #000;
-    width: 320px;
-    padding: 30px;
+    width: 400px;
+    max-width: 90%;
+    background: #fff;
     border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    padding: 40px 30px;
     text-align: center;
-    box-shadow: 0 0 20px rgba(0,0,0,0.5);
     position: absolute;
+    top: 50%;
+    transform: translateY(-50%) scale(0.5);
     opacity: 0;
-    transform: scale(0.5);
-    transition: all 0.5s ease;
+    transition: all 0.6s ease;
+    z-index: 1;
   }
 
   #letter p {
-    min-height: 80px; /* 留出打字文字空间 */
+    min-height: 100px;
+    font-size: 18px;
   }
 
   #birthday, #submitBtn {
     display: none;
     margin-top: 15px;
-    padding: 8px;
+    padding: 10px;
     font-size: 16px;
     border-radius: 8px;
     border: 1px solid #ccc;
   }
 
   #submitBtn {
-    margin-top: 10px;
     background-color: #ff69b4;
     color: white;
     border: none;
@@ -82,7 +102,6 @@
     background-color: #ff85c1;
   }
 
-  /* 下一关显示文字 */
   #next {
     display: none;
     margin-top: 20px;
@@ -93,10 +112,10 @@
 </head>
 <body>
 
-<!-- 信封 -->
-<div id="envelope"></div>
+<div id="envelope-container">
+  <div id="envelope" class="shake"></div>
+</div>
 
-<!-- 纸张 -->
 <div id="letter">
   <p id="text"></p>
   <input type="text" id="birthday" placeholder="输入你的生日">
@@ -106,62 +125,60 @@
 </div>
 
 <script>
-  const envelope = document.getElementById("envelope");
-  const letter = document.getElementById("letter");
-  const textEl = document.getElementById("text");
-  const birthdayInput = document.getElementById("birthday");
-  const submitBtn = document.getElementById("submitBtn");
-  const next = document.getElementById("next");
+const envelope = document.getElementById("envelope");
+const letter = document.getElementById("letter");
+const textEl = document.getElementById("text");
+const birthdayInput = document.getElementById("birthday");
+const submitBtn = document.getElementById("submitBtn");
+const next = document.getElementById("next");
 
-  const message = "好久不见，上次见面是什么时候你还记得吗？\n我的生日快到了，你一定要来哦 🎂";
+// 信封文字
+const message = "好久不见，上次见面是什么时候你还记得吗？\n我的生日快到了，你一定要来哦 🎂";
 
-  // 打字机效果
-  function typeText(text, el, callback) {
-    let i = 0;
-    const interval = setInterval(() => {
-      el.innerHTML += text.charAt(i).replace(/\n/g,"<br>");
-      i++;
-      if(i >= text.length) {
-        clearInterval(interval);
-        if(callback) callback();
-      }
-    }, 50); // 每50ms打一个字
-  }
-
-  // 点击信封
-  envelope.addEventListener("click", () => {
-    envelope.style.transform = "scale(0)"; // 信封缩小
-    setTimeout(() => {
-      envelope.style.display = "none";
-      letter.style.display = "block";
-      setTimeout(() => {
-        letter.style.opacity = "1";
-        letter.style.transform = "scale(1)";
-        typeText(message, textEl, () => {
-          // 打完字后显示输入框和按钮
-          birthdayInput.style.display = "inline-block";
-          submitBtn.style.display = "inline-block";
-        });
-      }, 50);
-    }, 500);
-  });
-
-  // 点击提交
-  submitBtn.addEventListener("click", () => {
-    const b = birthdayInput.value.trim();
-    if(b === "") {
-      alert("请输入你的生日哦~ 🎂");
-      return;
+// 打字机效果
+function typeText(text, el, callback) {
+  let i = 0;
+  const interval = setInterval(() => {
+    el.innerHTML += text.charAt(i).replace(/\n/g,"<br>");
+    i++;
+    if(i >= text.length) {
+      clearInterval(interval);
+      if(callback) callback();
     }
-    // 显示下一关文字
-    next.style.display = "block";
-    // 这里可以延时后进入下一关
-    setTimeout(() => {
-      // 假设下一关还没做，可以在这里替换内容或跳转
-      alert("下一关内容可以在这里显示或跳转页面！");
-    }, 500);
-  });
+  }, 50);
+}
 
+// 点击信封展开纸张
+envelope.addEventListener("click", () => {
+  envelope.classList.remove("shake");
+  envelope.style.transform = "scale(0) rotateX(90deg)";
+  setTimeout(() => {
+    envelope.style.display = "none";
+    letter.style.display = "block";
+    setTimeout(() => {
+      letter.style.opacity = 1;
+      letter.style.transform = "translateY(-50%) scale(1)";
+      typeText(message, textEl, () => {
+        birthdayInput.style.display = "inline-block";
+        submitBtn.style.display = "inline-block";
+      });
+    }, 100);
+  }, 600);
+});
+
+// 提交生日
+submitBtn.addEventListener("click", () => {
+  const b = birthdayInput.value.trim();
+  if(b === "") {
+    alert("请输入你的生日哦~ 🎂");
+    return;
+  }
+  next.style.display = "block";
+  setTimeout(() => {
+    alert("下一关内容可以在这里显示或跳转页面！");
+  }, 500);
+});
 </script>
+
 </body>
 </html>
