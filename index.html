@@ -1,76 +1,167 @@
 <!DOCTYPE html>
 <html lang="zh">
 <head>
-  <meta charset="UTF-8">
-  <title>甜蜜解谜游戏 · 第一关</title>
-  <style>
-    /* 页面背景 */
-    body {
-      background: url("Watercolor-Heart-Illustration.jpg") no-repeat center center fixed;
-      background-size: cover;
-      color: #fff;
-      font-family: "Microsoft YaHei";
-      text-align: center;
-      padding-top: 80px;
-    }
+<meta charset="UTF-8">
+<title>甜蜜解谜游戏 · 第一关</title>
+<style>
+  body {
+    background: url("Watercolor-Heart-Illustration.jpg") no-repeat center center fixed;
+    background-size: cover;
+    font-family: "Microsoft YaHei";
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    overflow: hidden;
+  }
 
-    /* 半透明文字区 */
-    #story, #result {
-      background: rgba(255, 192, 203, 0.6); /* 粉色半透明 */
-      color: #000;
-      padding: 20px;
-      border-radius: 12px;
-      display: inline-block;
-      max-width: 80%;
-      margin-top: 20px;
-    }
+  /* 信封样式 + 摇晃动画 */
+  #envelope {
+    width: 150px;
+    height: 100px;
+    background: #ff69b4;
+    border-radius: 8px;
+    cursor: pointer;
+    position: relative;
+    animation: shake 2s infinite;
+  }
+  #envelope::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    border-left: 75px solid transparent;
+    border-right: 75px solid transparent;
+    border-bottom: 50px solid #ff85c1;
+  }
 
-    input, button {
-      padding: 10px;
-      margin-top: 15px;
-      font-size: 16px;
-      border-radius: 8px;
-      border: none;
-    }
+  @keyframes shake {
+    0%, 100% { transform: rotate(0deg); }
+    25% { transform: rotate(5deg); }
+    75% { transform: rotate(-5deg); }
+  }
 
-    button {
-      background-color: #ff69b4; /* 粉色按钮 */
-      color: white;
-      cursor: pointer;
-    }
+  /* 纸张样式，初始隐藏 */
+  #letter {
+    display: none;
+    background: rgba(255, 255, 255, 0.95);
+    color: #000;
+    width: 320px;
+    padding: 30px;
+    border-radius: 12px;
+    text-align: center;
+    box-shadow: 0 0 20px rgba(0,0,0,0.5);
+    position: absolute;
+    opacity: 0;
+    transform: scale(0.5);
+    transition: all 0.5s ease;
+  }
 
-    button:hover {
-      background-color: #ff85c1;
-    }
-  </style>
+  #letter p {
+    min-height: 80px; /* 留出打字文字空间 */
+  }
+
+  #birthday, #submitBtn {
+    display: none;
+    margin-top: 15px;
+    padding: 8px;
+    font-size: 16px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+  }
+
+  #submitBtn {
+    margin-top: 10px;
+    background-color: #ff69b4;
+    color: white;
+    border: none;
+    cursor: pointer;
+  }
+  #submitBtn:hover {
+    background-color: #ff85c1;
+  }
+
+  /* 下一关显示文字 */
+  #next {
+    display: none;
+    margin-top: 20px;
+    font-weight: bold;
+    color: #ff1493;
+  }
+</style>
 </head>
 <body>
 
-  <h1>第一关</h1>
+<!-- 信封 -->
+<div id="envelope"></div>
 
-  <p id="story">
-    欢迎来到甜蜜解谜游戏！<br>
-    墙上写着一句话：<br>
-    <b>“我每天都会出现，但你从不记得我。”</b>
-  </p>
-
+<!-- 纸张 -->
+<div id="letter">
+  <p id="text"></p>
+  <input type="text" id="birthday" placeholder="输入你的生日">
   <br>
-  <input id="answer" placeholder="输入你的答案">
-  <br>
-  <button onclick="check()">提交</button>
+  <button id="submitBtn">提交</button>
+  <p id="next">🎉 生日正确！进入下一关！</p>
+</div>
 
-  <p id="result"></p>
+<script>
+  const envelope = document.getElementById("envelope");
+  const letter = document.getElementById("letter");
+  const textEl = document.getElementById("text");
+  const birthdayInput = document.getElementById("birthday");
+  const submitBtn = document.getElementById("submitBtn");
+  const next = document.getElementById("next");
 
-  <script>
-    function check() {
-      const v = document.getElementById("answer").value.trim();
-      if (v === "梦") { // 正确答案
-        document.getElementById("result").innerText = "✅ 正确！你听见门开了。";
-      } else {
-        document.getElementById("result").innerText = "❌ 不对，再想想。";
+  const message = "好久不见，上次见面是什么时候你还记得吗？\n我的生日快到了，你一定要来哦 🎂";
+
+  // 打字机效果
+  function typeText(text, el, callback) {
+    let i = 0;
+    const interval = setInterval(() => {
+      el.innerHTML += text.charAt(i).replace(/\n/g,"<br>");
+      i++;
+      if(i >= text.length) {
+        clearInterval(interval);
+        if(callback) callback();
       }
-    }
-  </script>
+    }, 50); // 每50ms打一个字
+  }
 
+  // 点击信封
+  envelope.addEventListener("click", () => {
+    envelope.style.transform = "scale(0)"; // 信封缩小
+    setTimeout(() => {
+      envelope.style.display = "none";
+      letter.style.display = "block";
+      setTimeout(() => {
+        letter.style.opacity = "1";
+        letter.style.transform = "scale(1)";
+        typeText(message, textEl, () => {
+          // 打完字后显示输入框和按钮
+          birthdayInput.style.display = "inline-block";
+          submitBtn.style.display = "inline-block";
+        });
+      }, 50);
+    }, 500);
+  });
+
+  // 点击提交
+  submitBtn.addEventListener("click", () => {
+    const b = birthdayInput.value.trim();
+    if(b === "") {
+      alert("请输入你的生日哦~ 🎂");
+      return;
+    }
+    // 显示下一关文字
+    next.style.display = "block";
+    // 这里可以延时后进入下一关
+    setTimeout(() => {
+      // 假设下一关还没做，可以在这里替换内容或跳转
+      alert("下一关内容可以在这里显示或跳转页面！");
+    }, 500);
+  });
+
+</script>
 </body>
 </html>
