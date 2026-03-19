@@ -1,1 +1,80 @@
 
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<title>系统日志</title>
+
+<style>
+body{
+  background:#000;
+  color:#0f0;
+  font-family: monospace;
+  padding:40px;
+}
+
+#log{
+  white-space: pre-line;
+  line-height:1.8;
+  min-height:200px;
+}
+
+#input{
+  margin-top:20px;
+  padding:10px;
+  font-size:18px;
+  background:#000;
+  border:1px solid #0f0;
+  color:#0f0;
+}
+</style>
+</head>
+
+<body>
+
+<div id="log"></div>
+
+<input id="input" placeholder="输入内容...">
+
+<script>
+const log = document.getElementById("log");
+
+const lines = [
+"[LOG 01] He came back earlier than expected.",
+"[LOG 02] Everything started to distort.",
+"[LOG 03] Lost connection to the outside world.",
+"[LOG 04] Please don't open it again."
+];
+
+let i = 0;
+
+function show(){
+  if(i < lines.length){
+    log.innerHTML += lines[i] + "\n";
+    i++;
+    setTimeout(show,800);
+  }
+}
+show();
+
+// 输入检测
+document.getElementById("input").addEventListener("keydown",function(e){
+  if(e.key === "Enter"){
+    const v = this.value.toUpperCase();
+
+    const ans = atob("SEVMUA=="); //
+
+    if(v === ans){
+      document.body.style.opacity="0";
+      setTimeout(()=>{
+        location.href="page3.html";
+      },800);
+    } else {
+      this.value="";
+    }
+  }
+});
+</script>
+
+</body>
+</html>
