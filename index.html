@@ -140,11 +140,16 @@ function checkCode() {
   const code = Array.from(inputs).map(i => i.value).join("");
   
   if (code.length === 4) {
-    if (code === "0630") {  
-      alert("正确，进入下一关");
-      // 跳转页面（你之后做第二关）
-      window.location.href = "page2.html";
-    } else {
+    if (code === "0815") {
+
+  // 让页面慢慢变黑
+  document.body.style.transition = "opacity 1s";
+  document.body.style.opacity = "0";
+
+  setTimeout(() => {
+    window.location.href = "page2.html";
+  }, 1000);
+} else {
       alert("不对，再想想这个日期…");
       inputs.forEach(i => i.value = "");
       inputs[0].focus();
