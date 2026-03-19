@@ -16,10 +16,11 @@ body {
   margin: 0;
 }
 
-#container {
+#box {
   width: 80%;
   max-width: 600px;
   text-align: center;
+  transition: transform 0.2s;
 }
 
 #text {
@@ -29,7 +30,7 @@ body {
   white-space: pre-line;
 }
 
-#enterBtn {
+#btn {
   display: none;
   margin-top: 30px;
   padding: 10px 20px;
@@ -39,18 +40,12 @@ body {
   cursor: pointer;
 }
 
-#enterBtn:hover {
-  background: #fff;
-  color: #000;
-}
-
-/* 输入区 */
 #inputArea {
   display: none;
   margin-top: 20px;
 }
 
-.code-input {
+.code {
   width: 40px;
   height: 50px;
   text-align: center;
@@ -60,41 +55,31 @@ body {
   border: 1px solid #fff;
   color: #fff;
 }
-
-#hint {
-  margin-top: 10px;
-  font-size: 14px;
-  color: #aaa;
-}
 </style>
 </head>
 
 <body>
 
-<div id="container">
+<div id="box">
   <div id="text"></div>
-
-  <button id="enterBtn">进入网页</button>
+  <button id="btn">进入网页</button>
 
   <div id="inputArea">
-    <div>
-      <input maxlength="1" class="code-input">
-      <input maxlength="1" class="code-input">
-      <input maxlength="1" class="code-input">
-      <input maxlength="1" class="code-input">
-    </div>
-    <div id="hint">提示：一个特殊的日期</div>
+    <input maxlength="1" class="code">
+    <input maxlength="1" class="code">
+    <input maxlength="1" class="code">
+    <input maxlength="1" class="code">
   </div>
 </div>
 
 <script>
-const textEl = document.getElementById("text");
-const enterBtn = document.getElementById("enterBtn");
-const inputArea = document.getElementById("inputArea");
-const inputs = document.querySelectorAll(".code-input");
+const t = document.getElementById("text");
+const b = document.getElementById("btn");
+const area = document.getElementById("inputArea");
+const inp = document.querySelectorAll(".code");
 
-// 文案
-const content = `你是泡芙，是一名研一学生。
+//
+const str = `你是泡芙，是一名研一学生。
 放暑假的你终于回到家里，可以见到女朋友小黄了。
 
 但是房间里没有人，发微信也没有任何回复，
@@ -105,54 +90,57 @@ const content = `你是泡芙，是一名研一学生。
 
 你下意识觉得，小黄的消失跟这个网页有关……`;
 
-// 打字机效果
 let i = 0;
-function typeWriter() {
-  if (i < content.length) {
-    textEl.innerHTML += content.charAt(i);
+function typing(){
+  if(i < str.length){
+    t.innerHTML += str.charAt(i);
     i++;
-    setTimeout(typeWriter, 40);
+    setTimeout(typing,40);
   } else {
-    enterBtn.style.display = "inline-block";
+    b.style.display = "inline-block";
   }
 }
-
-typeWriter();
+typing();
 
 // 点击进入
-enterBtn.onclick = () => {
-  inputArea.style.display = "block";
-  enterBtn.style.display = "none";
+b.onclick = () => {
+  area.style.display = "block";
+  b.style.display = "none";
 };
 
-// 自动跳到下一个输入框
-inputs.forEach((input, index) => {
-  input.addEventListener("input", () => {
-    if (input.value && index < inputs.length - 1) {
-      inputs[index + 1].focus();
+// 自动跳格
+inp.forEach((e,i)=>{
+  e.addEventListener("input",()=>{
+    if(e.value && i<inp.length-1){
+      inp[i+1].focus();
     }
-    checkCode();
+    check();
   });
 });
 
-// 检查密码
-function checkCode() {
-  const code = Array.from(inputs).map(i => i.value).join("");
-  
-  if (code.length === 4) {
-    if (code === "0629") {
+// 
+function check(){
+  const v = Array.from(inp).map(x=>x.value).join("");
+  const key = atob("MDYyOQ=="); //
 
-  // 让页面慢慢变黑
-  document.body.style.transition = "opacity 1s";
-  document.body.style.opacity = "0";
+  if(v.length === 4){
+    if(v === key){
 
-  setTimeout(() => {
-    window.location.href = "page2.html";
-  }, 1000);
-} else {
-      alert("不对，再想想这个日期…");
-      inputs.forEach(i => i.value = "");
-      inputs[0].focus();
+      document.body.style.transition="opacity 1s";
+      document.body.style.opacity="0";
+
+      setTimeout(()=>{
+        location.href="page2.html";
+      },1000);
+
+    } else {
+      inp.forEach(x=>x.value="");
+      inp[0].focus();
+
+      // 轻微抖动
+      box.style.transform="translateX(10px)";
+      setTimeout(()=>box.style.transform="translateX(-10px)",50);
+      setTimeout(()=>box.style.transform="translateX(0)",100);
     }
   }
 }
