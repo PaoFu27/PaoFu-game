@@ -318,20 +318,15 @@ inputs.forEach((inp, i) => {
 function checkPass() {
   let val = Array.from(inputs).map(i => i.value).join('');
   
-  if(val.length === 4) {
-    const encryptedTarget = [88, 74, 91, 82, 90, 66, 66]; 
-    const offset = 5;
+ if(val.length === 4) {
+    const encryptedTarget = [85, 82, 89, 93]; 
+    const offset = 13;
 
-    let base64Input = btoa(val); 
-
-    let decodedBase64 = '';
-    for (let i = 0; i < base64Input.length; i++) {
-      decodedBase64 += String.fromCharCode(base64Input.charCodeAt(i) - offset);
-    }
+    let inputCodes = val.split('').map(char => char.charCodeAt(0));
 
     let isCorrect = true;
-    for (let i = 0; i < encryptedTarget.length; i++) {
-      if (decodedBase64.charCodeAt(i) + offset !== encryptedTarget[i]) {
+    for(let k=0; k<4; k++) {
+      if(inputCodes[k] + offset !== encryptedTarget[k]) {
         isCorrect = false;
         break;
       }
