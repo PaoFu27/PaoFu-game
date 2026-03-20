@@ -2,7 +2,7 @@
 <html lang="zh">
 <head>
 <meta charset="UTF-8">
-<title>桌面</title>
+<title>桌面 - 第二关</title>
 
 <style>
 body{
@@ -11,7 +11,9 @@ body{
   font-family:Segoe UI;
   user-select:none;
   position: relative;
-  overflow: hidden;
+  overflow: hidden; /* 防止出现滚动条 */
+  height: 100vh; /* 确保body占满视口 */
+  width: 100vw;
 }
 
 /* 桌面图标 */
@@ -22,45 +24,57 @@ body{
   cursor:pointer;
   color:#000;
   transition: transform 0.1s ease;
+  display: inline-block; /* 防止换行问题 */
+  vertical-align: top;
 }
 
-/* 窗口 - 核心修改：优化居中逻辑，适配任意尺寸 */
+/* 窗口 - 核心修改：使用 fixed 确保绝对居中 */
 .window{
-  position:absolute;
-  width:600px;
-  height:350px;
-  background:#fff;
-  border:1px solid #aaa;
-  box-shadow:0 10px 30px rgba(0,0,0,0.3);
-  display:none;
-
-  top:50%;
-  left:50%;
-  transform:translate(-50%,-50%);
-
-  z-index:999;
+  position: fixed; /* 改为 fixed，相对于视口定位 */
+  width: 600px;
+  max-width: 90%; /* 适配小屏幕 */
+  height: 350px;
+  max-height: 80%;
+  background: #fff;
+  border: 1px solid #aaa;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+  display: none;
+  
+  /* 完美居中组合拳 */
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  -webkit-transform: translate(-50%, -50%);
+  -moz-transform: translate(-50%, -50%);
+  
+  z-index: 999;
+  border-radius: 4px;
+  overflow: hidden;
 }
   
 /* 标题栏 */
 .titlebar{
-  height:35px;
-  background:#f3f3f3;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  padding:0 10px;
-  border-bottom:1px solid #ddd;
+  height: 35px;
+  background: #f3f3f3;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 10px;
+  border-bottom: 1px solid #ddd;
   font-weight: 500;
+  cursor: default;
 }
 
 .close{
-  cursor:pointer;
+  cursor: pointer;
   width: 24px;
   height: 24px;
   display: flex;
   align-items: center;
   justify-content: center;
   border-radius: 3px;
+  font-size: 18px;
+  line-height: 1;
 }
 .close:hover {
   background: #e74c3c;
@@ -69,15 +83,16 @@ body{
 
 /* 内容 */
 .content{
-  padding:10px;
-  height:300px;
-  overflow:auto;
+  padding: 10px;
+  height: calc(100% - 35px); /* 减去标题栏高度 */
+  overflow: auto;
   line-height: 1.5;
+  box-sizing: border-box;
 }
 
 .file{
-  padding:8px 5px;
-  cursor:pointer;
+  padding: 8px 5px;
+  cursor: pointer;
   border-radius: 2px;
 }
 .file:hover{background:#e6f2ff;}
@@ -85,45 +100,49 @@ body{
 
 /* 任务栏 */
 #taskbar{
-  position:fixed;
-  bottom:0;
-  width:100%;
-  height:40px;
-  background:#222;
-  display:flex;
-  align-items:center;
-  padding-left:10px;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  height: 40px;
+  background: #222;
+  display: flex;
+  align-items: center;
+  padding-left: 10px;
   z-index: 1000;
+  box-sizing: border-box;
 }
 
 #search{
-  width:200px;
-  padding:5px;
+  width: 200px;
+  padding: 5px;
   border: none;
   border-radius: 3px;
   outline: none;
+  cursor: pointer;
 }
 
-/* 密码框 */
+/* 密码框 - 改为 fixed 定位 */
 #passBox{
-  display:none;
-  position:absolute;
-  bottom:60px;
-  left:20px;
-  background:#111;
-  color:#fff;
-  padding:10px;
+  display: none;
+  position: fixed; /* 关键修改 */
+  bottom: 60px; /* 在任务栏上方 */
+  left: 20px;
+  background: #111;
+  color: #fff;
+  padding: 10px;
   border-radius: 4px;
   z-index: 1001;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.5);
 }
 
 .pass{
-  width:30px;
-  margin:2px;
-  text-align:center;
+  width: 30px;
+  margin: 2px;
+  text-align: center;
   padding: 4px;
   border: none;
   border-radius: 2px;
+  font-size: 16px;
 }
 
 /* 抖动 */
@@ -137,7 +156,7 @@ body{
 
 /* 闪烁 */
 .flash{
-  animation:flash 0.1s 10;
+  animation: flash 0.1s 10;
 }
 @keyframes flash{
   0%{opacity:1}
@@ -145,70 +164,83 @@ body{
   100%{opacity:1}
 }
 
-/* 邮件弹窗 - 同样优化居中兼容 */
+/* 邮件弹窗 - 改为 fixed 定位 */
 #mailAlert{
-  display:none;
-  position:absolute;
-  top:50%;
-  left:50%;
-  transform:translate(-50%,-50%);
+  display: none;
+  position: fixed; /* 关键修改 */
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   -webkit-transform: translate(-50%, -50%);
   -moz-transform: translate(-50%, -50%);
-  background:#fff;
-  padding:20px;
-  border:1px solid #000;
-  text-align:center;
+  background: #fff;
+  padding: 20px;
+  border: 1px solid #000;
+  text-align: center;
   border-radius: 6px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.2);
   z-index: 1002;
+  min-width: 200px;
 }
 
-/* 是否救小黄弹窗 */
+/* 是否救小黄弹窗 - 优化为全屏遮罩 + Flex居中 */
 #saveXiaoHuangModal {
   display: none;
-  position: fixed;
+  position: fixed; /* 关键修改 */
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
   background: rgba(0,0,0,0.5);
   z-index: 2000;
+  /* 使用 Flexbox 让内部内容完美居中 */
   align-items: center;
   justify-content: center;
 }
+
 .modal-content {
   background: #fff;
   padding: 30px;
   border-radius: 8px;
   text-align: center;
   box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+  /* 防止在小屏幕上溢出 */
+  max-width: 90%; 
 }
+
 .modal-btn-group {
   margin-top: 20px;
   display: flex;
   gap: 15px;
   justify-content: center;
 }
+
 .modal-btn {
   padding: 8px 20px;
   border: none;
   border-radius: 4px;
   cursor: pointer;
   font-size: 14px;
+  transition: opacity 0.2s;
 }
+.modal-btn:hover {
+  opacity: 0.9;
+}
+
 .btn-save {
   background: #2ecc71;
   color: #fff;
 }
+
 .btn-not-save {
   background: #e74c3c;
   color: #fff;
 }
 
-/* 小黄失望提示框 */
+/* 小黄失望提示框 - 改为 fixed 定位 */
 #disappointedTip {
   display: none;
-  position: fixed;
+  position: fixed; /* 关键修改 */
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
@@ -220,6 +252,7 @@ body{
   border-radius: 6px;
   font-size: 16px;
   z-index: 2001;
+  text-align: center;
 }
 </style>
 </head>
@@ -278,16 +311,16 @@ body{
 
 <!-- 任务栏 -->
 <div id="taskbar">
-  <input id="search" placeholder="搜索...">
+  <input id="search" placeholder="搜索..." readonly>
 </div>
 
 <!-- 密码框 -->
 <div id="passBox">
   输入密码：
-  <input class="pass" maxlength="1">
-  <input class="pass" maxlength="1">
-  <input class="pass" maxlength="1">
-  <input class="pass" maxlength="1">
+  <input class="pass" maxlength="1" type="text">
+  <input class="pass" maxlength="1" type="text">
+  <input class="pass" maxlength="1" type="text">
+  <input class="pass" maxlength="1" type="text">
   <div style="font-size:12px;color:#aaa;margin-top:8px;">提示：一个单词</div>
 </div>
 
@@ -312,114 +345,148 @@ body{
 <div id="disappointedTip">小黄失望的看着你</div>
 
 <script>
-// 窗口
+// 窗口管理
 function openWin(id){
   const win = document.getElementById(id);
-  win.style.display="block";
-  // 额外保障：打开时强制重置居中（防止样式冲突）
-  win.style.top = "50%";
-  win.style.left = "50%";
-  win.style.transform = "translate(-50%, -50%)";
-}
-function closeWin(id){
-  document.getElementById(id).style.display="none";
+  win.style.display = "block";
+  // 强制重绘以确保居中逻辑生效（针对某些浏览器的渲染延迟）
+  setTimeout(() => {
+    win.style.top = "50%";
+    win.style.left = "50%";
+    win.style.transform = "translate(-50%, -50%)";
+  }, 10);
 }
 
-// 文件数据
-const files=[
-"01001000",
-"01001100",
-"01010000",
-"01000101"
+function closeWin(id){
+  document.getElementById(id).style.display = "none";
+}
+
+// 文件数据 (二进制)
+const files = [
+  "01001000",
+  "01001100",
+  "01010000",
+  "01000101"
 ];
 
 // 打开文件
 function openFile(i){
   openWin("docWin");
-  document.getElementById("docText").innerText=files[i];
+  document.getElementById("docText").innerText = files[i];
 }
 
-// 文本
+// 显示文本
 function showText(type){
   openWin("docWin");
-  if(type==="order"){
-    docText.innerText="4-2-1-3";
+  const docText = document.getElementById("docText");
+  if(type === "order"){
+    docText.innerText = "4-2-1-3";
   }
-  if(type==="tip"){
-    docText.innerText="解谜游戏中，常见方法是将二进制转换为16进制或10进制，从而得到隐藏信息。";
+  if(type === "tip"){
+    docText.innerText = "解谜游戏中，常见方法是将二进制转换为16进制或10进制，从而得到隐藏信息。";
   }
 }
 
 // 搜索逻辑
-const search=document.getElementById("search");
-const passBox=document.getElementById("passBox");
+const search = document.getElementById("search");
+const passBox = document.getElementById("passBox");
+const passInputs = document.querySelectorAll(".pass");
 
-search.addEventListener("click",(e)=>{
+search.addEventListener("click", (e) => {
   e.stopPropagation();
-  passBox.style.display="block";
-  document.querySelectorAll(".pass")[0].focus();
+  passBox.style.display = "block";
+  passInputs[0].focus();
 });
 
 // 点击外面关闭密码框
-document.addEventListener("click",()=>{
-  passBox.style.display="none";
+document.addEventListener("click", () => {
+  passBox.style.display = "none";
 });
 
-// 输入框阻止关闭 + 自动聚焦下一个
-document.querySelectorAll(".pass").forEach((el,i)=>{
-  el.addEventListener("click",(e)=>e.stopPropagation());
-  el.addEventListener("input",()=>{
+// 输入框逻辑
+passInputs.forEach((el, i) => {
+  el.addEventListener("click", (e) => e.stopPropagation());
+  
+  el.addEventListener("input", () => {
+    // 只允许字母
     el.value = el.value.replace(/[^a-zA-Z]/g, '');
-    if(el.value && i<3){
-      document.querySelectorAll(".pass")[i+1].focus();
+    
+    if(el.value && i < 3){
+      passInputs[i+1].focus();
     }
     check();
   });
-  el.addEventListener("keydown",(e)=>{
-    if(e.key === "Enter" && i<3){
-      document.querySelectorAll(".pass")[i+1].focus();
+  
+  el.addEventListener("keydown", (e) => {
+    if(e.key === "Backspace" && !el.value && i > 0){
+      passInputs[i-1].focus();
+    }
+    if(e.key === "Enter" && i < 3){
+      passInputs[i+1].focus();
     }
   });
 });
 
 // 验证密码
 function check(){
-  let v=[...document.querySelectorAll(".pass")].map(i=>i.value).join("").toUpperCase();
-  let ans=atob("SEVMUA=="); 
-  if(v.length===4){
-    if(v===ans){
+  let v = [...passInputs].map(i => i.value).join("").toUpperCase();
+  // "HELP" 的 Base64 是 SEVMUA== (注意：原代码中 SEVMUA== 解码是 HELU? 这里修正为正确的 HELP 编码或者保持你的原意)
+  // 原代码: atob("SEVMUA==") -> "HELU" (看起来像是 typo, 应该是 HELP -> SEVMUA== 是错的, HELP -> SEVMUA== 不对)
+  // H(72) E(69) L(76) P(80) -> Base64: SEVMUA== 是错误的。
+  // 正确计算: 
+  // H (01001000) E (01000101) L (01001100) P (01010000)
+  // 010010 000100 010101 001100 010100 00xxxx
+  // 18     4      21     12     20
+  // S      E      V      M      U
+  // 所以 "HELP" 的 Base64 确实是 "SEVMUA==" (最后两位填充)
+  // 让我们再确认一下: 
+  // 'H' 'E' 'L' 'P' -> 0x48 0x45 0x4C 0x50
+  // Binary: 01001000 01000101 01001100 01010000
+  // Groups: 010010 000100 010101 001100 010100 00....
+  // Dec:    18     4      21     12     20
+  // Char:   S      E      V      M      U
+  // Result: SEVMU= (如果是3个字符) 或 SEVMUA== (如果是4个字符，补全)
+  // JS atob("SEVMUA==") 结果是 "HELP"。原代码逻辑没问题。
+  
+  let ans = atob("SEVMUA=="); 
+  
+  if(v.length === 4){
+    if(v === ans){
       triggerEffect();
-    }else{
+    } else {
       passBox.style.animation = "shake 0.5s";
-      setTimeout(()=>{
+      setTimeout(() => {
         passBox.style.animation = "";
-        document.querySelectorAll(".pass").forEach(i=>i.value="");
-      },500);
+        passInputs.forEach(i => i.value = "");
+        passInputs[0].focus();
+      }, 500);
     }
   }
 }
 
 // 特效
 function triggerEffect(){
-  document.querySelectorAll(".icon").forEach(i=>{
-    i.style.animation="shake 0.5s";
-    setTimeout(()=>{i.style.animation="";},500);
+  document.querySelectorAll(".icon").forEach(i => {
+    i.style.animation = "shake 0.5s";
+    setTimeout(() => { i.style.animation = ""; }, 500);
   });
   document.body.classList.add("flash");
-  setTimeout(()=>{
+  setTimeout(() => {
     document.body.classList.remove("flash");
-    document.getElementById("mailAlert").style.display="block";
-  },800);
+    document.getElementById("mailAlert").style.display = "block";
+  }, 800);
 }
 
 // 打开救小黄弹窗
 function openSaveModal() {
-  document.getElementById("saveXiaoHuangModal").style.display = "flex";
+  const modal = document.getElementById("saveXiaoHuangModal");
+  modal.style.display = "flex"; // 使用 flex 以启用内部的居中
 }
 
 // 点击“救”
 function saveXiaoHuang() {
   document.getElementById("saveXiaoHuangModal").style.display = "none";
+  // 模拟跳转，实际使用时请确保 level2.html 存在
   location.href = "level2.html";
 }
 
@@ -428,11 +495,14 @@ function notSaveXiaoHuang() {
   document.getElementById("saveXiaoHuangModal").style.display = "none";
   const tip = document.getElementById("disappointedTip");
   tip.style.display = "block";
+  
   const closeTip = () => {
     tip.style.display = "none";
     document.removeEventListener("click", closeTip);
   };
-  setTimeout(()=>{
+  
+  // 稍微延迟添加监听，防止点击按钮时立即触发关闭
+  setTimeout(() => {
     document.addEventListener("click", closeTip);
   }, 100);
 }
@@ -441,7 +511,7 @@ function notSaveXiaoHuang() {
 window.addEventListener("load", () => {
   const urlParams = new URLSearchParams(window.location.search);
   if(urlParams.get("fromPublic") === "true"){
-    setTimeout(()=>{openSaveModal();}, 500);
+    setTimeout(() => { openSaveModal(); }, 500);
   }
 });
 </script>
