@@ -2,7 +2,7 @@
 <html lang="zh">
 <head>
 <meta charset="UTF-8">
-<title>桌面 - 第二关</title>
+<title>桌面</title>
 <style>
 /* 全局设置 */
 body {
@@ -16,14 +16,13 @@ body {
   width: 100vw;
 }
 
-/* --- 1. 左上角图标 (竖向排列) --- */
 .icon-container {
   position: absolute;
   top: 30px;
   left: 30px;
   display: flex;
-  flex-direction: column; /* 强制竖向排列 */
-  gap: 20px; /* 图标之间的间距 */
+  flex-direction: column;
+  gap: 20px;
   z-index: 10;
 }
 
@@ -52,7 +51,6 @@ body {
   text-shadow: 0 1px 2px rgba(255,255,255,0.5);
 }
 
-/* --- 2. 普通窗口 (居中) --- */
 .window {
   position: fixed;
   top: 50%;
@@ -102,7 +100,6 @@ body {
 .file:hover { background: #e6f2ff; }
 .file::before { content: "📄 "; }
 
-/* --- 3. 任务栏 & 密码框 --- */
 #taskbar {
   position: fixed;
   bottom: 0;
@@ -150,7 +147,6 @@ body {
   color: #fff;
 }
 
-/* --- 4. 【重点修改】救小黄决策框 (大幅变大) --- */
 #saveXiaoHuangModal {
   display: none;
   position: fixed;
@@ -169,7 +165,7 @@ body {
   background: #fff;
   width: 600px; 
   max-width: 90%;
-  padding: 50px 40px;
+  padding: 50px 40px; 
   border-radius: 12px;
   text-align: center;
   box-shadow: 0 20px 60px rgba(0,0,0,0.4);
@@ -229,10 +225,9 @@ body {
   z-index: 2005; 
   text-align: center;
   box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-  pointer-events: none;
+  pointer-events: none; 
 }
 
-/* 动画 */
 @keyframes shake {
   0%, 100% { transform: translateX(0); }
   25% { transform: translateX(5px); }
@@ -252,25 +247,21 @@ body {
   <div class="icon" onclick="openWin('noteWin')"><span>📝</span><div>笔记</div></div>
 </div>
 
-<!-- 窗口模板 -->
 <div id="folderWin" class="window"><div class="titlebar">文件夹<span class="close" onclick="closeWin('folderWin')">×</span></div><div class="content"><div class="file" onclick="openFile(0)">data_1.txt</div><div class="file" onclick="openFile(1)">data_2.txt</div><div class="file" onclick="openFile(2)">data_3.txt</div><div class="file" onclick="openFile(3)">data_4.txt</div></div></div>
 <div id="trashWin" class="window"><div class="titlebar">回收站<span class="close" onclick="closeWin('trashWin')">×</span></div><div class="content"><div class="file" onclick="showText('order')">system.log</div></div></div>
 <div id="noteWin" class="window"><div class="titlebar">笔记<span class="close" onclick="closeWin('noteWin')">×</span></div><div class="content"><div class="file" onclick="showText('tip')">readme.txt</div></div></div>
 <div id="docWin" class="window"><div class="titlebar">文档<span class="close" onclick="closeWin('docWin')">×</span></div><div id="docText" class="content"></div></div>
 
-<!-- 任务栏 -->
 <div id="taskbar"><input id="search" placeholder="搜索..." readonly></div>
 
-<!-- 密码框 -->
 <div id="passBox">
   密码：<br>
   <div style="margin-top:5px;">
     <input class="pass" maxlength="1"><input class="pass" maxlength="1"><input class="pass" maxlength="1"><input class="pass" maxlength="1">
   </div>
-  <div style="font-size:12px;color:#aaa;margin-top:5px;">提示：一个单词</div>
+  <div style="font-size:12px;color:#aaa;margin-top:5px;">提示：英文字母</div>
 </div>
 
-<!-- 邮件弹窗 -->
 <div id="mailAlert" style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); background:#fff; padding:30px; border-radius:10px; box-shadow:0 10px 30px rgba(0,0,0,0.3); text-align:center; z-index:1002;">
   <h3>新邮件!</h3>
   <div style="font-size:50px; cursor:pointer;" onclick="location.href='mail.html'">📧</div>
@@ -281,84 +272,112 @@ body {
     <h2>⚠️ 紧急抉择</h2>
     <p>系统检测到“小黄”被困在数据深处。<br>你是否要消耗算力救出它？</p>
     <div class="modal-btn-group">
-      <!-- 点击救：跳转 -->
       <button class="modal-btn btn-save" onclick="doSave()">🦸 立即救援</button>
-      <!-- 点击不救：显示失望，但不关闭此框 -->
       <button class="modal-btn btn-not-save" onclick="doNotSave()">❌ 放弃救援</button>
     </div>
   </div>
 </div>
 
-<!-- 失望提示 (浮动在最上层) -->
 <div id="disappointedTip">
   😞 小黄失望地看着你...<br>
   <span style="font-size:14px; color:#ccc; margin-top:10px; display:block;"></span>
 </div>
 
 <script>
-// 窗口逻辑
 function openWin(id) { document.getElementById(id).style.display = 'flex'; }
 function closeWin(id) { document.getElementById(id).style.display = 'none'; }
 
-// 文件逻辑
 const files = ["01001000","01001100","01010000","01000101"];
 function openFile(i) { openWin('docWin'); document.getElementById('docText').innerText = files[i]; }
 function showText(t) { openWin('docWin'); document.getElementById('docText').innerText = t==='order' ? "4-2-1-3" : "二进制转ASCII"; }
 
-// 密码逻辑
 const inputs = document.querySelectorAll('.pass');
-document.getElementById('search').onclick = (e) => { e.stopPropagation(); document.getElementById('passBox').style.display='block'; inputs[0].focus(); };
+
+document.getElementById('search').onclick = (e) => { 
+  e.stopPropagation(); 
+  document.getElementById('passBox').style.display='block'; 
+  inputs[0].focus(); 
+};
+
 document.onclick = () => document.getElementById('passBox').style.display='none';
+
 inputs.forEach((inp, i) => {
   inp.onclick = e => e.stopPropagation();
-  inp.oninput = () => { if(inp.value) { inp.value=inp.value[0].toUpperCase(); if(i<3) inputs[i+1].focus(); checkPass(); } };
-  inp.onkeydown = e => { if(e.key=='Backspace' && !inp.value && i>0) inputs[i-1].focus(); };
+  inp.oninput = () => { 
+    if(inp.value) { 
+      inp.value = inp.value[0].toUpperCase();
+      if(i < 3) inputs[i+1].focus(); 
+      checkPass(); 
+    } 
+  };
+  inp.onkeydown = e => { 
+    if(e.key === 'Backspace' && !inp.value && i > 0) inputs[i-1].focus(); 
+  };
 });
 
 function checkPass() {
-  let val = Array.from(inputs).map(i=>i.value).join('');
-  if(val.length===4) {
-    if(val === "HELP") {
+  let val = Array.from(inputs).map(i => i.value).join('');
+  
+  if(val.length === 4) {
+    const encryptedTarget = [88, 74, 91, 82, 90, 66, 66]; 
+    const offset = 5;
+
+    let base64Input = btoa(val); 
+
+    let decodedBase64 = '';
+    for (let i = 0; i < base64Input.length; i++) {
+      decodedBase64 += String.fromCharCode(base64Input.charCodeAt(i) - offset);
+    }
+
+    let isCorrect = true;
+    for (let i = 0; i < encryptedTarget.length; i++) {
+      if (decodedBase64.charCodeAt(i) + offset !== encryptedTarget[i]) {
+        isCorrect = false;
+        break;
+      }
+    }
+
+    if(isCorrect) {
       document.body.classList.add('flash');
-      setTimeout(()=>{ document.body.classList.remove('flash'); document.getElementById('mailAlert').style.display='block'; }, 500);
+      setTimeout(() => { 
+        document.body.classList.remove('flash'); 
+        document.getElementById('passBox').style.display = 'none';
+        document.getElementById('mailAlert').style.display = 'block'; 
+      }, 500);
     } else {
-      document.getElementById('passBox').style.animation = 'shake 0.3s';
-      setTimeout(()=>{ document.getElementById('passBox').style.animation=''; inputs.forEach(i=>i.value=''); inputs[0].focus(); }, 300);
+      const box = document.getElementById('passBox');
+      box.style.animation = 'shake 0.3s';
+      setTimeout(() => { 
+        box.style.animation = ''; 
+        inputs.forEach(i => i.value = ''); 
+        inputs[0].focus(); 
+      }, 300);
     }
   }
 }
 
-// =======================
-// 【核心修改】剧情逻辑
-// =======================
 
-// 点击“救” -> 直接跳转
 function doSave() {
   console.log("Saving...");
   location.href = "level2.html";
 }
 
-// 点击“不救” -> 显示失望提示，【绝对不关闭】主框
 function doNotSave() {
   const tip = document.getElementById('disappointedTip');
   tip.style.display = 'block';
   
-  // 逻辑：点击页面任意位置，只关闭“失望提示”，不关闭“主框”
   const closeTipHandler = (e) => {
-    // 如果点击的是主框里的按钮，不要关闭提示（避免冲突），其他情况关闭
     if (!e.target.closest('.modal-btn')) {
       tip.style.display = 'none';
       document.removeEventListener('click', closeTipHandler);
     }
   };
   
-  // 稍微延迟绑定，防止本次点击按钮的事件冒泡立即触发关闭
   setTimeout(() => {
     document.addEventListener('click', closeTipHandler);
   }, 50);
 }
 
-// 初始化
 window.onload = () => {
   if(new URLSearchParams(window.location.search).get('fromPublic') === 'true') {
     document.getElementById('saveXiaoHuangModal').style.display = 'flex';
