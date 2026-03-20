@@ -33,15 +33,12 @@ body{
   border:1px solid #aaa;
   box-shadow:0 10px 30px rgba(0,0,0,0.3);
   display:none;
-  /* 修复居中：使用top/left 50% + translate(-50%,-50%)，同时确保定位基准正确 */
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  -webkit-transform: translate(-50%, -50%); /* 兼容webkit内核浏览器 */
-  -moz-transform: translate(-50%, -50%); /* 兼容火狐 */
+
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+
   z-index:999;
-  border-radius: 4px;
-  overflow: hidden;
 }
   
 /* 标题栏 */
