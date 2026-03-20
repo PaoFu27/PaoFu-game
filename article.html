@@ -1,71 +1,221 @@
 <!DOCTYPE html>
-<html lang="zh">
+<html lang="zh-CN">
 <head>
-<meta charset="UTF-8">
-<title>公众号</title>
-
-<style>
-body{
-  margin:0;
-  background:#fff;
-  font-family:Arial;
-  padding:20px;
-}
-
-h1{font-size:22px;}
-
-.footer{
-  position:fixed;
-  bottom:0;
-  width:100%;
-  display:flex;
-  justify-content:space-around;
-  background:#fff;
-  border-top:1px solid #ccc;
-  padding:10px;
-}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>网页解谜游戏互助会 | 紧急预警</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        }
+        body {
+            background-color: rgba(0, 0, 0, 0.8); /* 半透明背景，模拟弹窗效果 */
+            padding: 20px 15px;
+            max-width: 900px;
+            margin: 0 auto;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        /* 关闭按钮 - 更醒目，贴合游戏弹窗风格 */
+        .close-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #ff3b30;
+            color: white;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.3);
+            transition: all 0.2s ease;
+        }
+        .close-btn:hover {
+            background-color: #ff6347;
+            transform: scale(1.1);
+        }
+        .article-container {
+            background-color: #fff;
+            border-radius: 12px;
+            padding: 25px 20px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+            width: 100%;
+            max-width: 800px;
+        }
+        .article-header {
+            margin-bottom: 25px;
+        }
+        .article-title {
+            font-size: 22px;
+            font-weight: 700;
+            line-height: 1.4;
+            color: #222;
+            margin-bottom: 12px;
+        }
+        .article-meta {
+            font-size: 13px;
+            color: #999;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .meta-tag {
+            background-color: #f0f0f0;
+            color: #666;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 12px;
+        }
+        .article-content {
+            font-size: 16px;
+            line-height: 1.8;
+            color: #333;
+        }
+        .article-content p {
+            margin-bottom: 18px;
+        }
+        .warning-box {
+            background-color: #fff8e6;
+            border-left: 4px solid #ffb800;
+            padding: 12px 15px;
+            margin: 25px 0;
+            border-radius: 0 4px 4px 0;
+        }
+        .warning-box h4 {
+            color: #d48806;
+            margin-bottom: 8px;
+            font-size: 16px;
+        }
+        .warning-box p {
+            margin-bottom: 8px;
+        }
+        .article-footer {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .author-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .author-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background-color: #e0e0e0;
+        }
+        .author-name {
+            font-size: 14px;
+            color: #333;
+            font-weight: 500;
+        }
+        .follow-btn {
+            background-color: #07c160;
+            color: #fff;
+            border: none;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            cursor: pointer;
+        }
+        .stats {
+            display: flex;
+            gap: 20px;
+            font-size: 13px;
+            color: #999;
+        }
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+    </style>
 </head>
-
 <body>
+    <!-- 关闭按钮 - 核心功能 -->
+    <button class="close-btn" onclick="backToDesktop()">×</button>
 
-<h1>紧急预警！多人因点击 “解谜网页” 离奇失踪，背后竟是恐怖「网页黑洞」！</h1>
+    <div class="article-container">
+        <div class="article-header">
+            <h1 class="article-title">紧急预警！多人因点击“解谜网页”离奇失踪，背后竟是恐怖「网页黑洞」！</h1>
+            <div class="article-meta">
+                <span class="meta-tag">原创</span>
+                <span>网页解谜游戏互助会</span>
+                <span>2026年3月20日</span>
+                <span>网络安全</span>
+                <span>👤 2人</span>
+            </div>
+        </div>
+        <div class="article-content">
+            <p>近期，城市里接连发生<strong>诡异失踪案</strong>，失踪者无一例外都有一个共同行为——点击过一个伪装成「趣味解谜游戏」的陌生网页。</p>
+            <p>小编历经多日暗访探查，终于揭开骇人真相：<br>这个看似普通的解谜网页，<strong>暗藏致命「网页黑洞」</strong>，一旦点击进入，人会被直接吸入黑洞之中，彻底失联！</p>
 
-<p>近期，城市里接连发生诡异失踪案，失踪者无一例外都有一个共同行为 —— 点击过一个伪装成「趣味解谜游戏」的陌生网页。</p>
+            <h3 style="margin: 25px 0 15px 0; font-size: 18px; color: #222;">恐怖真相：解谜不是游戏，是生死囚笼</h3>
+            <p>被吸入黑洞的人，并非凭空消失，而是被困在网页构建的虚拟迷宫里。<br>黑洞会<strong>层层设置解谜关卡</strong>，困住受害者，<strong>只有破解所有谜题，才能将人成功救出</strong>。</p>
+            <p>更可怕的是，我们已接触多位被解救的受害者，证实：</p>
+            <p>✅ 每个人遇到的谜题<strong>完全不同</strong><br>✅ 谜题会<strong>根据被困者自身经历、记忆定制</strong>，精准拿捏被困者心理<br>✅ 解不出题，就会永远被困，杳无音信</p>
 
-<p>小编历经多日暗访探查，终于揭开骇人真相：</p>
+            <h3 style="margin: 25px 0 15px 0; font-size: 18px; color: #222;">警惕！它极会伪装，很难被发现</h3>
+            <p>这个「黑洞网页」反侦察能力极强，前期会完美伪装：</p>
+            <p>▪️ 伪装成正常休闲网页、解谜小游戏界面<br>▪️ 甚至会<strong>伪装成电脑桌面</strong>，隐藏在设备里，难以察觉</p>
 
-<p> 被吸入黑洞的人，并非凭空消失，而是被困在网页构建的虚拟迷宫里。黑洞会层层设置解谜关卡，困住受害者，只有破解所有谜题，才能将人成功救出。
-更可怕的是，我们已接触多位被解救的受害者，证实：</p>
+            <div class="warning-box">
+                <h4>⚠️ 紧急求助通道！失踪速联</h4>
+                <p>如果您身边有人<strong>突然离奇失踪</strong>，请第一时间检查：<br>家人/朋友的电脑、设备上，是否有陌生神秘网页、异常桌面伪装！</p>
+                <p>✅ 一旦发现相关线索，<strong>立刻联系小编</strong></p>
+                <p>📞 求助电话：139xxxx0584</p>
+            </div>
 
-<p>✅ 每个人遇到的谜题完全不同
-   ✅ 谜题会根据被困者自身经历、记忆定制，精准拿捏被困者心理
-   ✅ 解不出题，就会永远被困，杳无音信</p>
+            <p style="font-weight: 500; color: #d32f2f;">⚠️ 转发提醒身边人：<br>陌生解谜网页别乱点，守护家人朋友，远离「网页黑洞」！</p>
+        </div>
+        <div class="article-footer">
+            <div class="author-info">
+                <div class="author-avatar"></div>
+                <div>
+                    <div class="author-name">网页解谜游戏互助会</div>
+                    <button class="follow-btn">+ 关注</button>
+                </div>
+            </div>
+            <div class="stats">
+                <div class="stat-item">👍 6</div>
+                <div class="stat-item">↪️ 30</div>
+                <div class="stat-item">❤️ 2</div>
+                <div class="stat-item">💬 1</div>
+            </div>
+        </div>
+    </div>
 
-<p>警惕！它极会伪装，很难被发现，这个「黑洞网页」反侦察能力极强，前期会完美伪装：伪装成正常休闲网页、解谜小游戏界面，甚至会伪装成电脑桌面，隐藏在设备里，难以察觉</p>
+    <script>
+        // 
+        function backToDesktop() {
+            // 核心：替换成你的游戏桌面页面地址（关键！）
+            // 示例：如果桌面页面是同目录下的 desktop.html，就写 './desktop.html'
+            const desktopUrl = 'mail.html';
+            
+            // 
+            window.location.href = desktopUrl;
 
-<p>紧急求助通道！失踪速联</p>
-  
-<p>如果您身边有人突然离奇失踪，请第一时间检查：家人 / 朋友的电脑、设备上，是否有陌生神秘网页、异常桌面伪装！</p>
-
-<p>紧急求助通道！失踪速联</p>
-  
-<p>如果您身边有人突然离奇失踪，请第一时间检查：家人 / 朋友的电脑、设备上，是否有陌生神秘网页、异常桌面伪装！</p>
-  
-<p>✅ 一旦发现相关线索，立刻联系小编</p>
-  
-<p>📞 求助电话：139xxxx0584</p>
-  
-<p>⚠️ 转发提醒身边人：</p>
-  
-<p>陌生解谜网页别乱点，守护家人朋友，远离「网页黑洞」！</p>
-
-<div class="footer">
-  👍 点赞
-  💬 评论
-  🔁 转发
-  ➕ 关注
-</div>
-
+            // 备用方式（如果是弹窗嵌入形式，可启用下面代码，注释上面的跳转）
+            // document.body.parentElement.style.display = 'none'; // 隐藏当前页面
+            // 或
+            // window.history.back(); // 返回到上一页（点击进入此页面的前一个页面）
+        }
+    </script>
 </body>
 </html>
