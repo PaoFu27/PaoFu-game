@@ -160,7 +160,6 @@ body {
   height: 100%;
   background: rgba(0, 0, 0, 0.6);
   z-index: 2000;
-  /* 使用 Flex 居中内部内容 */
   align-items: center;
   justify-content: center;
   backdrop-filter: blur(2px);
@@ -168,10 +167,9 @@ body {
 
 .modal-content {
   background: #fff;
-  /* 关键：强制增加尺寸 */
   width: 600px; 
   max-width: 90%;
-  padding: 50px 40px; /* 大幅增加内边距，不再拥挤 */
+  padding: 50px 40px;
   border-radius: 12px;
   text-align: center;
   box-shadow: 0 20px 60px rgba(0,0,0,0.4);
@@ -199,11 +197,11 @@ body {
 .modal-btn-group {
   display: flex;
   justify-content: center;
-  gap: 30px; /* 按钮之间的大间距 */
+  gap: 30px;
 }
 
 .modal-btn {
-  padding: 15px 40px; /* 大按钮 */
+  padding: 15px 40px; 
   font-size: 18px;
   border: none;
   border-radius: 8px;
@@ -217,23 +215,21 @@ body {
 .btn-save { background: #2ecc71; box-shadow: 0 4px 15px rgba(46, 204, 113, 0.4); }
 .btn-not-save { background: #e74c3c; box-shadow: 0 4px 15px rgba(231, 76, 60, 0.4); }
 
-/* --- 5. 【重点修改】失望提示 (层级更高，不关闭父级) --- */
 #disappointedTip {
   display: none;
   position: fixed;
   top: 50%;
   left: 50%;
-  /* 注意：这里不使用 transform 覆盖父级，而是独立定位 */
   transform: translate(-50%, -50%); 
   background: rgba(0, 0, 0, 0.85);
   color: #fff;
   padding: 30px 50px;
   border-radius: 10px;
   font-size: 22px;
-  z-index: 2005; /* 必须比 modal (2000) 高，显示在最上面 */
+  z-index: 2005; 
   text-align: center;
   box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-  pointer-events: none; /* 让点击事件穿透它，防止误触关闭逻辑复杂化 */
+  pointer-events: none;
 }
 
 /* 动画 */
@@ -280,7 +276,6 @@ body {
   <div style="font-size:50px; cursor:pointer;" onclick="location.href='mail.html'">📧</div>
 </div>
 
-<!-- 【核心】救小黄决策框 (已放大) -->
 <div id="saveXiaoHuangModal">
   <div class="modal-content">
     <h2>⚠️ 紧急抉择</h2>
@@ -297,7 +292,7 @@ body {
 <!-- 失望提示 (浮动在最上层) -->
 <div id="disappointedTip">
   😞 小黄失望地看着你...<br>
-  <span style="font-size:14px; color:#ccc; margin-top:10px; display:block;">(点击任意处消除此提示)</span>
+  <span style="font-size:14px; color:#ccc; margin-top:10px; display:block;"></span>
 </div>
 
 <script>
