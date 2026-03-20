@@ -3,245 +3,154 @@
 <head>
 <meta charset="UTF-8">
 <title>桌面 - 第二关</title>
-
 <style>
 /* 全局设置 */
-body{
+body {
   margin: 0;
   padding: 0;
   background: #4fa3d1;
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  font-family: "Segoe UI", sans-serif;
   user-select: none;
-  /* 防止出现滚动条，确保视口固定 */
-  overflow: hidden; 
+  overflow: hidden;
   height: 100vh;
   width: 100vw;
 }
 
-/* =======================
-   1. 桌面图标样式 (保持在左上角)
-   ======================= */
+/* --- 1. 左上角图标 (竖向排列) --- */
 .icon-container {
-  /* 可选：给图标区域一个容器，确保从左上角开始 */
   position: absolute;
-  top: 0;
-  left: 0;
-  padding: 10px;
+  top: 30px;
+  left: 30px;
   display: flex;
-  flex-direction: column; /* 垂直排列图标 */
-  align-items: flex-start;
+  flex-direction: column; /* 强制竖向排列 */
+  gap: 20px; /* 图标之间的间距 */
   z-index: 10;
 }
 
-.icon{
-  width: 80px;
+.icon {
+  width: 90px;
   text-align: center;
-  margin: 10px 0; /* 上下间距 */
   cursor: pointer;
   color: #000;
-  transition: transform 0.1s ease, background 0.2s;
-  border-radius: 4px;
-  padding: 5px;
+  padding: 10px;
+  border-radius: 8px;
+  transition: background 0.2s;
 }
 
 .icon:hover {
-  background: rgba(255, 255, 255, 0.2);
-}
-
-.icon:active {
-  transform: scale(0.95);
+  background: rgba(255, 255, 255, 0.3);
 }
 
 .icon span {
   display: block;
-  font-size: 32px;
+  font-size: 42px;
   margin-bottom: 5px;
 }
 
 .icon div {
-  font-size: 14px;
+  font-size: 15px;
   text-shadow: 0 1px 2px rgba(255,255,255,0.5);
 }
 
-/* =======================
-   2. 窗口样式 (强制居中)
-   ======================= */
-.window{
-  /* 关键：使用 fixed 定位，相对于浏览器窗口，不受文档流影响 */
-  position: fixed; 
-  width: 600px;
-  max-width: 90%; /* 小屏幕适配 */
-  height: 350px;
-  max-height: 80%;
-  background: #fff;
-  border: 1px solid #aaa;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-  
-  /* 初始隐藏 */
-  display: none; 
-  
-  /* 核心居中代码 */
+/* --- 2. 普通窗口 (居中) --- */
+.window {
+  position: fixed;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  -webkit-transform: translate(-50%, -50%);
-  -moz-transform: translate(-50%, -50%);
-  
-  z-index: 999;
+  width: 600px;
+  height: 350px;
+  background: #fff;
+  border: 1px solid #ccc;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+  display: none;
+  z-index: 900;
   border-radius: 6px;
-  overflow: hidden;
   flex-direction: column;
+  overflow: hidden;
 }
 
-/* 标题栏 */
-.titlebar{
+.titlebar {
   height: 35px;
   background: #f0f0f0;
+  border-bottom: 1px solid #ddd;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0 12px;
-  border-bottom: 1px solid #ddd;
-  font-weight: 600;
-  font-size: 14px;
-  color: #333;
-  cursor: default;
+  padding: 0 15px;
+  font-weight: bold;
 }
 
-.close{
+.close {
   cursor: pointer;
-  width: 20px;
-  height: 20px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 4px;
-  font-size: 18px;
-  line-height: 1;
-  color: #666;
+  font-size: 20px;
+  padding: 0 5px;
 }
-.close:hover {
-  background: #e81123;
-  color: #fff;
-}
+.close:hover { color: red; }
 
-/* 内容区域 */
-.content{
-  padding: 10px;
-  height: calc(100% - 35px);
+.content {
+  padding: 15px;
   overflow: auto;
-  line-height: 1.6;
-  font-size: 14px;
-  color: #333;
-  box-sizing: border-box;
+  flex: 1;
 }
 
-.file{
-  padding: 8px 10px;
+.file {
+  padding: 8px;
   cursor: pointer;
   border-radius: 4px;
-  display: flex;
-  align-items: center;
 }
-.file:hover{
-  background: #e5f3ff;
-}
-.file::before{
-  content: "📄 ";
-  margin-right: 8px;
-  font-size: 16px;
-}
+.file:hover { background: #e6f2ff; }
+.file::before { content: "📄 "; }
 
-/* =======================
-   3. 任务栏 (底部固定)
-   ======================= */
-#taskbar{
+/* --- 3. 任务栏 & 密码框 --- */
+#taskbar {
   position: fixed;
   bottom: 0;
-  left: 0;
   width: 100%;
   height: 40px;
-  background: #1a1a1a;
+  background: #222;
   display: flex;
   align-items: center;
-  padding: 0 10px;
+  padding-left: 15px;
   z-index: 1000;
-  box-sizing: border-box;
 }
 
-#search{
-  width: 200px;
+#search {
   padding: 6px 10px;
-  border: none;
   border-radius: 4px;
-  outline: none;
+  border: none;
   background: #333;
   color: #fff;
-  font-size: 13px;
-  cursor: text;
-}
-#search::placeholder {
-  color: #aaa;
+  width: 200px;
+  cursor: pointer;
 }
 
-/* =======================
-   4. 密码框 (左下角固定)
-   ======================= */
-#passBox{
-  display: none;
-  position: fixed; /* 相对于视口 */
-  bottom: 50px; /* 任务栏上方 */
-  left: 10px;
-  background: #222;
-  color: #fff;
-  padding: 12px;
-  border-radius: 6px;
-  z-index: 1001;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.4);
-  font-size: 14px;
-}
-
-.pass{
-  width: 30px;
-  height: 30px;
-  margin: 0 2px;
-  text-align: center;
-  border: none;
-  border-radius: 4px;
-  font-size: 18px;
-  font-weight: bold;
-  background: #444;
-  color: #fff;
-  outline: none;
-}
-.pass:focus {
-  background: #555;
-  box-shadow: 0 0 0 2px #4fa3d1;
-}
-
-/* =======================
-   5. 其他弹窗 (全部强制居中)
-   ======================= */
-
-/* 邮件弹窗 */
-#mailAlert{
+#passBox {
   display: none;
   position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  -webkit-transform: translate(-50%, -50%);
-  background: #fff;
-  padding: 30px;
-  border: 1px solid #ccc;
-  text-align: center;
-  border-radius: 8px;
-  box-shadow: 0 10px 40px rgba(0,0,0,0.25);
-  z-index: 1002;
-  min-width: 250px;
+  bottom: 50px;
+  left: 20px;
+  background: #111;
+  color: #fff;
+  padding: 15px;
+  border-radius: 6px;
+  z-index: 1001;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.5);
 }
 
-/* 救小黄模态框 (全屏遮罩 + 内容居中) */
+.pass {
+  width: 30px;
+  height: 30px;
+  text-align: center;
+  font-size: 18px;
+  margin: 0 2px;
+  border: none;
+  border-radius: 4px;
+  background: #444;
+  color: #fff;
+}
+
+/* --- 4. 【重点修改】救小黄决策框 (大幅变大) --- */
 #saveXiaoHuangModal {
   display: none;
   position: fixed;
@@ -251,7 +160,7 @@ body{
   height: 100%;
   background: rgba(0, 0, 0, 0.6);
   z-index: 2000;
-  /* 使用 Flexbox 让内部 .modal-content 居中 */
+  /* 使用 Flex 居中内部内容 */
   align-items: center;
   justify-content: center;
   backdrop-filter: blur(2px);
@@ -259,357 +168,207 @@ body{
 
 .modal-content {
   background: #fff;
-  padding: 40px;
-  border-radius: 10px;
-  text-align: center;
-  box-shadow: 0 15px 50px rgba(0,0,0,0.4);
+  /* 关键：强制增加尺寸 */
+  width: 600px; 
   max-width: 90%;
-  animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  padding: 50px 40px; /* 大幅增加内边距，不再拥挤 */
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+  animation: popIn 0.3s ease-out;
 }
 
 @keyframes popIn {
-  from { transform: scale(0.8); opacity: 0; }
+  from { transform: scale(0.9); opacity: 0; }
   to { transform: scale(1); opacity: 1; }
 }
 
+.modal-content h2 {
+  margin: 0 0 20px 0;
+  font-size: 28px;
+  color: #333;
+}
+
+.modal-content p {
+  font-size: 18px;
+  color: #555;
+  line-height: 1.6;
+  margin-bottom: 30px;
+}
+
 .modal-btn-group {
-  margin-top: 25px;
   display: flex;
-  gap: 20px;
   justify-content: center;
+  gap: 30px; /* 按钮之间的大间距 */
 }
 
 .modal-btn {
-  padding: 10px 25px;
+  padding: 15px 40px; /* 大按钮 */
+  font-size: 18px;
   border: none;
-  border-radius: 6px;
+  border-radius: 8px;
   cursor: pointer;
-  font-size: 15px;
-  font-weight: 600;
-  transition: transform 0.1s, opacity 0.2s;
+  color: #fff;
+  font-weight: bold;
+  transition: transform 0.1s;
 }
-.modal-btn:hover { opacity: 0.9; transform: translateY(-1px); }
-.modal-btn:active { transform: translateY(1px); }
 
-.btn-save { background: #2ecc71; color: #fff; }
-.btn-not-save { background: #e74c3c; color: #fff; }
+.modal-btn:active { transform: scale(0.95); }
+.btn-save { background: #2ecc71; box-shadow: 0 4px 15px rgba(46, 204, 113, 0.4); }
+.btn-not-save { background: #e74c3c; box-shadow: 0 4px 15px rgba(231, 76, 60, 0.4); }
 
-/* 失望提示 */
+/* --- 5. 【重点修改】失望提示 (层级更高，不关闭父级) --- */
 #disappointedTip {
   display: none;
   position: fixed;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -50%);
+  /* 注意：这里不使用 transform 覆盖父级，而是独立定位 */
+  transform: translate(-50%, -50%); 
   background: rgba(0, 0, 0, 0.85);
   color: #fff;
-  padding: 20px 40px;
-  border-radius: 8px;
-  font-size: 18px;
-  z-index: 2001;
+  padding: 30px 50px;
+  border-radius: 10px;
+  font-size: 22px;
+  z-index: 2005; /* 必须比 modal (2000) 高，显示在最上面 */
   text-align: center;
   box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  pointer-events: none; /* 让点击事件穿透它，防止误触关闭逻辑复杂化 */
 }
 
-/* 动画定义 */
-@keyframes shake{
-  0%{transform:translate(0)}
-  25%{transform:translate(5px, 0)}
-  50%{transform:translate(-5px, 0)}
-  75%{transform:translate(5px, 0)}
-  100%{transform:translate(0)}
+/* 动画 */
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(5px); }
+  75% { transform: translateX(-5px); }
 }
+.flash { animation: flashAnim 0.1s 10; }
+@keyframes flashAnim { 50% { opacity: 0.5; } }
 
-.flash{
-  animation: flashAnim 0.1s 10;
-}
-@keyframes flashAnim{
-  0%{opacity:1}
-  50%{opacity:0.5}
-  100%{opacity:1}
-}
 </style>
 </head>
-
 <body>
 
-<!-- 图标区域 (左上角) -->
+<!-- 图标区域 -->
 <div class="icon-container">
-  <div class="icon" onclick="openWin('folderWin')">
-    <span>📁</span>
-    <div>文件夹</div>
-  </div>
-  <div class="icon" onclick="openWin('trashWin')">
-    <span>🗑️</span>
-    <div>回收站</div>
-  </div>
-  <div class="icon" onclick="openWin('noteWin')">
-    <span>📝</span>
-    <div>笔记</div>
-  </div>
+  <div class="icon" onclick="openWin('folderWin')"><span>📁</span><div>文件夹</div></div>
+  <div class="icon" onclick="openWin('trashWin')"><span>🗑️</span><div>回收站</div></div>
+  <div class="icon" onclick="openWin('noteWin')"><span>📝</span><div>笔记</div></div>
 </div>
 
-<!-- 窗口：文件夹 -->
-<div id="folderWin" class="window">
-  <div class="titlebar">
-    <span>文件夹</span>
-    <span class="close" onclick="closeWin('folderWin')">×</span>
-  </div>
-  <div class="content">
-    <div class="file" onclick="openFile(0)">data_1.txt</div>
-    <div class="file" onclick="openFile(1)">data_2.txt</div>
-    <div class="file" onclick="openFile(2)">data_3.txt</div>
-    <div class="file" onclick="openFile(3)">data_4.txt</div>
-  </div>
-</div>
-
-<!-- 窗口：回收站 -->
-<div id="trashWin" class="window">
-  <div class="titlebar">
-    <span>回收站</span>
-    <span class="close" onclick="closeWin('trashWin')">×</span>
-  </div>
-  <div class="content">
-    <div class="file" onclick="showText('order')">system.log</div>
-  </div>
-</div>
-
-<!-- 窗口：笔记 -->
-<div id="noteWin" class="window">
-  <div class="titlebar">
-    <span>笔记</span>
-    <span class="close" onclick="closeWin('noteWin')">×</span>
-  </div>
-  <div class="content">
-    <div class="file" onclick="showText('tip')">readme.txt</div>
-  </div>
-</div>
-
-<!-- 窗口：文档查看器 -->
-<div id="docWin" class="window">
-  <div class="titlebar">
-    <span>文档</span>
-    <span class="close" onclick="closeWin('docWin')">×</span>
-  </div>
-  <div id="docText" class="content" style="font-family: monospace; white-space: pre-wrap;"></div>
-</div>
+<!-- 窗口模板 -->
+<div id="folderWin" class="window"><div class="titlebar">文件夹<span class="close" onclick="closeWin('folderWin')">×</span></div><div class="content"><div class="file" onclick="openFile(0)">data_1.txt</div><div class="file" onclick="openFile(1)">data_2.txt</div><div class="file" onclick="openFile(2)">data_3.txt</div><div class="file" onclick="openFile(3)">data_4.txt</div></div></div>
+<div id="trashWin" class="window"><div class="titlebar">回收站<span class="close" onclick="closeWin('trashWin')">×</span></div><div class="content"><div class="file" onclick="showText('order')">system.log</div></div></div>
+<div id="noteWin" class="window"><div class="titlebar">笔记<span class="close" onclick="closeWin('noteWin')">×</span></div><div class="content"><div class="file" onclick="showText('tip')">readme.txt</div></div></div>
+<div id="docWin" class="window"><div class="titlebar">文档<span class="close" onclick="closeWin('docWin')">×</span></div><div id="docText" class="content"></div></div>
 
 <!-- 任务栏 -->
-<div id="taskbar">
-  <input id="search" placeholder="搜索..." readonly>
-</div>
+<div id="taskbar"><input id="search" placeholder="搜索..." readonly></div>
 
-<!-- 密码输入框 -->
+<!-- 密码框 -->
 <div id="passBox">
-  <div style="margin-bottom:8px;">输入密码：</div>
-  <div style="display:flex;">
-    <input class="pass" maxlength="1" type="text">
-    <input class="pass" maxlength="1" type="text">
-    <input class="pass" maxlength="1" type="text">
-    <input class="pass" maxlength="1" type="text">
+  密码：<br>
+  <div style="margin-top:5px;">
+    <input class="pass" maxlength="1"><input class="pass" maxlength="1"><input class="pass" maxlength="1"><input class="pass" maxlength="1">
   </div>
-  <div style="font-size:12px;color:#aaa;margin-top:8px;text-align:center;">提示：一个英文单词</div>
+  <div style="font-size:12px;color:#aaa;margin-top:5px;">提示：一个单词</div>
 </div>
 
-<!-- 邮件通知弹窗 -->
-<div id="mailAlert">
-  <h3 style="margin-top:0;">新邮件提醒</h3>
-  <p>你收到一封重要邮件</p>
-  <div style="font-size:50px;cursor:pointer;margin:15px 0;transition:transform 0.2s;" onclick="location.href='mail.html'" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
-    📧
-  </div>
-  <button onclick="document.getElementById('mailAlert').style.display='none'" style="padding:5px 15px;cursor:pointer;">关闭</button>
+<!-- 邮件弹窗 -->
+<div id="mailAlert" style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); background:#fff; padding:30px; border-radius:10px; box-shadow:0 10px 30px rgba(0,0,0,0.3); text-align:center; z-index:1002;">
+  <h3>新邮件!</h3>
+  <div style="font-size:50px; cursor:pointer;" onclick="location.href='mail.html'">📧</div>
 </div>
 
-<!-- 救小黄决策弹窗 -->
+<!-- 【核心】救小黄决策框 (已放大) -->
 <div id="saveXiaoHuangModal">
   <div class="modal-content">
-    <h2 style="margin-top:0; color:#333;">紧急抉择</h2>
-    <p style="font-size:16px; color:#555;">系统检测到小黄被困，是否立即启动救援程序？</p>
+    <h2>⚠️ 紧急抉择</h2>
+    <p>系统检测到“小黄”被困在数据深处。<br>你是否要消耗算力救出它？</p>
     <div class="modal-btn-group">
-      <button class="modal-btn btn-save" onclick="saveXiaoHuang()">🦸 立即救援</button>
-      <button class="modal-btn btn-not-save" onclick="notSaveXiaoHuang()">❌ 放弃救援</button>
+      <!-- 点击救：跳转 -->
+      <button class="modal-btn btn-save" onclick="doSave()">🦸 立即救援</button>
+      <!-- 点击不救：显示失望，但不关闭此框 -->
+      <button class="modal-btn btn-not-save" onclick="doNotSave()">❌ 放弃救援</button>
     </div>
   </div>
 </div>
 
-<!-- 失望提示 -->
+<!-- 失望提示 (浮动在最上层) -->
 <div id="disappointedTip">
-  😞 小黄失望地看着你<br>
-  <span style="font-size:12px; color:#ccc">(点击任意处关闭)</span>
+  😞 小黄失望地看着你...<br>
+  <span style="font-size:14px; color:#ccc; margin-top:10px; display:block;">(点击任意处消除此提示)</span>
 </div>
 
 <script>
-// --- 窗口控制逻辑 ---
-function openWin(id){
-  const win = document.getElementById(id);
-  win.style.display = "flex"; // 使用 flex 以支持内部布局
-  
-  // 强制重绘并确保居中 (防止某些浏览器渲染延迟导致位置偏移)
-  requestAnimationFrame(() => {
-    win.style.top = "50%";
-    win.style.left = "50%";
-    win.style.transform = "translate(-50%, -50%)";
-  });
-}
+// 窗口逻辑
+function openWin(id) { document.getElementById(id).style.display = 'flex'; }
+function closeWin(id) { document.getElementById(id).style.display = 'none'; }
 
-function closeWin(id){
-  document.getElementById(id).style.display = "none";
-}
+// 文件逻辑
+const files = ["01001000","01001100","01010000","01000101"];
+function openFile(i) { openWin('docWin'); document.getElementById('docText').innerText = files[i]; }
+function showText(t) { openWin('docWin'); document.getElementById('docText').innerText = t==='order' ? "4-2-1-3" : "二进制转ASCII"; }
 
-// --- 文件内容逻辑 ---
-const files = [
-  "01001000", // H
-  "01001100", // L
-  "01010000", // P
-  "01000101"  // E
-  // 注意：这里顺序是 H, L, P, E. 
-  // 如果谜题需要 HELP，可能需要根据文件顺序组合，或者文件内容本身就是线索。
-  // 原代码逻辑是直接显示二进制。
-];
-
-function openFile(i){
-  openWin("docWin");
-  document.getElementById("docText").innerText = files[i];
-}
-
-function showText(type){
-  openWin("docWin");
-  const docText = document.getElementById("docText");
-  if(type === "order"){
-    docText.innerText = "解密顺序：4 - 2 - 1 - 3";
-  }
-  if(type === "tip"){
-    docText.innerText = "提示：\n1. 这些是二进制代码。\n2. 尝试将它们转换为 ASCII 字符。\n3. 注意文件的读取顺序。";
-  }
-}
-
-// --- 密码验证逻辑 ---
-const searchInput = document.getElementById("search");
-const passBox = document.getElementById("passBox");
-const passInputs = document.querySelectorAll(".pass");
-
-// 点击搜索框打开密码盒
-searchInput.addEventListener("click", (e) => {
-  e.stopPropagation();
-  passBox.style.display = "block";
-  passInputs[0].focus();
+// 密码逻辑
+const inputs = document.querySelectorAll('.pass');
+document.getElementById('search').onclick = (e) => { e.stopPropagation(); document.getElementById('passBox').style.display='block'; inputs[0].focus(); };
+document.onclick = () => document.getElementById('passBox').style.display='none';
+inputs.forEach((inp, i) => {
+  inp.onclick = e => e.stopPropagation();
+  inp.oninput = () => { if(inp.value) { inp.value=inp.value[0].toUpperCase(); if(i<3) inputs[i+1].focus(); checkPass(); } };
+  inp.onkeydown = e => { if(e.key=='Backspace' && !inp.value && i>0) inputs[i-1].focus(); };
 });
 
-// 点击页面其他地方关闭密码盒
-document.addEventListener("click", () => {
-  passBox.style.display = "none";
-});
-
-// 密码框内部点击不关闭
-passBox.addEventListener("click", (e) => {
-  e.stopPropagation();
-});
-
-// 输入框事件绑定
-passInputs.forEach((el, index) => {
-  el.addEventListener("input", () => {
-    // 只保留字母
-    el.value = el.value.replace(/[^a-zA-Z]/g, '');
-    
-    // 自动跳转下一个
-    if(el.value.length >= 1 && index < 3){
-      passInputs[index+1].focus();
-    }
-    
-    checkPassword();
-  });
-  
-  el.addEventListener("keydown", (e) => {
-    // 退格键跳转上一个
-    if(e.key === "Backspace" && el.value === "" && index > 0){
-      passInputs[index-1].focus();
-    }
-    // 回车跳转
-    if(e.key === "Enter" && index < 3){
-      passInputs[index+1].focus();
-    } else if (e.key === "Enter" && index === 3) {
-      checkPassword();
-    }
-  });
-});
-
-function checkPassword(){
-  const val = Array.from(passInputs).map(i => i.value).join("").toUpperCase();
-  
-  // 正确答案: HELP (Base64: SEVMUA==)
-  const correctAns = atob("SEVMUA=="); 
-  
-  if(val.length === 4){
-    if(val === correctAns){
-      // 密码正确
-      triggerSuccessEffect();
+function checkPass() {
+  let val = Array.from(inputs).map(i=>i.value).join('');
+  if(val.length===4) {
+    if(val === "HELP") {
+      document.body.classList.add('flash');
+      setTimeout(()=>{ document.body.classList.remove('flash'); document.getElementById('mailAlert').style.display='block'; }, 500);
     } else {
-      // 密码错误
-      passBox.style.animation = "shake 0.4s ease-in-out";
-      setTimeout(() => {
-        passBox.style.animation = "";
-        passInputs.forEach(i => i.value = "");
-        passInputs[0].focus();
-      }, 400);
+      document.getElementById('passBox').style.animation = 'shake 0.3s';
+      setTimeout(()=>{ document.getElementById('passBox').style.animation=''; inputs.forEach(i=>i.value=''); inputs[0].focus(); }, 300);
     }
   }
 }
 
-function triggerSuccessEffect(){
-  // 图标抖动
-  document.querySelectorAll(".icon").forEach(icon => {
-    icon.style.animation = "shake 0.5s";
-    setTimeout(() => icon.style.animation = "", 500);
-  });
-  
-  // 屏幕闪烁
-  document.body.classList.add("flash");
-  
-  setTimeout(() => {
-    document.body.classList.remove("flash");
-    passBox.style.display = "none";
-    document.getElementById("mailAlert").style.display = "block";
-  }, 600);
+// =======================
+// 【核心修改】剧情逻辑
+// =======================
+
+// 点击“救” -> 直接跳转
+function doSave() {
+  console.log("Saving...");
+  location.href = "level2.html";
 }
 
-// --- 剧情逻辑 ---
-function openSaveModal() {
-  const modal = document.getElementById("saveXiaoHuangModal");
-  modal.style.display = "flex"; // 启用 Flex 居中
-}
-
-function saveXiaoHuang() {
-  document.getElementById("saveXiaoHuangModal").style.display = "none";
-  alert("救援程序已启动！跳转至下一关...");
-  // 实际游戏中取消注释下面这行
-  // location.href = "level2.html";
-}
-
-function notSaveXiaoHuang() {
-  document.getElementById("saveXiaoHuangModal").style.display = "none";
-  const tip = document.getElementById("disappointedTip");
-  tip.style.display = "block";
+// 点击“不救” -> 显示失望提示，【绝对不关闭】主框
+function doNotSave() {
+  const tip = document.getElementById('disappointedTip');
+  tip.style.display = 'block';
   
-  // 点击任意处关闭提示
-  const closeHandler = () => {
-    tip.style.display = "none";
-    document.removeEventListener("click", closeHandler);
+  // 逻辑：点击页面任意位置，只关闭“失望提示”，不关闭“主框”
+  const closeTipHandler = (e) => {
+    // 如果点击的是主框里的按钮，不要关闭提示（避免冲突），其他情况关闭
+    if (!e.target.closest('.modal-btn')) {
+      tip.style.display = 'none';
+      document.removeEventListener('click', closeTipHandler);
+    }
   };
   
-  // 稍微延迟绑定，防止点击"不救"按钮时立即触发关闭
+  // 稍微延迟绑定，防止本次点击按钮的事件冒泡立即触发关闭
   setTimeout(() => {
-    document.addEventListener("click", closeHandler);
+    document.addEventListener('click', closeTipHandler);
   }, 50);
 }
 
-// 页面加载检查
-window.addEventListener("load", () => {
-  const params = new URLSearchParams(window.location.search);
-  if(params.get("fromPublic") === "true"){
-    setTimeout(openSaveModal, 800);
+// 初始化
+window.onload = () => {
+  if(new URLSearchParams(window.location.search).get('fromPublic') === 'true') {
+    document.getElementById('saveXiaoHuangModal').style.display = 'flex';
   }
-});
+};
 </script>
 </body>
 </html>
