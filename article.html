@@ -199,16 +199,11 @@
         </div>
     </div>
 
-    <script>
-        // 
-        function backToDesktop() {
-            
-            const desktopUrl = 'page2.html';
-            
-            // 
-            window.location.href = desktopUrl;
-
-        }
-    </script>
+   <script>
+    // 返回游戏桌面的核心函数
+    function backToDesktop() {
+        window.location.href = "page2.html?fromPublic=true";
+    }
+</script>
 </body>
 </html>
