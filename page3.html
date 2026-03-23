@@ -699,120 +699,221 @@
             document.getElementById('collectionPage').style.display = 'none';
         });
 
-        // 2. 便利贴拖拽逻辑（保留原有功能，提示改为新坐标714）
-        const stickyNotes = document.querySelectorAll('.sticky-note');
-        const slots = document.querySelectorAll('.slot');
-        const correctOrder = [8,2,1,9,5,6,3,4,7]; // 正确顺序
-        let placedNotes = {};
-        let draggedNote = null; // 记录当前拖拽的便利贴
+        // 2. // 便利贴拖拽逻辑
+const stickyNotes = document.querySelectorAll('.sticky-note');
+const slots = document.querySelectorAll('.slot');
+const correctOrder = [8,2,1,9,5,6,3,4,7]; 
+let placedNotes = {};
+let draggedNote = null; 
+let errorCount = 0; // 错误次数统计
+let lastErrorTime = 0; // 最后一次错误时间
 
-        stickyNotes.forEach(note => {
-            // 开始拖拽
-            note.addEventListener('mousedown', (e) => {
-                e.preventDefault();
-                // 记录当前拖拽的便利贴
-                draggedNote = note;
-                
-                // 创建克隆体（带当前便利贴的所有数据）
-                const clone = document.createElement('div');
-                clone.id = 'dragging-clone';
-                clone.className = 'sticky-note';
-                clone.style.position = 'absolute';
-                clone.style.zIndex = '9999';
-                clone.style.left = `${e.clientX - 35}px`; // 居中
-                clone.style.top = `${e.clientY - 40}px`;
-                clone.innerHTML = `
-                    <span class="note-icon">${note.dataset.icon}</span>
-                    <span>${note.dataset.name}</span>
-                `;
-                document.body.appendChild(clone);
+// 错误提示函数（带时间间隔限制）
+function showErrorTip() {
+    const now = Date.now();
+    // 防止短时间内重复提示（间隔1秒）
+    if (now - lastErrorTime < 1000) return;
+    
+    lastErrorTime = now;
+    errorCount++;
+    
+    // 不同错误次数显示不同提示
+    let tipText = '';
+    if (errorCount === 1) {
+        tipText = '轨迹不对哦，再回忆一下她的经历顺序～';
+    } else if (errorCount === 2) {
+        tipText = '还是不对呢，试试从「游戏」开始排？';
+    } else if (errorCount >= 3) {
+        tipText = '提示：正确顺序是游戏→全季酒店→滑雪→美甲→旅游→搬家→海边→拼图→学画画';
+    }
+    
+    // 创建提示框
+    const tip = document.createElement('div');
+    tip.style.position = 'fixed';
+    tip.style.top = '50%';
+    tip.style.left = '50%';
+    tip.style.transform = 'translate(-50%, -50%)';
+    tip.style.background = 'rgba(229, 62, 62, 0.9)';
+    tip.style.color = 'white';
+    tip.style.padding = '12px 20px';
+    tip.style.borderRadius = '8px';
+    tip.style.zIndex = '9999';
+    tip.style.fontSize = '16px';
+    tip.textContent = tipText;
+    document.body.appendChild(tip);
+    
+    // 2秒后移除提示框
+    setTimeout(() => {
+        document.body.removeChild(tip);
+    }, 2000);
+}
 
-                // 鼠标移动
-                const onMouseMove = (e) => {
-                    clone.style.left = `${e.clientX - 35}px`;
-                    clone.style.top = `${e.clientY - 40}px`;
-                };
+// 标记错误slot的特效函数
+function markErrorSlots() {
+    // 遍历所有slot，对比正确顺序，错误的标红
+    for (let i = 1; i <= 9; i++) {
+        if (placedNotes[i]) { // 只检查已放置的slot
+            const slot = document.querySelector(`.slot[data-slot="${i}"]`);
+            if (placedNotes[i] !== correctOrder[i-1]) {
+                // 错误slot变红，添加闪烁特效
+                slot.style.border = '2px solid #e53e3e';
+                slot.style.boxShadow = '0 0 8px rgba(229, 62, 62, 0.6)';
+                // 3秒后恢复边框样式（保留内容，仅清除特效）
+                setTimeout(() => {
+                    slot.style.border = '1px solid #4caf50';
+                    slot.style.boxShadow = 'none';
+                }, 3000);
+            }
+            // 正确的slot保持原有样式，不做修改
+        }
+    }
+}
 
-                // 结束拖拽
-                const onMouseUp = (e) => {
-                    // 移除克隆体
-                    document.body.removeChild(clone);
-                    document.removeEventListener('mousemove', onMouseMove);
-                    document.removeEventListener('mouseup', onMouseUp);
+// 初始化slot的拖拽接收逻辑（支持照片墙内移动、移回原位）
+slots.forEach(slot => {
+    slot.addEventListener('click', (e) => {
+        // 如果slot里有便利贴，点击后移回原位
+        const noteInSlot = slot.querySelector('.sticky-note');
+        if (noteInSlot) {
+            const noteName = noteInSlot.querySelector('span:last-child').textContent;
+            // 找到源区域对应的便利贴并恢复显示
+            const sourceNote = Array.from(stickyNotes).find(note => 
+                note.dataset.name === noteName
+            );
+            if (sourceNote) {
+                sourceNote.classList.remove('dragged');
+            }
+            // 清空当前slot，恢复默认样式
+            slot.innerHTML = `<span class="slot-number">${slot.dataset.slot}</span>`;
+            slot.style.border = '1px dashed #5f6368';
+            slot.style.boxShadow = 'none';
+            // 删除已放置记录
+            delete placedNotes[parseInt(slot.dataset.slot)];
+        }
+    });
+});
 
-                    // 检测是否拖到槽位
-                    slots.forEach(slot => {
-                        const slotRect = slot.getBoundingClientRect();
-                        if (e.clientX >= slotRect.left && e.clientX <= slotRect.right &&
-                            e.clientY >= slotRect.top && e.clientY <= slotRect.bottom) {
-                            // 清空槽位原有内容
-                            slot.innerHTML = `<span class="slot-number">${slot.dataset.slot}</span>`;
-                            
-                            // 创建新的便利贴添加到槽位（使用拖拽源的真实数据）
-                            const newNote = document.createElement('div');
-                            newNote.className = 'sticky-note';
-                            newNote.innerHTML = `
-                                <span class="note-icon">${draggedNote.dataset.icon}</span>
-                                <span>${draggedNote.dataset.name}</span>
-                            `;
-                            slot.appendChild(newNote);
-                            slot.style.border = '1px solid #4caf50';
+stickyNotes.forEach(note => {
+    note.addEventListener('mousedown', (e) => {
+        e.preventDefault();
+        draggedNote = note;
+        
+        const clone = document.createElement('div');
+        clone.id = 'dragging-clone';
+        clone.className = 'sticky-note';
+        clone.style.position = 'absolute';
+        clone.style.zIndex = '9999';
+        clone.style.left = `${e.clientX - 35}px`;
+        clone.style.top = `${e.clientY - 40}px`;
+        clone.innerHTML = `
+            <span class="note-icon">${note.dataset.icon}</span>
+            <span>${note.dataset.name}</span>
+        `;
+        document.body.appendChild(clone);
 
-                            // 记录放置的便利贴ID
-                            const noteId = parseInt(draggedNote.dataset.id);
-                            const slotNum = parseInt(slot.dataset.slot);
-                            placedNotes[slotNum] = noteId;
+        const onMouseMove = (e) => {
+            clone.style.left = `${e.clientX - 35}px`;
+            clone.style.top = `${e.clientY - 40}px`;
+        };
 
-                            // 隐藏原便利贴（拖拽后消失）
-                            draggedNote.classList.add('dragged');
+        const onMouseUp = (e) => {
+            document.body.removeChild(clone);
+            document.removeEventListener('mousemove', onMouseMove);
+            document.removeEventListener('mouseup', onMouseUp);
+
+            let isPlaced = false;
+            slots.forEach(slot => {
+                const slotRect = slot.getBoundingClientRect();
+                if (e.clientX >= slotRect.left && e.clientX <= slotRect.right &&
+                    e.clientY >= slotRect.top && e.clientY <= slotRect.bottom) {
+                    // 先清空目标slot已有内容（支持照片墙内移动）
+                    const existingNote = slot.querySelector('.sticky-note');
+                    if (existingNote) {
+                        const existingName = existingNote.querySelector('span:last-child').textContent;
+                        const sourceNote = Array.from(stickyNotes).find(n => 
+                            n.dataset.name === existingName
+                        );
+                        if (sourceNote) {
+                            sourceNote.classList.remove('dragged');
                         }
-                    });
-
-                    // 检查排序是否正确
-                    checkOrder();
-                    draggedNote = null;
-                };
-
-                document.addEventListener('mousemove', onMouseMove);
-                document.addEventListener('mouseup', onMouseUp);
-            });
-        });
-
-        // 3. 检查便利贴排序是否正确（提示改为新坐标714）
-        function checkOrder() {
-            let isCorrect = true;
-            let allPlaced = true;
-
-            // 检查是否所有槽位都已放置
-            for (let i = 1; i <= 9; i++) {
-                if (!placedNotes[i]) {
-                    allPlaced = false;
-                    break;
-                }
-            }
-
-            // 检查顺序是否正确
-            if (allPlaced) {
-                for (let i = 1; i <= 9; i++) {
-                    if (placedNotes[i] !== correctOrder[i-1]) {
-                        isCorrect = false;
-                        break;
+                        delete placedNotes[parseInt(slot.dataset.slot)];
                     }
+                    
+                    // 放入新便利贴
+                    slot.innerHTML = `<span class="slot-number">${slot.dataset.slot}</span>`;
+                    const newNote = document.createElement('div');
+                    newNote.className = 'sticky-note';
+                    newNote.innerHTML = `
+                        <span class="note-icon">${draggedNote.dataset.icon}</span>
+                        <span>${draggedNote.dataset.name}</span>
+                    `;
+                    slot.appendChild(newNote);
+                    slot.style.border = '1px solid #4caf50';
+                    slot.style.boxShadow = 'none'; // 清除之前的错误特效
+
+                    const noteId = parseInt(draggedNote.dataset.id);
+                    const slotNum = parseInt(slot.dataset.slot);
+                    placedNotes[slotNum] = noteId;
+
+                    draggedNote.classList.add('dragged');
+                    isPlaced = true;
                 }
-            } else {
-                isCorrect = false;
+            });
+
+            // 如果没放到slot里，恢复便利贴显示（拖拽到空白处取消）
+            if (!isPlaced) {
+                draggedNote.classList.remove('dragged');
             }
 
-            // 显示纸条提示（解密后显示新的无规律坐标714）
-            if (isCorrect) {
-                const firstCoord = decryptData(encryptedFirstCoord);
-                document.getElementById('paperNote').innerHTML = `
-                    <div class="paper-note-title">📜 她的纸条</div>
-                    <div>找到第一组坐标：<b>${firstCoord}</b></div>
-                `;
-                document.getElementById('paperNote').style.display = 'block';
+            checkOrder();
+            draggedNote = null;
+        };
+
+        document.addEventListener('mousemove', onMouseMove);
+        document.addEventListener('mouseup', onMouseUp);
+    });
+});
+
+// 检查便利贴排序是否正确（修改：错误只标红不重置）
+function checkOrder() {
+    let isCorrect = true;
+    let allPlaced = true;
+
+    for (let i = 1; i <= 9; i++) {
+        if (!placedNotes[i]) {
+            allPlaced = false;
+            break;
+        }
+    }
+
+    if (allPlaced) {
+        for (let i = 1; i <= 9; i++) {
+            if (placedNotes[i] !== correctOrder[i-1]) {
+                isCorrect = false;
+                break;
             }
         }
+
+        if (isCorrect) {
+            // 正确时重置错误统计
+            errorCount = 0;
+            const firstCoord = decryptData(encryptedFirstCoord);
+            document.getElementById('paperNote').innerHTML = `
+                <div class="paper-note-title">📜 她的纸条</div>
+                <div>找到第一组坐标：<b>${firstCoord}</b></div>
+                <div>继续搜索「黑洞」找下一组</div>
+            `;
+            document.getElementById('paperNote').style.display = 'block';
+        } else {
+            // 错误时提示+标红错误slot（不再自动清空）
+            showErrorTip();
+            markErrorSlots();
+        }
+    } else {
+        // 未放满时不检查，也不提示
+        isCorrect = false;
+    }
+}
 
         // 4. Google搜索框逻辑（验证新的无规律坐标714.859.362）
         const googleSearchInput = document.getElementById('googleSearchInput');
