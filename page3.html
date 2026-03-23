@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>Google 搜索</title>
+    <style>
+        /* 全局重置 - 复刻Chrome默认样式 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Roboto", "Segoe UI", Arial, sans-serif;
+        }
+
+        body {
+            background: #ffffff;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Chrome地址栏/标签栏 - 完全复刻截图样式 */
+        .chrome-top-bar {
+            height: 60px;
+            padding: 0 16px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            border-bottom: 1px solid #dadce0;
+        }
+
+        .address-bar {
+            width: 100%;
+            height: 40px;
+            border: 1px solid #dadce0;
+            border-radius: 20px;
+            padding: 0 16px;
+            font-size: 14px;
+            outline: none;
+            background: #f8f9fa;
+            transition: all 0.2s ease;
+        }
+
+        .address-bar:focus {
+            border-color: #8ab4f8;
+            box-shadow: 0 0 0 2px rgba(151, 187, 229, 0.2);
+            background: #ffffff;
+        }
+
+        /* Chrome新标签页核心内容 - 调整后样式 */
+        .google-main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        /* 替换Google Logo为「搜索」大字 */
+        .search-title {
+            font-size: 80px;
+            font-weight: 700;
+            color: #202124;
+            margin-bottom: 28px;
+            letter-spacing: -5px;
+        }
+
+        /* Google搜索框 - 移除话筒，仅保留搜索图标 + 坐标提示 */
+        .search-container {
+            width: 100%;
+            max-width: 584px;
+            position: relative;
+            margin-bottom: 30px;
+        }
+
+        .google-search-input {
+            width: 100%;
+            height: 44px;
+            border: 1px solid #dfe1e5;
+            border-radius: 24px;
+            padding: 0 40px;
+            font-size: 16px;
+            outline: none;
+            transition: all 0.2s ease;
+        }
+
+        .google-search-input:hover {
+            box-shadow: 0 1px 6px rgba(32, 33, 36, 0.28);
+            border-color: rgba(223, 225, 229, 0);
+        }
+
+        .google-search-input:focus {
+            box-shadow: 0 1px 6px rgba(32, 33, 36, 0.28);
+            border-color: rgba(223, 225, 229, 0);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 20px;
+            color: #9aa0a6;
+        }
+
+        /* 快捷方式栏 - 复刻截图样式 */
+        .shortcuts-bar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            width: 100%;
+            max-width: 600px;
+            justify-content: center;
+        }
+
+        .shortcut-item {
+            width: 80px;
+            height: 80px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: background 0.2s ease;
+        }
+
+        .shortcut-item:hover {
+            background: #f1f3f4;
+        }
+
+        .shortcut-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #f1f3f4;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 8px;
+            font-size: 20px;
+            color: #202124;
+        }
+
+        .shortcut-text {
+            font-size: 12px;
+            color: #202124;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            width: 100%;
+            text-align: center;
+        }
+
+        /* 共同的回忆标签页 - 独立页面，点击快捷方式打开 */
+        .memories-page {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: #ffffff;
+            z-index: 1000;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .memories-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #dadce0;
+        }
+
+        .close-btn {
+            padding: 8px 16px;
+            background: #f1f3f4;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .memories-title {
+            font-size: 20px;
+            color: #202124;
+            font-weight: 500;
+        }
+
+        /* 迷你便利贴区 - 拖拽源 */
+        .sticky-notes-source {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 30px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        /* 迷你便利贴样式 */
+        .sticky-note {
+            width: 70px;
+            height: 80px;
+            padding: 8px;
+            background: #fff9c4;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            cursor: move;
+            font-size: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            transition: opacity 0.2s ease;
+        }
+
+        .sticky-note.dragged {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .note-icon {
+            font-size: 16px;
+        }
+
+        /* 照片墙（带图钉+网格线） */
+        .photo-wall {
+            background: #f0f8fb;
+            border-radius: 8px;
+            border: 1px solid #dadce0;
+            padding: 20px;
+            position: relative;
+            background-image: 
+                linear-gradient(90deg, rgba(218,220,224,0.3) 1px, transparent 1px),
+                linear-gradient(rgba(218,220,224,0.3) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+
+        .photo-wall-title {
+            font-size: 18px;
+            color: #202124;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .pin-icon {
+            font-size: 20px;
+            color: #e53e3e;
+        }
+
+        /* 照片墙排序槽 */
+        .photo-wall-slots {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            max-width: 600px;
+        }
+
+        .slot {
+            width: 80px;
+            height: 90px;
+            border: 1px dashed #5f6368;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .slot-number {
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            font-size: 10px;
+            color: #9aa0a6;
+        }
+
+        /* 排序完成纸条提示 */
+        .paper-note {
+            display: none;
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            width: 200px;
+            height: 120px;
+            padding: 15px;
+            background: #ffffff;
+            border: 1px solid #dadce0;
+            border-radius: 4px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .paper-note-title {
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: #d69e2e;
+        }
+
+        /* 历史记录/收藏页 - 点击快捷方式打开 */
+        .history-page, .collection-page {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: #ffffff;
+            z-index: 1000;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        /* 纯静态数独样式 - 无任何交互/提示 */
+        .collection-page {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: #ffffff;
+            z-index: 1000;
+            padding: 20px;
+            overflow-y: auto;
+            /* 数独居中 */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* 纯静态9x9数独网格 - 所有边框统一加粗 */
+        .sudoku-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+        }
+
+        .sudoku-grid {
+            display: grid;
+            grid-template-columns: repeat(9, 40px);
+            grid-template-rows: repeat(9, 40px);
+            gap: 2px; /* 统一边框宽度 */
+            background: #000;
+            padding: 2px;
+        }
+
+        .sudoku-cell {
+            width: 40px;
+            height: 40px;
+            border: none;
+            background: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        /* 空单元格样式 - 仅占位，无任何提示 */
+        .sudoku-cell.empty {
+            background: #f8f9fa;
+            font-weight: bold;
+            color: #e53e3e;
+        }
+    </style>
+</head>
+<body>
+    <!-- Chrome顶部地址栏 -->
+    <div class="chrome-top-bar">
+        <input type="text" class="address-bar" placeholder="搜索或输入网页地址">
+    </div>
+
+    <!-- Google新标签页核心内容（调整后） -->
+    <div class="google-main">
+        <!-- 替换Google Logo为「搜索」大字 -->
+        <div class="search-title">搜索</div>
+        
+        <!-- Google搜索框 - 移除话筒，仅保留搜索图标 + 坐标提示 -->
+        <div class="search-container">
+            <span class="search-icon">🔍</span>
+            <input type="text" class="google-search-input" id="googleSearchInput" placeholder="请输入坐标xxx.xxx.xxx">
+        </div>
+
+        <!-- 快捷方式栏（复刻截图样式） -->
+        <div class="shortcuts-bar">
+            <div class="shortcut-item" id="shortcutMemories">
+                <div class="shortcut-icon">💖</div>
+                <div class="shortcut-text">共同的回忆</div>
+            </div>
+            <div class="shortcut-item" id="shortcutHistory">
+                <div class="shortcut-icon">📜</div>
+                <div class="shortcut-text">历史记录</div>
+            </div>
+            <div class="shortcut-item" id="shortcutCollection">
+                <div class="shortcut-icon">⭐</div>
+                <div class="shortcut-text">收藏页</div>
+            </div>
+            <div class="shortcut-item">
+                <div class="shortcut-icon">🤖</div>
+                <div class="shortcut-text">ChatGPT</div>
+            </div>
+            <div class="shortcut-item">
+                <div class="shortcut-icon">🌐</div>
+                <div class="shortcut-text">Amazon</div>
+            </div>
+            <div class="shortcut-item">
+                <div class="shortcut-icon">➕</div>
+                <div class="shortcut-text">添加快捷方式</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 共同的回忆页面（便利贴+照片墙） -->
+    <div class="memories-page" id="memoriesPage">
+        <div class="memories-header">
+            <button class="close-btn" id="closeMemories">← 返回</button>
+            <div class="memories-title">💖 共同的回忆（拖拽便利贴到照片墙排序）</div>
+        </div>
+
+        <!-- 迷你便利贴源区域 -->
+        <div class="sticky-notes-source" id="stickyNotesSource">
+            <div class="sticky-note" data-id="1" data-name="滑雪" data-icon="🎿">
+                <span class="note-icon">🎿</span>
+                <span>滑雪</span>
+            </div>
+            <div class="sticky-note" data-id="2" data-name="全季酒店" data-icon="🏨">
+                <span class="note-icon">🏨</span>
+                <span>全季酒店</span>
+            </div>
+            <div class="sticky-note" data-id="3" data-name="海边" data-icon="🌊">
+                <span class="note-icon">🌊</span>
+                <span>海边</span>
+            </div>
+            <div class="sticky-note" data-id="4" data-name="拼图" data-icon="🧩">
+                <span class="note-icon">🧩</span>
+                <span>拼图</span>
+            </div>
+            <div class="sticky-note" data-id="5" data-name="旅游" data-icon="✈️">
+                <span class="note-icon">✈️</span>
+                <span>旅游</span>
+            </div>
+            <div class="sticky-note" data-id="6" data-name="搬家" data-icon="📦">
+                <span class="note-icon">📦</span>
+                <span>搬家</span>
+            </div>
+            <div class="sticky-note" data-id="7" data-name="学画画" data-icon="🎨">
+                <span class="note-icon">🎨</span>
+                <span>学画画</span>
+            </div>
+            <div class="sticky-note" data-id="8" data-name="游戏" data-icon="🎮">
+                <span class="note-icon">🎮</span>
+                <span>游戏</span>
+            </div>
+            <div class="sticky-note" data-id="9" data-name="美甲" data-icon="💅">
+                <span class="note-icon">💅</span>
+                <span>美甲</span>
+            </div>
+        </div>
+
+        <!-- 照片墙 -->
+        <div class="photo-wall">
+            <div class="photo-wall-title">
+                <span class="pin-icon">📌</span>
+                她的经历轨迹
+            </div>
+            <div class="photo-wall-slots" id="photoWallSlots">
+                <div class="slot" data-slot="1"><span class="slot-number">1</span></div>
+                <div class="slot" data-slot="2"><span class="slot-number">2</span></div>
+                <div class="slot" data-slot="3"><span class="slot-number">3</span></div>
+                <div class="slot" data-slot="4"><span class="slot-number">4</span></div>
+                <div class="slot" data-slot="5"><span class="slot-number">5</span></div>
+                <div class="slot" data-slot="6"><span class="slot-number">6</span></div>
+                <div class="slot" data-slot="7"><span class="slot-number">7</span></div>
+                <div class="slot" data-slot="8"><span class="slot-number">8</span></div>
+                <div class="slot" data-slot="9"><span class="slot-number">9</span></div>
+            </div>
+
+            <!-- 排序完成纸条提示 -->
+            <div class="paper-note" id="paperNote">
+                <div class="paper-note-title">📜 她的纸条</div>
+                <div>找到第一组坐标：<b>987</b></div>
+                <div>继续搜索「黑洞」找下一组</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 历史记录页面 -->
+    <div class="history-page" id="historyPage">
+        <div class="memories-header">
+            <button class="close-btn" id="closeHistory">← 返回</button>
+            <div class="memories-title">📜 搜索历史</div>
+        </div>
+        <div style="padding: 20px; max-width: 800px;">
+            <div style="background: #ffffff; border: 1px solid #dadce0; border-radius: 8px;">
+                <div style="padding: 12px 16px; border-bottom: 1px solid #dadce0; font-size: 14px; color: #5f6368;">最近7天</div>
+                <div style="padding: 12px 16px; border-bottom: 1px solid #dadce0; display: flex; align-items: center; gap: 12px;">
+                    <span>🔍</span>
+                    <div style="flex: 1;">
+                        <div style="font-size: 14px; color: #202124; font-weight: 500;">黑洞</div>
+                        <div style="font-size: 12px; color: #9aa0a6; margin-top: 2px;">搜索时间：今天 14:23</div>
+                    </div>
+                    <span style="color: #dadce0; cursor: pointer;">⋮</span>
+                </div>
+                <div style="padding: 12px 16px; border-bottom: 1px solid #dadce0; display: flex; align-items: center; gap: 12px;">
+                    <span>🔍</span>
+                    <div style="flex: 1;">
+                        <div style="font-size: 14px; color: #202124;">奶茶推荐</div>
+                        <div style="font-size: 12px; color: #9aa0a6; margin-top: 2px;">搜索时间：今天 10:15</div>
+                    </div>
+                    <span style="color: #dadce0; cursor: pointer;">⋮</span>
+                </div>
+                <div style="padding: 12px 16px; border-bottom: 1px solid #dadce0; display: flex; align-items: center; gap: 12px;">
+                    <span>🔍</span>
+                    <div style="flex: 1;">
+                        <div style="font-size: 14px; color: #202124;">解谜游戏攻略</div>
+                        <div style="font-size: 12px; color: #9aa0a6; margin-top: 2px;">搜索时间：昨天 18:47</div>
+                    </div>
+                    <span style="color: #dadce0; cursor: pointer;">⋮</span>
+                </div>
+                <div style="padding: 12px 16px; border-bottom: 1px solid #dadce0; display: flex; align-items: center; gap: 12px;">
+                    <span>🔍</span>
+                    <div style="flex: 1;">
+                        <div style="font-size: 14px; color: #202124;">全季酒店价格</div>
+                        <div style="font-size: 12px; color: #9aa0a6; margin-top: 2px;">搜索时间：昨天 15:32</div>
+                    </div>
+                    <span style="color: #dadce0; cursor: pointer;">⋮</span>
+                </div>
+                <div style="padding: 12px 16px; display: flex; align-items: center; gap: 12px;">
+                    <span>🔍</span>
+                    <div style="flex: 1;">
+                        <div style="font-size: 14px; color: #202124;">数独解题技巧</div>
+                        <div style="font-size: 12px; color: #9aa0a6; margin-top: 2px;">搜索时间：3天前</div>
+                    </div>
+                    <span style="color: #dadce0; cursor: pointer;">⋮</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 收藏页（纯静态数独 - 空白位置：第一行第5、第四行第1、第八行第8） -->
+    <div class="collection-page" id="collectionPage">
+        <button class="close-btn" id="closeCollection" style="position: absolute; top: 20px; left: 20px;">← 返回</button>
+        <div class="sudoku-container">
+            <div class="sudoku-grid">
+                <!-- 第一行 - 空白1：第一行第5列 -->
+                <div class="sudoku-cell">8</div>
+                <div class="sudoku-cell">1</div>
+                <div class="sudoku-cell">7</div>
+                <div class="sudoku-cell">3</div>
+                <div class="sudoku-cell empty">?</div>
+                <div class="sudoku-cell">2</div>
+                <div class="sudoku-cell">6</div>
+                <div class="sudoku-cell">5</div>
+                <div class="sudoku-cell">4</div>
+                
+                <!-- 第二行 -->
+                <div class="sudoku-cell">9</div>
+                <div class="sudoku-cell">4</div>
+                <div class="sudoku-cell">5</div>
+                <div class="sudoku-cell">8</div>
+                <div class="sudoku-cell">6</div>
+                <div class="sudoku-cell">1</div>
+                <div class="sudoku-cell">7</div>
+                <div class="sudoku-cell">2</div>
+                <div class="sudoku-cell">3</div>
+                
+                <!-- 第三行 -->
+                <div class="sudoku-cell">6</div>
+                <div class="sudoku-cell">3</div>
+                <div class="sudoku-cell">2</div>
+                <div class="sudoku-cell">5</div>
+                <div class="sudoku-cell">7</div>
+                <div class="sudoku-cell">4</div>
+                <div class="sudoku-cell">9</div>
+                <div class="sudoku-cell">8</div>
+                <div class="sudoku-cell">1</div>
+                
+                <!-- 第四行 - 空白2：第四行第1列 -->
+                <div class="sudoku-cell empty">?</div>
+                <div class="sudoku-cell">8</div>
+                <div class="sudoku-cell">4</div>
+                <div class="sudoku-cell">2</div>
+                <div class="sudoku-cell">3</div>
+                <div class="sudoku-cell">9</div>
+                <div class="sudoku-cell">5</div>
+                <div class="sudoku-cell">7</div>
+                <div class="sudoku-cell">6</div>
+                
+                <!-- 第五行 -->
+                <div class="sudoku-cell">5</div>
+                <div class="sudoku-cell">7</div>
+                <div class="sudoku-cell">9</div>
+                <div class="sudoku-cell">4</div>
+                <div class="sudoku-cell">1</div>
+                <div class="sudoku-cell">8</div>
+                <div class="sudoku-cell">2</div>
+                <div class="sudoku-cell">3</div>
+                <div class="sudoku-cell">8</div>
+                
+                <!-- 第六行 -->
+                <div class="sudoku-cell">2</div>
+                <div class="sudoku-cell">6</div>
+                <div class="sudoku-cell">3</div>
+                <div class="sudoku-cell">7</div>
+                <div class="sudoku-cell">5</div>
+                <div class="sudoku-cell">8</div>
+                <div class="sudoku-cell">1</div>
+                <div class="sudoku-cell">9</div>
+                <div class="sudoku-cell">4</div>
+                
+                <!-- 第七行 -->
+                <div class="sudoku-cell">3</div>
+                <div class="sudoku-cell">9</div>
+                <div class="sudoku-cell">8</div>
+                <div class="sudoku-cell">6</div>
+                <div class="sudoku-cell">4</div>
+                <div class="sudoku-cell">7</div>
+                <div class="sudoku-cell">8</div>
+                <div class="sudoku-cell">1</div>
+                <div class="sudoku-cell">5</div>
+                
+                <!-- 第八行 - 空白3：第八行第8列 -->
+                <div class="sudoku-cell">7</div>
+                <div class="sudoku-cell">2</div>
+                <div class="sudoku-cell">6</div>
+                <div class="sudoku-cell">1</div>
+                <div class="sudoku-cell">8</div>
+                <div class="sudoku-cell">5</div>
+                <div class="sudoku-cell">4</div>
+                <div class="sudoku-cell empty">?</div>
+                <div class="sudoku-cell">9</div>
+                
+                <!-- 第九行 -->
+                <div class="sudoku-cell">4</div>
+                <div class="sudoku-cell">5</div>
+                <div class="sudoku-cell">1</div>
+                <div class="sudoku-cell">9</div>
+                <div class="sudoku-cell">2</div>
+                <div class="sudoku-cell">3</div>
+                <div class="sudoku-cell">8</div>
+                <div class="sudoku-cell">6</div>
+                <div class="sudoku-cell">7</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 加密函数 - 坐标加密存储
+        function encryptData(str) {
+            // 简单异或加密 + Base64编码，防止直接查看源码获取坐标
+            let encrypted = '';
+            const key = 17; // 加密密钥
+            for (let i = 0; i < str.length; i++) {
+                encrypted += String.fromCharCode(str.charCodeAt(i) ^ key);
+            }
+            return btoa(encrypted);
+        }
+
+        // 解密函数
+        function decryptData(encryptedStr) {
+            const key = 17;
+            let decrypted = atob(encryptedStr);
+            let result = '';
+            for (let i = 0; i < decrypted.length; i++) {
+                result += String.fromCharCode(decrypted.charCodeAt(i) ^ key);
+            }
+            return result;
+        }
+
+        // 加密存储三组坐标（打乱后：789→987，456→654，123→387）
+        const encryptedFirstCoord = encryptData('987');    // 原789 → 打乱为987
+        const encryptedSecondCoord = encryptData('654');  // 原456 → 打乱为654
+        const encryptedThirdCoord = encryptData('387');   // 原123 → 打乱为387
+        const encryptedFullCoord = encryptData('987.654.387'); // 完整加密坐标
+
+        // 1. 快捷方式点击逻辑（仅打开/关闭页面，数独无任何填充）
+        document.getElementById('shortcutMemories').addEventListener('click', () => {
+            document.getElementById('memoriesPage').style.display = 'block';
+        });
+
+        document.getElementById('closeMemories').addEventListener('click', () => {
+            document.getElementById('memoriesPage').style.display = 'none';
+        });
+
+        document.getElementById('shortcutHistory').addEventListener('click', () => {
+            document.getElementById('historyPage').style.display = 'block';
+        });
+
+        document.getElementById('closeHistory').addEventListener('click', () => {
+            document.getElementById('historyPage').style.display = 'none';
+        });
+
+        document.getElementById('shortcutCollection').addEventListener('click', () => {
+            document.getElementById('collectionPage').style.display = 'flex';
+            // 移除所有数独填充/提示逻辑，仅显示静态数独
+        });
+
+        document.getElementById('closeCollection').addEventListener('click', () => {
+            document.getElementById('collectionPage').style.display = 'none';
+        });
+
+        // 2. 便利贴拖拽逻辑（保留原有功能）
+        const stickyNotes = document.querySelectorAll('.sticky-note');
+        const slots = document.querySelectorAll('.slot');
+        const correctOrder = [8,2,1,9,5,6,3,4,7]; // 正确顺序
+        let placedNotes = {};
+        let draggedNote = null; // 记录当前拖拽的便利贴
+
+        stickyNotes.forEach(note => {
+            // 开始拖拽
+            note.addEventListener('mousedown', (e) => {
+                e.preventDefault();
+                // 记录当前拖拽的便利贴
+                draggedNote = note;
+                
+                // 创建克隆体（带当前便利贴的所有数据）
+                const clone = document.createElement('div');
+                clone.id = 'dragging-clone';
+                clone.className = 'sticky-note';
+                clone.style.position = 'absolute';
+                clone.style.zIndex = '9999';
+                clone.style.left = `${e.clientX - 35}px`; // 居中
+                clone.style.top = `${e.clientY - 40}px`;
+                clone.innerHTML = `
+                    <span class="note-icon">${note.dataset.icon}</span>
+                    <span>${note.dataset.name}</span>
+                `;
+                document.body.appendChild(clone);
+
+                // 鼠标移动
+                const onMouseMove = (e) => {
+                    clone.style.left = `${e.clientX - 35}px`;
+                    clone.style.top = `${e.clientY - 40}px`;
+                };
+
+                // 结束拖拽
+                const onMouseUp = (e) => {
+                    // 移除克隆体
+                    document.body.removeChild(clone);
+                    document.removeEventListener('mousemove', onMouseMove);
+                    document.removeEventListener('mouseup', onMouseUp);
+
+                    // 检测是否拖到槽位
+                    slots.forEach(slot => {
+                        const slotRect = slot.getBoundingClientRect();
+                        if (e.clientX >= slotRect.left && e.clientX <= slotRect.right &&
+                            e.clientY >= slotRect.top && e.clientY <= slotRect.bottom) {
+                            // 清空槽位原有内容
+                            slot.innerHTML = `<span class="slot-number">${slot.dataset.slot}</span>`;
+                            
+                            // 创建新的便利贴添加到槽位（使用拖拽源的真实数据）
+                            const newNote = document.createElement('div');
+                            newNote.className = 'sticky-note';
+                            newNote.innerHTML = `
+                                <span class="note-icon">${draggedNote.dataset.icon}</span>
+                                <span>${draggedNote.dataset.name}</span>
+                            `;
+                            slot.appendChild(newNote);
+                            slot.style.border = '1px solid #4caf50';
+
+                            // 记录放置的便利贴ID
+                            const noteId = parseInt(draggedNote.dataset.id);
+                            const slotNum = parseInt(slot.dataset.slot);
+                            placedNotes[slotNum] = noteId;
+
+                            // 隐藏原便利贴（拖拽后消失）
+                            draggedNote.classList.add('dragged');
+                        }
+                    });
+
+                    // 检查排序是否正确
+                    checkOrder();
+                    draggedNote = null;
+                };
+
+                document.addEventListener('mousemove', onMouseMove);
+                document.addEventListener('mouseup', onMouseUp);
+            });
+        });
+
+        // 3. 检查便利贴排序是否正确
+        function checkOrder() {
+            let isCorrect = true;
+            let allPlaced = true;
+
+            // 检查是否所有槽位都已放置
+            for (let i = 1; i <= 9; i++) {
+                if (!placedNotes[i]) {
+                    allPlaced = false;
+                    break;
+                }
+            }
+
+            // 检查顺序是否正确
+            if (allPlaced) {
+                for (let i = 1; i <= 9; i++) {
+                    if (placedNotes[i] !== correctOrder[i-1]) {
+                        isCorrect = false;
+                        break;
+                    }
+                }
+            } else {
+                isCorrect = false;
+            }
+
+            // 显示纸条提示（解密后显示打乱的坐标）
+            if (isCorrect) {
+                const firstCoord = decryptData(encryptedFirstCoord);
+                document.getElementById('paperNote').innerHTML = `
+                    <div class="paper-note-title">📜 她的纸条</div>
+                    <div>找到第一组坐标：<b>${firstCoord}</b></div>
+                    <div>继续搜索「黑洞」找下一组</div>
+                `;
+                document.getElementById('paperNote').style.display = 'block';
+            }
+        }
+
+        // 4. Google搜索框逻辑（保留坐标验证）
+        const googleSearchInput = document.getElementById('googleSearchInput');
+        const addressBar = document.querySelector('.address-bar');
+
+        // 统一搜索逻辑
+        function handleSearch(inputValue) {
+            inputValue = inputValue.trim();
+            if (inputValue === '黑洞') {
+                window.open('blackhole-search.html', '_blank');
+            } else if (inputValue === decryptData(encryptedFullCoord)) {
+                window.open('next-level.html', '_blank');
+            }
+        }
+
+        // 搜索框提交
+        googleSearchInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                handleSearch(googleSearchInput.value);
+                googleSearchInput.value = '';
+            }
+        });
+
+        // 地址栏提交
+        addressBar.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                handleSearch(addressBar.value);
+                addressBar.value = '';
+            }
+        });
+    </script>
+</body>
+</html>
