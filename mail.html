@@ -1,17 +1,308 @@
 <!DOCTYPE html>
 <html lang="zh">
 <head>
-  <meta charset="UTF-8">
-  <title>邮件</title>
-  <style>
-    body {background: #f5f5f5; font-family: Segoe UI; text-align: center; padding-top: 100px;}
-    a {color: #2980b9; font-size: 18px; text-decoration: none;}
-    a:hover {text-decoration: underline;}
-  </style>
+    <meta charset="UTF-8">
+    <title>邮件客户端</title>
+    <style>
+        /* 全局样式 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Segoe UI", "Microsoft YaHei", sans-serif;
+            user-select: none;
+        }
+
+        body {
+            background: #f0f2f5;
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden;
+        }
+
+        /* 邮件客户端容器 */
+        .email-container {
+            display: flex;
+            height: 100vh;
+            width: 100vw;
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+
+        /* 左侧导航栏 */
+        .email-nav {
+            width: 200px;
+            background: #2d3748;
+            color: #fff;
+            padding: 20px 0;
+        }
+
+        .nav-title {
+            padding: 0 20px;
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 30px;
+            color: #e2e8f0;
+        }
+
+        .nav-item {
+            padding: 12px 20px;
+            cursor: pointer;
+            transition: background 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-item:hover {
+            background: #4a5568;
+        }
+
+        .nav-item.active {
+            background: #3182ce;
+            border-left: 4px solid #ffffff;
+        }
+
+        .nav-item span {
+            font-size: 18px;
+        }
+
+        /* 邮件列表区域 */
+        .email-list {
+            width: 350px;
+            border-right: 1px solid #e0e0e0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .list-header {
+            padding: 15px 20px;
+            border-bottom: 1px solid #e0e0e0;
+            font-weight: bold;
+            font-size: 16px;
+            color: #2d3748;
+        }
+
+        .email-item {
+            padding: 15px 20px;
+            border-bottom: 1px solid #f0f0f0;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .email-item:hover {
+            background: #f7fafc;
+        }
+
+        .email-item.new {
+            background: #e8f4f8;
+            border-left: 4px solid #3182ce;
+        }
+
+        .email-subject {
+            font-weight: bold;
+            font-size: 15px;
+            margin-bottom: 5px;
+        }
+
+        .email-sender {
+            font-size: 13px;
+            color: #718096;
+        }
+
+        .email-time {
+            font-size: 12px;
+            color: #a0aec0;
+            text-align: right;
+            margin-top: -20px;
+        }
+
+        /* 邮件内容区域 */
+        .email-content {
+            flex: 1;
+            padding: 30px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .empty-state {
+            color: #718096;
+            font-size: 18px;
+            padding: 20px;
+        }
+
+        .empty-state span {
+            font-size: 40px;
+            display: block;
+            margin-bottom: 15px;
+        }
+
+        /* 邮件详情样式 */
+        .email-detail {
+            display: none;
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+            text-align: left;
+        }
+
+        .detail-header {
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .detail-subject {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #2d3748;
+        }
+
+        .detail-sender {
+            font-size: 14px;
+            color: #4a5568;
+        }
+
+        .detail-body {
+            font-size: 16px;
+            line-height: 1.8;
+            color: #2d3748;
+            margin: 20px 0;
+        }
+
+        .wechat-public {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 12px 24px;
+            background: #3182ce;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: bold;
+            transition: background 0.2s;
+        }
+
+        .wechat-public:hover {
+            background: #2b6cb0;
+        }
+
+        /* 返回按钮 */
+        .back-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            padding: 8px 16px;
+            background: #e53e3e;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.2s;
+        }
+
+        .back-btn:hover {
+            background: #c53030;
+        }
+    </style>
 </head>
 <body>
-  <h2>紧急邮件</h2>
-  <p>微信公众号，点击查看详情</p>
-  <a href="article.html">🔍 查看公众号线索</a>
+    <!-- 返回桌面按钮 -->
+    <button class="back-btn" onclick="window.location.href='index.html'">← 返回桌面</button>
+
+    <!-- 邮件客户端主体 -->
+    <div class="email-container">
+        <!-- 左侧导航栏 -->
+        <div class="email-nav">
+            <div class="nav-title">邮件导航</div>
+            <div class="nav-item active">
+                <span>📥</span> 收件箱
+            </div>
+            <div class="nav-item">
+                <span>📤</span> 发件箱
+            </div>
+            <div class="nav-item">
+                <span>📁</span> 草稿箱
+            </div>
+            <div class="nav-item">
+                <span>🗑️</span> 垃圾箱
+            </div>
+        </div>
+
+        <!-- 邮件列表区域 -->
+        <div class="email-list">
+            <div class="list-header">收件箱 (1封新邮件)</div>
+            <div class="email-item new" onclick="openEmail()">
+                <div class="email-subject">你收到一封新邮件</div>
+                <div class="email-sender">发件人: 未知 &lt;unknown@web黑洞.com&gt;</div>
+                <div class="email-time">刚刚</div>
+            </div>
+            <div class="email-item">
+                <div class="email-subject">游戏验证码</div>
+                <div class="email-sender">发件人: Steam &lt;gf@daily.com&gt;</div>
+                <div class="email-time">昨天</div>
+            </div>
+            <div class="email-item">
+                <div class="email-subject">账单提醒</div>
+                <div class="email-sender">发件人: 银行 &lt;bank@notice.com&gt;</div>
+                <div class="email-time">3天前</div>
+            </div>
+        </div>
+
+        <!-- 邮件内容区域 -->
+        <div class="email-content">
+            <!-- 空状态提示 -->
+            <div class="empty-state" id="emptyState">
+                <span>📩</span>
+                请选择一封邮件查看详情
+            </div>
+
+            <!-- 邮件详情 -->
+            <div class="email-detail" id="emailDetail">
+                <div class="detail-header">
+                    <div class="detail-subject">你收到一封新邮件</div>
+                    <div class="detail-sender">发件人: 未知 &lt;unknown@web黑洞.com&gt; | 发送时间: 刚刚</div>
+                </div>
+                <div class="detail-body">
+                    <p>你是不是在找她？</p>
+                  <p>想救她，就点进这个公众号，里面有所有线索：</p>
+                  <p style="text-align: center; margin: 30px 0;">
+                    <a href="article.html" class="wechat-public">网页解谜游戏互助会</a>
+                  </p>
+                  <p style="color: #718096; font-size: 14px; margin-top: 40px;">—— 匿名</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 打开邮件详情
+        function openEmail() {
+            // 隐藏空状态，显示邮件详情
+            document.getElementById('emptyState').style.display = 'none';
+            document.getElementById('emailDetail').style.display = 'block';
+            
+            // 标记邮件为已读（移除new样式）
+            document.querySelector('.email-item.new').classList.remove('new');
+        }
+
+        // 页面加载时的小动画（可选）
+        window.onload = function() {
+            // 给新邮件添加轻微的闪烁动画，提示玩家点击
+            const newEmail = document.querySelector('.email-item.new');
+            let flashCount = 0;
+            const flashInterval = setInterval(() => {
+                newEmail.style.opacity = newEmail.style.opacity === '0.8' ? '1' : '0.8';
+                flashCount++;
+                if (flashCount >= 10) clearInterval(flashInterval);
+            }, 500);
+        };
+    </script>
 </body>
 </html>
