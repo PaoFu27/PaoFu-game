@@ -425,7 +425,7 @@
     <div class="memories-page" id="memoriesPage">
         <div class="memories-header">
             <button class="close-btn" id="closeMemories">← 返回</button>
-            <div class="memories-title">💖 共同的回忆（拖拽便利贴到照片墙排序）</div>
+            <div class="memories-title">💖 共同的回忆（按时间拖拽便利贴到照片墙排序）</div>
         </div>
 
         <!-- 迷你便利贴源区域 -->
@@ -472,7 +472,7 @@
         <div class="photo-wall">
             <div class="photo-wall-title">
                 <span class="pin-icon">📌</span>
-                她的经历轨迹
+               共同的经历轨迹
             </div>
             <div class="photo-wall-slots" id="photoWallSlots">
                 <div class="slot" data-slot="1"><span class="slot-number">1</span></div>
@@ -490,7 +490,6 @@
             <div class="paper-note" id="paperNote">
                 <div class="paper-note-title">📜 她的纸条</div>
                 <div>找到第一组坐标：<b>987</b></div>
-                <div>继续搜索「黑洞」找下一组</div>
             </div>
         </div>
     </div>
@@ -820,7 +819,6 @@
                 document.getElementById('paperNote').innerHTML = `
                     <div class="paper-note-title">📜 她的纸条</div>
                     <div>找到第一组坐标：<b>${firstCoord}</b></div>
-                    <div>继续搜索「黑洞」找下一组</div>
                 `;
                 document.getElementById('paperNote').style.display = 'block';
             }
