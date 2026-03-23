@@ -308,7 +308,7 @@
 
         /* 历史记录/收藏页 - 点击快捷方式打开 */
         .history-page, .collection-page {
-            display: none;
+            display: none; /* 默认隐藏，解决数独页默认显示问题 */
             position: fixed;
             top: 0;
             left: 0;
@@ -322,18 +322,8 @@
 
         /* 纯静态数独样式 - 无任何交互/提示 */
         .collection-page {
+            /* 移除默认flex，改为点击后再设置flex */
             display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: #ffffff;
-            z-index: 1000;
-            padding: 20px;
-            overflow-y: auto;
-            /* 数独居中 */
-            display: flex;
             align-items: center;
             justify-content: center;
         }
@@ -381,7 +371,7 @@
         <input type="text" class="address-bar" placeholder="搜索或输入网页地址">
     </div>
 
-    <!-- Google新标签页核心内容（调整后） -->
+    <!-- Google新标签页核心内容（默认显示） -->
     <div class="google-main">
         <!-- 替换Google Logo为「搜索」大字 -->
         <div class="search-title">搜索</div>
@@ -472,7 +462,7 @@
         <div class="photo-wall">
             <div class="photo-wall-title">
                 <span class="pin-icon">📌</span>
-               共同的经历轨迹
+                共同的经历轨迹
             </div>
             <div class="photo-wall-slots" id="photoWallSlots">
                 <div class="slot" data-slot="1"><span class="slot-number">1</span></div>
@@ -489,7 +479,7 @@
             <!-- 排序完成纸条提示 -->
             <div class="paper-note" id="paperNote">
                 <div class="paper-note-title">📜 她的纸条</div>
-                <div>找到第一组坐标：<b>987</b></div>
+                <div>找到第一组坐标：<b>714</b></div>
             </div>
         </div>
     </div>
@@ -552,11 +542,11 @@
         <button class="close-btn" id="closeCollection" style="position: absolute; top: 20px; left: 20px;">← 返回</button>
         <div class="sudoku-container">
             <div class="sudoku-grid">
-                <!-- 第一行 - 空白1：第一行第5列 -->
+               <!-- 第一行 - 空白1：第一行第5列（解出3） -->
                 <div class="sudoku-cell">8</div>
                 <div class="sudoku-cell">1</div>
                 <div class="sudoku-cell">7</div>
-                <div class="sudoku-cell">3</div>
+                <div class="sudoku-cell">9</div>
                 <div class="sudoku-cell empty">?</div>
                 <div class="sudoku-cell">2</div>
                 <div class="sudoku-cell">6</div>
@@ -585,7 +575,7 @@
                 <div class="sudoku-cell">8</div>
                 <div class="sudoku-cell">1</div>
                 
-                <!-- 第四行 - 空白2：第四行第1列 -->
+                <!-- 第四行 - 空白2：第四行第1列（解出6） -->
                 <div class="sudoku-cell empty">?</div>
                 <div class="sudoku-cell">8</div>
                 <div class="sudoku-cell">4</div>
@@ -594,7 +584,7 @@
                 <div class="sudoku-cell">9</div>
                 <div class="sudoku-cell">5</div>
                 <div class="sudoku-cell">7</div>
-                <div class="sudoku-cell">6</div>
+                <div class="sudoku-cell">1</div>
                 
                 <!-- 第五行 -->
                 <div class="sudoku-cell">5</div>
@@ -605,7 +595,7 @@
                 <div class="sudoku-cell">8</div>
                 <div class="sudoku-cell">2</div>
                 <div class="sudoku-cell">3</div>
-                <div class="sudoku-cell">8</div>
+                <div class="sudoku-cell">6</div>
                 
                 <!-- 第六行 -->
                 <div class="sudoku-cell">2</div>
@@ -625,11 +615,11 @@
                 <div class="sudoku-cell">6</div>
                 <div class="sudoku-cell">4</div>
                 <div class="sudoku-cell">7</div>
-                <div class="sudoku-cell">8</div>
+                <div class="sudoku-cell">1</div>
                 <div class="sudoku-cell">1</div>
                 <div class="sudoku-cell">5</div>
                 
-                <!-- 第八行 - 空白3：第八行第8列 -->
+                <!-- 第八行 - 空白3：第八行第8列（解出2） -->
                 <div class="sudoku-cell">7</div>
                 <div class="sudoku-cell">2</div>
                 <div class="sudoku-cell">6</div>
@@ -644,18 +634,18 @@
                 <div class="sudoku-cell">4</div>
                 <div class="sudoku-cell">5</div>
                 <div class="sudoku-cell">1</div>
-                <div class="sudoku-cell">9</div>
-                <div class="sudoku-cell">2</div>
                 <div class="sudoku-cell">3</div>
-                <div class="sudoku-cell">8</div>
+                <div class="sudoku-cell">9</div>
                 <div class="sudoku-cell">6</div>
+                <div class="sudoku-cell">8</div>
+                <div class="sudoku-cell">4</div>
                 <div class="sudoku-cell">7</div>
             </div>
         </div>
     </div>
 
     <script>
-        // 加密函数 - 坐标加密存储
+        // 加密函数 - 坐标加密存储（改为无规律坐标：714.859.362）
         function encryptData(str) {
             // 简单异或加密 + Base64编码，防止直接查看源码获取坐标
             let encrypted = '';
@@ -677,11 +667,11 @@
             return result;
         }
 
-        // 加密存储三组坐标（打乱后：789→987，456→654，123→387）
-        const encryptedFirstCoord = encryptData('987');    // 原789 → 打乱为987
-        const encryptedSecondCoord = encryptData('654');  // 原456 → 打乱为654
-        const encryptedThirdCoord = encryptData('387');   // 原123 → 打乱为387
-        const encryptedFullCoord = encryptData('987.654.387'); // 完整加密坐标
+        // 加密存储三组无规律坐标（彻底打乱，无连续数字）
+        const encryptedFirstCoord = encryptData('714');    // 第一组：714（无连续）
+        const encryptedSecondCoord = encryptData('859');  // 第二组：859（无连续）
+        const encryptedThirdCoord = encryptData('362');   // 第三组：362（无连续）
+        const encryptedFullCoord = encryptData('714.859.362'); // 完整加密坐标
 
         // 1. 快捷方式点击逻辑（仅打开/关闭页面，数独无任何填充）
         document.getElementById('shortcutMemories').addEventListener('click', () => {
@@ -701,15 +691,15 @@
         });
 
         document.getElementById('shortcutCollection').addEventListener('click', () => {
+            // 点击后才设置flex显示数独，默认隐藏
             document.getElementById('collectionPage').style.display = 'flex';
-            // 移除所有数独填充/提示逻辑，仅显示静态数独
         });
 
         document.getElementById('closeCollection').addEventListener('click', () => {
             document.getElementById('collectionPage').style.display = 'none';
         });
 
-        // 2. 便利贴拖拽逻辑（保留原有功能）
+        // 2. 便利贴拖拽逻辑（保留原有功能，提示改为新坐标714）
         const stickyNotes = document.querySelectorAll('.sticky-note');
         const slots = document.querySelectorAll('.slot');
         const correctOrder = [8,2,1,9,5,6,3,4,7]; // 正确顺序
@@ -788,7 +778,7 @@
             });
         });
 
-        // 3. 检查便利贴排序是否正确
+        // 3. 检查便利贴排序是否正确（提示改为新坐标714）
         function checkOrder() {
             let isCorrect = true;
             let allPlaced = true;
@@ -813,7 +803,7 @@
                 isCorrect = false;
             }
 
-            // 显示纸条提示（解密后显示打乱的坐标）
+            // 显示纸条提示（解密后显示新的无规律坐标714）
             if (isCorrect) {
                 const firstCoord = decryptData(encryptedFirstCoord);
                 document.getElementById('paperNote').innerHTML = `
@@ -824,7 +814,7 @@
             }
         }
 
-        // 4. Google搜索框逻辑（保留坐标验证）
+        // 4. Google搜索框逻辑（验证新的无规律坐标714.859.362）
         const googleSearchInput = document.getElementById('googleSearchInput');
         const addressBar = document.querySelector('.address-bar');
 
