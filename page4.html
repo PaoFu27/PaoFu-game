@@ -800,24 +800,35 @@ document.getElementById('wxLoginBtn').onclick = () => {
 };
 
     // 打开聊天
-    document.querySelectorAll('.wx-chat-item').forEach(item => {
-        item.onclick = () => {
-            let target = item.dataset.target;
-            let name = item.querySelector('h4').innerText;
-            document.getElementById('wxChatRight').style.display = 'block';
-            document.getElementById('currentChatName').innerText = name;
-            let html = '';
-            let lastDate = '';
-            chatData[target].forEach(msg => {
-                if(msg.date !== lastDate){
-                    html += `<div class="msg-date">${msg.date}</div>`;
-                    lastDate = msg.date;
-                }
-                html += `<div class="msg ${msg.type==='left'?'msg-left':'msg-right'}">${msg.text}</div>`;
-            });
-            document.getElementById('wxChatContent').innerHTML = html;
-        };
+    document.getElementById("wxWindow").addEventListener("click", (e) => {
+
+    let item = e.target.closest(".wx-chat-item");
+    if(!item) return;
+
+    let t = item.dataset.target;
+
+    let data =
+        chatData[t] ||
+        chatDataCy[t];
+
+    if(!data) return;
+
+    document.getElementById("chatBox").style.display = "block";
+
+    let html = '';
+    let last = '';
+
+    data.forEach(m=>{
+        if(m.date !== last){
+            html += `<div class="msg-date">${m.date}</div>`;
+            last = m.date;
+        }
+
+        html += `<div class="msg ${m.type==='left'?'msg-left':'msg-right'}">${m.text}</div>`;
     });
+
+    document.getElementById("chatContent").innerHTML = html;
+});
 
     // 返回聊天列表
     document.getElementById('wxBack').onclick = () => {
