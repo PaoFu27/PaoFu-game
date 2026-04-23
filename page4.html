@@ -383,6 +383,10 @@
         <div class="icon-box" style="background: #07c160;">💬</div>
         <div>微信</div>
     </div>
+    <div class="desktop-icon" id="openWeibo">
+    <div class="icon-box" style="background: #e6162d;">📱</div>
+    <div>微博</div>
+</div>
     <div class="desktop-icon">
         <div class="icon-box" style="background: #0078d4;">💻</div>
         <div>此电脑</div>
@@ -494,6 +498,17 @@
             </div>
             <div class="wx-chat-content" id="wxChatContent"></div>
         </div>
+    </div>
+</div>
+    <!-- 微博窗口 -->
+<div class="window" id="weiboWindow" style="width:900px;height:650px;background:#fff;">
+    <div class="window-header">
+        <span>微博</span>
+        <button class="window-close" id="closeWeibo">×</button>
+    </div>
+    <div style="padding:20px;height:calc(100% - 42px);overflow-y:auto;">
+        <h3>微博主页</h3>
+        <p>这里可以放解谜线索、寻人信息、公告等内容</p>
     </div>
 </div>
 
@@ -650,6 +665,14 @@ document.getElementById('mailLogout').onclick = () => {
     document.getElementById('wxBack').onclick = () => {
         document.getElementById('wxChatRight').style.display = 'none';
     };
+    // 打开微博
+document.getElementById('openWeibo').onclick = () => {
+    document.getElementById('weiboWindow').style.display = 'block';
+};
+// 关闭微博
+document.getElementById('closeWeibo').onclick = () => {
+    document.getElementById('weiboWindow').style.display = 'none';
+};
 </script>
 </body>
 </html>
