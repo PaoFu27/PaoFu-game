@@ -477,7 +477,7 @@
         </div>
     </div>
 
-    <!-- 主界面 -->
+    <!-- 主界面 - 林薇安（你原来的，完全没动） -->
     <div class="wx-container" id="wxContainer">
         <div class="wx-left">
             <div class="wx-user-info">
@@ -499,33 +499,39 @@
             <div class="wx-chat-content" id="wxChatContent"></div>
         </div>
     </div>
-</div>
-<!-- 陈远微信主界面（默认隐藏，登录后显示） -->
-<div id="wxContainerCy" style="display:none; height:calc(100% - 42px); display:flex;">
-  <!-- 左侧聊天列表 -->
-  <div style="width:240px; background:#f5f5f5; border-right:1px solid #ddd;">
-    <div style="padding:12px; text-align:center; font-weight:bold;">陈远 的微信</div>
 
-    <!-- 聊天列表 -->
-    <div class="chat-item" style="padding:10px 14px; border-bottom:1px solid #eee; cursor:pointer;">
-      <div style="font-weight:bold;">安安</div>
+    <!-- 主界面 - 陈远（新增，和你原版完全一样的样式） -->
+    <div class="wx-container" id="wxContainerCy" style="display:none;">
+        <div class="wx-left">
+            <div class="wx-user-info">
+                <span>陈远</span>
+                <span class="wx-exit" id="wxExitCy">退出登录</span>
+            </div>
+            <div class="wx-chat-list">
+                <div class="wx-chat-item" data-target="anan"><h4>安安</h4></div>
+                <div class="wx-chat-item" data-target="sun"><h4>孙财务</h4></div>
+                <div class="wx-chat-item" data-target="liao"><h4>廖总</h4></div>
+                <div class="wx-chat-item" data-target="dad"><h4>爸</h4></div>
+            </div>
+        </div>
+        <div class="wx-right" id="wxChatRightCy">
+            <div class="wx-chat-title">
+                <span class="wx-chat-back" id="wxBackCy">←</span>
+                <span id="currentChatNameCy">聊天对象</span>
+            </div>
+            <div class="wx-chat-content" id="wxChatContentCy"></div>
+        </div>
     </div>
-    <div class="chat-item" style="padding:10px 14px; border-bottom:1px solid #eee; cursor:pointer;">
-      <div style="font-weight:bold;">孙财务</div>
-    </div>
-    <div class="chat-item" style="padding:10px 14px; border-bottom:1px solid #eee; cursor:pointer;">
-      <div style="font-weight:bold;">廖总</div>
-    </div>
-    <div class="chat-item" style="padding:10px 14px; border-bottom:1px solid #eee; cursor:pointer;">
-      <div style="font-weight:bold;">爸</div>
-    </div>
-  </div>
+</div>
 
   <!-- 右侧聊天内容区 -->
   <div style="flex:1; background:#fff; padding:20px;">
     <div style="color:#999; text-align:center; margin-top:100px;">选择联系人开始聊天</div>
   </div>
 </div>  
+    </div>
+</div>
+
 
 <script>
     // 3秒弹出邮件通知
