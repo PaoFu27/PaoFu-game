@@ -416,17 +416,49 @@
         <span>QQ邮箱</span>
         <button class="window-close" id="closeMail">×</button>
     </div>
-    <div class="mail-sidebar">
-        <div style="font-weight: 600; margin-bottom: 12px;">收件箱</div>
-    </div>
-    <div class="mail-main">
-        <div class="mail-item" id="openMsg">
-            <strong>小黄</strong> · 救命！我被困住了！
+    <!-- 登录界面 -->
+    <div id="mailLoginPage" style="height: calc(100% - 42px); background: #f5f7fa; display: flex; align-items: center; justify-content: center;">
+        <div style="text-align: center; background: white; padding: 40px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+            <div style="font-size: 28px; font-weight: bold; color: #0066cc; margin-bottom: 30px;">QQ邮箱</div>
+            <input id="mailAccount" placeholder="请输入邮箱账号" style="width: 260px; padding: 10px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 4px;"><br>
+            <input id="mailPwd" placeholder="请输入密码" type="password" style="width: 260px; padding: 10px; margin-bottom: 20px; border: 1px solid #ddd; border-radius: 4px;"><br>
+            <button id="mailLoginBtn" style="width: 260px; padding: 10px; background: #0066cc; color: white; border: none; border-radius: 4px; cursor: pointer;">登录</button>
         </div>
-        <div class="mail-detail" id="mailDetail">
-            <h3>泡芙！！</h3>
-            <p>当时我就是点进了这个网页解谜游戏被困住了！</p>
-            <p>你只要解开这个游戏就可以放我出来了！</p>
+    </div>
+    <!-- 主界面 -->
+    <div id="mailMainPage" style="display: none; height: calc(100% - 42px);">
+        <div style="width: 200px; background: #f0f2f5; height: 100%; float: left; padding: 16px; border-right: 1px solid #e8e8e8;">
+            <div style="background: #0066cc; color: white; padding: 10px; border-radius: 4px; text-align: center; margin-bottom: 20px;">写信</div>
+            <div style="padding: 10px; background: #dce8f7; color: #0066cc; border-radius: 4px; margin-bottom: 10px;">收件箱 (230)</div>
+            <div style="padding: 10px; color: #333; margin-bottom: 10px; cursor: pointer;">重要联系人</div>
+            <div style="padding: 10px; color: #333; margin-bottom: 10px; cursor: pointer;">星标邮件</div>
+            <div style="padding: 10px; color: #333; margin-bottom: 10px; cursor: pointer;">群邮件</div>
+            <div style="padding: 10px; color: #333; margin-bottom: 10px; cursor: pointer;">已发送</div>
+            <div style="padding: 10px; color: #333; margin-bottom: 10px; cursor: pointer;">草稿箱</div>
+            <div style="padding: 10px; color: #333; margin-bottom: 10px; cursor: pointer;">已删除</div>
+            <div style="padding: 10px; color: #333; margin-bottom: 10px; cursor: pointer;">垃圾箱</div>
+            <div style="padding: 10px; color: #333; margin-bottom: 10px; cursor: pointer;">我的文件夹</div>
+            <div style="margin-top: 30px; color: #0066cc; cursor: pointer;" id="mailLogout">退出登录</div>
+        </div>
+        <div style="width: calc(100% - 200px); height: 100%; float: left; padding: 20px; overflow-y: auto;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h3>收件箱</h3>
+                <div>
+                    <button style="border: 1px solid #ddd; background: white; padding: 5px 10px; border-radius: 4px; margin-right: 5px;">删除</button>
+                    <button style="border: 1px solid #ddd; background: white; padding: 5px 10px; border-radius: 4px; margin-right: 5px;">转发</button>
+                    <button style="border: 1px solid #ddd; background: white; padding: 5px 10px; border-radius: 4px; margin-right: 5px;">举报</button>
+                    <button style="border: 1px solid #ddd; background: white; padding: 5px 10px; border-radius: 4px; margin-right: 5px;">全部已读</button>
+                    <button style="border: 1px solid #ddd; background: white; padding: 5px 10px; border-radius: 4px;">标记为</button>
+                </div>
+            </div>
+            <div class="mail-item" id="openMsg">
+                <strong>小黄</strong> · 救命！我被困住了！
+            </div>
+            <div class="mail-detail" id="mailDetail">
+                <h3>泡芙！！</h3>
+                <p>当时我就是点进了这个网页解谜游戏被困住了！</p>
+                <p>你只要解开这个游戏就可以放我出来了！</p>
+            </div>
         </div>
     </div>
 </div>
