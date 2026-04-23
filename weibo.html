@@ -146,9 +146,9 @@
             margin-top: 10px;
         }
         .weibo-item {
-            padding: 20px;
-            border-bottom: 1px solid #eee;
-        }
+    max-width: 600px;
+    margin: 0 auto;
+}
         .weibo-header {
             display: flex;
             align-items: center;
@@ -185,9 +185,7 @@
             margin-bottom: 12px;
         }
     .weibo-images {
-    display: grid;
-    gap: 6px;
-    max-width: 600px;
+    overflow: hidden;
 }
 
 /* 单图 */
@@ -209,8 +207,10 @@
 
 .weibo-images img {
     width: 100%;
-    aspect-ratio: 1 / 1;
-    object-fit: cover;
+    max-width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 8px;
 }
         .weibo-stats {
             display: flex;
