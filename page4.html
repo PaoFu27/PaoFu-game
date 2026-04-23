@@ -269,22 +269,26 @@
         }
 
         .wx-left {
-            width: 300px;
-            height: 100%;
-            background: white;
-            float: left;
-            border-right: 1px solid #eee;
-        }
+    width: 300px;
+    height: 100%;
+    background: #eaeaea;
+    float: left;
+    border-right: 1px solid #d6d6d6;
+    display: flex;
+    flex-direction: column;
+}
 
         .wx-user-info {
-            height: 60px;
-            padding: 12px 16px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            border-bottom: 1px solid #eee;
-        }
-
+    height: 60px;
+    background: #ededed;
+    padding: 10px 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid #d0d0d0;
+    font-weight: 500;
+    font-size: 14px;
+}
         .wx-exit {
             color: #07c160;
             font-size: 13px;
@@ -297,38 +301,23 @@
         }
 
         .wx-chat-item {
-            padding: 12px 16px;
-            border-bottom: 1px solid #f6f6f6;
-            cursor: pointer;
-        }
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 14px;
+    border-bottom: 1px solid #f0f0f0;
+    cursor: pointer;
+    transition: 0.2s;
+}
 
-        .wx-chat-item:hover {
-            background: #f6f6f6;
-        }
+.wx-chat-item:hover {
+    background: #dcdcdc;
+}
 
         .wx-chat-item h4 {
             font-size: 14px;
             font-weight: 500;
         }
-        .wx-left {
-    width: 300px;
-    height: 100%;
-    background: #ededed;
-    float: left;
-    border-right: 1px solid #ddd;
-}
-
-/* 顶部栏 */
-.wx-user-info {
-    height: 60px;
-    background: #f7f7f7;
-    padding: 10px 14px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    border-bottom: 1px solid #ddd;
-    font-weight: 500;
-}
 
 /* 搜索栏（仿微信） */
 .wx-search {
@@ -343,20 +332,6 @@
     border: none;
     background: #e5e5e5;
     font-size: 13px;
-}
-
-/* 聊天列表 */
-.wx-chat-item {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 12px 14px;
-    border-bottom: 1px solid #eaeaea;
-    cursor: pointer;
-}
-
-.wx-chat-item:hover {
-    background: #e5e5e5;
 }
 
 /* 头像 */
@@ -417,15 +392,15 @@
             overflow-y: auto;
         }
 
-        .msg {
-            max-width: 70%;
-            margin-bottom: 16px;
-            clear: both;
-            padding: 8px 12px;
-            border-radius: 8px;
-            font-size: 14px;
-            line-height: 1.5;
-        }
+       .msg {
+    max-width: 65%;
+    margin-bottom: 12px;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 14px;
+    line-height: 1.5;
+    position: relative;
+}
 
         .msg-left {
             float: left;
