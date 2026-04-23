@@ -800,38 +800,46 @@ document.getElementById('wxLoginBtn').onclick = () => {
 };
 
     // 打开聊天
-    document.querySelectorAll("#wxContainerCy .wx-chat-item").forEach(item => {
+    function bindCyChat() {
 
-    item.onclick = () => {
+    const container = document.getElementById("wxContainerCy");
 
-        let t = item.dataset.target;
+    container.querySelectorAll(".wx-chat-item").forEach(item => {
 
-        let data = chatDataCy[t];
+        item.onclick = function () {
 
-        if (!data) return;
+            const key = this.dataset.target;
+            const data = chatDataCy[key];
 
-        document.getElementById("wxChatRightCy").style.display = "block";
+            if (!data) return;
 
-        document.getElementById("currentChatNameCy").innerText =
-            item.querySelector("h4").innerText;
+            const right = document.getElementById("wxChatRightCy");
+            const box = document.getElementById("wxChatContentCy");
 
-        let html = "";
-        let last = "";
+            right.style.display = "block";
 
-        data.forEach(m => {
+            document.getElementById("currentChatNameCy").innerText =
+                this.innerText.trim();
 
-            if (m.date !== last) {
-                html += `<div class="msg-date">${m.date}</div>`;
-                last = m.date;
-            }
+            let html = "";
+            let lastDate = "";
 
-            html += `<div class="msg ${m.type === 'left' ? 'msg-left' : 'msg-right'}">${m.text}</div>`;
-        });
+            data.forEach(m => {
 
-        document.getElementById("wxChatContentCy").innerHTML = html;
-    };
+                if (m.date !== lastDate) {
+                    html += `<div class="msg-date">${m.date}</div>`;
+                    lastDate = m.date;
+                }
 
-});
+                html += `<div class="msg ${m.type === 'left' ? 'msg-left' : 'msg-right'}">${m.text}</div>`;
+            });
+
+            box.innerHTML = html;
+        };
+    });
+}
+
+bindCyChat();
 
     // 返回聊天列表
     document.getElementById('wxBack').onclick = () => {
