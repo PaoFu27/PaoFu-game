@@ -416,45 +416,36 @@
         <span>QQ邮箱</span>
         <button class="window-close" id="closeMail">×</button>
     </div>
-    <!-- 登录界面 -->
+
+    <!-- 登录页 -->
     <div id="mailLoginPage" style="height: calc(100% - 42px); background: #f5f7fa; display: flex; align-items: center; justify-content: center;">
-        <div style="text-align: center; background: white; padding: 40px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
-            <div style="font-size: 28px; font-weight: bold; color: #0066cc; margin-bottom: 30px;">QQ邮箱</div>
-            <input id="mailAccount" placeholder="请输入邮箱账号" style="width: 260px; padding: 10px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 4px;"><br>
-            <input id="mailPwd" placeholder="请输入密码" type="password" style="width: 260px; padding: 10px; margin-bottom: 20px; border: 1px solid #ddd; border-radius: 4px;"><br>
-            <button id="mailLoginBtn" style="width: 260px; padding: 10px; background: #0066cc; color: white; border: none; border-radius: 4px; cursor: pointer;">登录</button>
+        <div style="text-align:center; background:white; padding:40px; border-radius:12px; box-shadow:0 2px 10px rgba(0,0,0,0.1);">
+            <div style="font-size:28px; font-weight:bold; color:#0066cc; margin-bottom:30px;">QQ邮箱</div>
+            <input id="mailAccount" placeholder="邮箱账号" style="width:260px; padding:10px; margin-bottom:15px; border:1px solid #ddd; border-radius:4px;"><br>
+            <input id="mailPwd" placeholder="密码" type="password" style="width:260px; padding:10px; margin-bottom:20px; border:1px solid #ddd; border-radius:4px;"><br>
+            <button id="mailLoginBtn" style="width:260px; padding:10px; background:#0066cc; color:white; border:none; border-radius:4px; cursor:pointer;">登录</button>
         </div>
     </div>
+
     <!-- 主界面 -->
-    <div id="mailMainPage" style="display: none; height: calc(100% - 42px);">
-        <div style="width: 200px; background: #f0f2f5; height: 100%; float: left; padding: 16px; border-right: 1px solid #e8e8e8;">
-            <div style="background: #0066cc; color: white; padding: 10px; border-radius: 4px; text-align: center; margin-bottom: 20px;">写信</div>
-            <div style="padding: 10px; background: #dce8f7; color: #0066cc; border-radius: 4px; margin-bottom: 10px;">收件箱 (230)</div>
-            <div style="padding: 10px; color: #333; margin-bottom: 10px; cursor: pointer;">重要联系人</div>
-            <div style="padding: 10px; color: #333; margin-bottom: 10px; cursor: pointer;">星标邮件</div>
-            <div style="padding: 10px; color: #333; margin-bottom: 10px; cursor: pointer;">群邮件</div>
-            <div style="padding: 10px; color: #333; margin-bottom: 10px; cursor: pointer;">已发送</div>
-            <div style="padding: 10px; color: #333; margin-bottom: 10px; cursor: pointer;">草稿箱</div>
-            <div style="padding: 10px; color: #333; margin-bottom: 10px; cursor: pointer;">已删除</div>
-            <div style="padding: 10px; color: #333; margin-bottom: 10px; cursor: pointer;">垃圾箱</div>
-            <div style="padding: 10px; color: #333; margin-bottom: 10px; cursor: pointer;">我的文件夹</div>
-            <div style="margin-top: 30px; color: #0066cc; cursor: pointer;" id="mailLogout">退出登录</div>
+    <div id="mailMainPage" style="display:none; height:calc(100% - 42px);">
+        <div style="width:200px; background:#f0f2f5; height:100%; float:left; padding:16px; border-right:1px solid #e8e8e8;">
+            <div style="background:#0066cc; color:white; padding:10px; border-radius:4px; text-align:center; margin-bottom:20px;">写信</div>
+            <div style="padding:10px; background:#dce8f7; color:#0066cc; border-radius:4px; margin-bottom:10px;">收件箱</div>
+            <div style="padding:10px; color:#333; margin-bottom:10px;">星标邮件</div>
+            <div style="padding:10px; color:#333; margin-bottom:10px;">已发送</div>
+            <div style="padding:10px; color:#333; margin-bottom:10px;">草稿箱</div>
+            <div style="padding:10px; color:#333; margin-bottom:10px;">已删除</div>
+            <div style="padding:10px; color:#333; margin-bottom:10px;">垃圾箱</div>
+            <div style="margin-top:60px; color:#0066cc; cursor:pointer;" id="mailLogout">退出登录</div>
         </div>
-        <div style="width: calc(100% - 200px); height: 100%; float: left; padding: 20px; overflow-y: auto;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                <h3>收件箱</h3>
-                <div>
-                    <button style="border: 1px solid #ddd; background: white; padding: 5px 10px; border-radius: 4px; margin-right: 5px;">删除</button>
-                    <button style="border: 1px solid #ddd; background: white; padding: 5px 10px; border-radius: 4px; margin-right: 5px;">转发</button>
-                    <button style="border: 1px solid #ddd; background: white; padding: 5px 10px; border-radius: 4px; margin-right: 5px;">举报</button>
-                    <button style="border: 1px solid #ddd; background: white; padding: 5px 10px; border-radius: 4px; margin-right: 5px;">全部已读</button>
-                    <button style="border: 1px solid #ddd; background: white; padding: 5px 10px; border-radius: 4px;">标记为</button>
-                </div>
-            </div>
-            <div class="mail-item" id="openMsg">
+
+        <div style="width:calc(100% - 200px); height:100%; float:left; padding:20px; background:white; overflow-y:auto;">
+            <h3 style="margin-bottom:20px;">收件箱</h3>
+            <div class="mail-item" id="openMsg" style="padding:12px; border-bottom:1px solid #eee; cursor:pointer;">
                 <strong>小黄</strong> · 救命！我被困住了！
             </div>
-            <div class="mail-detail" id="mailDetail">
+            <div class="mail-detail" id="mailDetail" style="margin-top:20px; padding:20px; background:#fafafa; border-radius:8px; display:none;">
                 <h3>泡芙！！</h3>
                 <p>当时我就是点进了这个网页解谜游戏被困住了！</p>
                 <p>你只要解开这个游戏就可以放我出来了！</p>
@@ -512,37 +503,44 @@
         document.getElementById('mailNoti').style.display = 'block';
     }, 3000);
 
-   // 邮箱登录/退出功能
-document.getElementById('mailLoginBtn').onclick = () => {
-    let acc = document.getElementById('mailAccount').value.trim();
-    let pwd = document.getElementById('mailPwd').value.trim();
-    // 这里可以设置你想让玩家输入的账号密码，我先留空，你可以自己加逻辑
-    // 比如 if(acc === 'xxx@qq.com' && pwd === 'xxx') { ... }
-    document.getElementById('mailLoginPage').style.display = 'none';
-    document.getElementById('mailMainPage').style.display = 'block';
-};
-
-document.getElementById('mailLogout').onclick = () => {
-    document.getElementById('mailMainPage').style.display = 'none';
-    document.getElementById('mailLoginPage').style.display = 'flex';
-    document.getElementById('mailAccount').value = '';
-    document.getElementById('mailPwd').value = '';
-};
-
-// 打开邮箱
+  // ====================== 邮箱功能 ======================
+// 点击右下角邮件通知 → 直接进入已登录邮箱并打开邮件
+document.getElementById('mailNoti').onclick = () => {
+    document.getElementById('mailNoti').style.display = 'none';
+    document.getElementById('mailWindow').style.display = 'block';
     document.getElementById('mailLoginPage').style.display = 'none';
     document.getElementById('mailMainPage').style.display = 'block';
     document.getElementById('mailDetail').style.display = 'block';
 };
- document.getElementById('mailLoginPage').style.display = 'flex';
+
+// 点击桌面邮箱图标 → 显示登录页
+document.getElementById('openMail').onclick = () => {
+    document.getElementById('mailWindow').style.display = 'block';
+    document.getElementById('mailLoginPage').style.display = 'flex';
     document.getElementById('mailMainPage').style.display = 'none';
     document.getElementById('mailDetail').style.display = 'none';
 };
+
+// 关闭邮箱窗口
 document.getElementById('closeMail').onclick = () => {
     document.getElementById('mailWindow').style.display = 'none';
 };
+
+// 点击邮件 → 打开内容
 document.getElementById('openMsg').onclick = () => {
     document.getElementById('mailDetail').style.display = 'block';
+};
+
+// 邮箱登录
+document.getElementById('mailLoginBtn').onclick = () => {
+    document.getElementById('mailLoginPage').style.display = 'none';
+    document.getElementById('mailMainPage').style.display = 'block';
+};
+
+// 邮箱退出登录
+document.getElementById('mailLogout').onclick = () => {
+    document.getElementById('mailMainPage').style.display = 'none';
+    document.getElementById('mailLoginPage').style.display = 'flex';
 };
 
     // 打开微信
