@@ -260,6 +260,7 @@
             margin-top: -10px;
             margin-bottom: 10px;
         }
+        
 
         /* 主界面 */
         .wx-container {
@@ -309,7 +310,82 @@
             font-size: 14px;
             font-weight: 500;
         }
+        .wx-left {
+    width: 300px;
+    height: 100%;
+    background: #ededed;
+    float: left;
+    border-right: 1px solid #ddd;
+}
 
+/* 顶部栏 */
+.wx-user-info {
+    height: 60px;
+    background: #f7f7f7;
+    padding: 10px 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid #ddd;
+    font-weight: 500;
+}
+
+/* 搜索栏（仿微信） */
+.wx-search {
+    padding: 10px;
+    background: #f7f7f7;
+}
+
+.wx-search input {
+    width: 100%;
+    padding: 6px 10px;
+    border-radius: 6px;
+    border: none;
+    background: #e5e5e5;
+    font-size: 13px;
+}
+
+/* 聊天列表 */
+.wx-chat-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 14px;
+    border-bottom: 1px solid #eaeaea;
+    cursor: pointer;
+}
+
+.wx-chat-item:hover {
+    background: #e5e5e5;
+}
+
+/* 头像 */
+.wx-avatar {
+    width: 38px;
+    height: 38px;
+    border-radius: 6px;
+    background: #bbb;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 14px;
+}
+
+/* 聊天信息 */
+.wx-chat-meta {
+    flex: 1;
+}
+
+.wx-chat-meta h4 {
+    font-size: 14px;
+    margin-bottom: 2px;
+}
+
+.wx-chat-meta p {
+    font-size: 12px;
+    color: #888;
+}
         /* 聊天窗口 */
         .wx-right {
             width: calc(100% - 300px);
@@ -662,6 +738,66 @@ document.getElementById('wxLoginBtn').onclick = () => {
             {date:'2026-04-23',text:'我试试找密码',type:'right'}
         ]
     };
+    const chatDataCy = {
+    anan: [
+        {date:'2026-02-05',text:'宝贝早安～',type:'right'},
+        {date:'2026-02-05',text:'早呀，今天也要加油',type:'left'},
+        {date:'2026-02-08',text:'晚上一起吃饭不',type:'right'},
+        {date:'2026-02-08',text:'好呀，去吃你喜欢的火锅',type:'left'},
+        {date:'2026-02-14',text:'情人节快乐宝贝',type:'right'},
+        {date:'2026-02-14',text:'快乐～爱你',type:'left'},
+        {date:'2026-03-01',text:'这周末天气好，去公园走走',type:'right'},
+        {date:'2026-03-01',text:'可以呀，我带上相机',type:'left'},
+        {date:'2026-03-07',text:'最近工作忙不忙',type:'right'},
+        {date:'2026-03-07',text:'有点忙，不过还好',type:'left'},
+        {date:'2026-03-12',text:'晚安啦',type:'right'},
+        {date:'2026-03-12',text:'晚安，做个好梦',type:'left'},
+        {date:'2026-03-18',text:'想你啦',type:'right'},
+        {date:'2026-03-18',text:'我也想你',type:'left'},
+        {date:'2026-03-25',text:'周末去看新上映的电影',type:'right'},
+        {date:'2026-03-25',text:'好，我买票',type:'left'},
+        {date:'2026-04-02',text:'最近过得怎么样',type:'right'},
+        {date:'2026-04-02',text:'挺好的，你呢',type:'left'},
+        {date:'2026-04-05',text:'一切顺利',type:'right'},
+        {date:'2026-04-10',text:'下个月16号是你生日，想要什么礼物',type:'left'},
+        {date:'2026-04-10',text:'只要你陪着就好啦',type:'right'},
+        {date:'2026-04-15',text:'快到你生日啦，期待不',type:'left'},
+        {date:'2026-04-15',text:'超级期待！',type:'right'},
+        {date:'2026-04-20',text:'今天忙了一天',type:'right'},
+        {date:'2026-04-20',text:'辛苦啦，早点休息',type:'left'},
+        {date:'2026-04-21',text:'晚安安安',type:'right'},
+        {date:'2026-04-21',text:'晚安～',type:'left'},
+        {date:'2026-04-22',text:'早上好~',type:'left'},
+        {date:'2026-04-22',text:'在干嘛呀',type:'left'},
+        {date:'2026-04-22',text:'给你打电话也不接，家里公司你都不在，你到底在哪里',type:'left'}
+    ],
+
+    sun: [
+        {date:'2021-07-15',text:'恭喜你正式入职【星途】公司，从今天起你就是项目部成员了',type:'left'},
+        {date:'2021-07-15',text:'谢谢孙财务，我会努力的',type:'right'},
+        {date:'2021-07-15',text:'请把你的银行卡号发给我，用于工资发放登记',type:'left'},
+        {date:'2021-07-15',text:'好的，我稍后发你',type:'right'},
+
+        {date:'2026-03-15',text:'本月奖金已发放，请查收公司邮件系统',type:'left'},
+        {date:'2026-03-15',text:'收到，谢谢提醒',type:'right'},
+        {date:'2026-03-15',text:'另外系统显示你最近登录异常，如需帮助请联系IT',type:'left'},
+        {date:'2026-03-15',text:'我知道了',type:'right'}
+    ],
+
+    liao: [
+        {date:'2026-04-21',text:'晚上20:00到公司一趟，有重要项目要谈',type:'left'},
+        {date:'2026-04-21',text:'好的廖总，我准时到',type:'right'},
+        {date:'2026-04-21',text:'记得带上你之前负责的“星图系统”资料',type:'left'},
+        {date:'2026-04-21',text:'明白',type:'right'},
+        {date:'2026-04-21',text:'不要迟到，这次很关键',type:'left'}
+    ],
+
+    dad: [
+        {date:'2026-04-22',text:'小远，你在哪里？',type:'left'},
+        {date:'2026-04-22',text:'看到信息回个电话',type:'left'},
+        {date:'2026-04-22',text:'我有点担心你',type:'left'}
+    ]
+};
 
     // 打开聊天
     document.querySelectorAll('.wx-chat-item').forEach(item => {
