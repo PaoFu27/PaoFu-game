@@ -800,34 +800,37 @@ document.getElementById('wxLoginBtn').onclick = () => {
 };
 
     // 打开聊天
-    document.getElementById("wxWindow").addEventListener("click", (e) => {
+    document.querySelectorAll("#wxContainerCy .wx-chat-item").forEach(item => {
 
-    let item = e.target.closest(".wx-chat-item");
-    if(!item) return;
+    item.onclick = () => {
 
-    let t = item.dataset.target;
+        let t = item.dataset.target;
 
-    let data =
-        chatData[t] ||
-        chatDataCy[t];
+        let data = chatDataCy[t];
 
-    if(!data) return;
+        if (!data) return;
 
-    document.getElementById("chatBox").style.display = "block";
+        document.getElementById("wxChatRightCy").style.display = "block";
 
-    let html = '';
-    let last = '';
+        document.getElementById("currentChatNameCy").innerText =
+            item.querySelector("h4").innerText;
 
-    data.forEach(m=>{
-        if(m.date !== last){
-            html += `<div class="msg-date">${m.date}</div>`;
-            last = m.date;
-        }
+        let html = "";
+        let last = "";
 
-        html += `<div class="msg ${m.type==='left'?'msg-left':'msg-right'}">${m.text}</div>`;
-    });
+        data.forEach(m => {
 
-    document.getElementById("chatContent").innerHTML = html;
+            if (m.date !== last) {
+                html += `<div class="msg-date">${m.date}</div>`;
+                last = m.date;
+            }
+
+            html += `<div class="msg ${m.type === 'left' ? 'msg-left' : 'msg-right'}">${m.text}</div>`;
+        });
+
+        document.getElementById("wxChatContentCy").innerHTML = html;
+    };
+
 });
 
     // 返回聊天列表
