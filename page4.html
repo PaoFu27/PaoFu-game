@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>最终关 - 桌面解谜</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Microsoft YaHei", sans-serif;
+        }
+
+        /* 桌面背景 */
+        body {
+            background: url('https://tse4-mm.cn.bing.net/th/id/OIP.2H8lM4tXJz9XlM4tXJz9XJHaEo?rs=1&pid=ImgDetMain') no-repeat center center fixed;
+            background-size: cover;
+            overflow: hidden;
+            height: 100vh;
+            cursor: default;
+        }
+
+        /* 桌面图标 */
+        .desktop-icon {
+            width: 80px;
+            text-align: center;
+            margin: 20px;
+            color: white;
+            font-size: 14px;
+            text-shadow: 1px 1px 2px #000;
+            display: inline-block;
+            vertical-align: top;
+        }
+
+        .desktop-icon img {
+            width: 50px;
+            height: 50px;
+            display: block;
+            margin: 0 auto 5px;
+            cursor: pointer;
+        }
+
+        /* 窗口通用样式 */
+        .window {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 800px;
+            height: 600px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.3);
+            display: none;
+            overflow: hidden;
+            z-index: 999;
+        }
+
+        .window-header {
+            background: #0078d7;
+            color: white;
+            padding: 10px 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .window-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+        }
+
+        .window-body {
+            height: calc(100% - 40px);
+            overflow-y: auto;
+            padding: 15px;
+        }
+
+        /* 右下角邮件提示 */
+        .mail-toast {
+            position: absolute;
+            bottom: 50px;
+            right: 20px;
+            width: 300px;
+            background: #e3f2fd;
+            border: 1px solid #90caf9;
+            padding: 15px;
+            border-radius: 6px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            display: none;
+            animation: fadeIn 0.3s;
+            cursor: pointer;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* 邮箱界面 */
+        .mail-list {
+            margin-top: 10px;
+        }
+        .mail-item {
+            padding: 12px;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+        }
+        .mail-item:hover {
+            background: #f5f5f5;
+        }
+        .mail-content {
+            margin-top: 20px;
+            line-height: 1.8;
+            display: none;
+        }
+
+        /* 微信样式 */
+        .wx-login {
+            text-align: center;
+            padding-top: 80px;
+        }
+        .wx-login input {
+            width: 260px;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .wx-login button {
+            width: 260px;
+            padding: 10px;
+            background: #07c160;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+        .wx-tip {
+            color: #666;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+
+        /* 微信主界面 */
+        .wx-main {
+            display: none;
+            height: 100%;
+        }
+        .wx-top {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            background: #f5f5f5;
+            border-bottom: 1px solid #eee;
+        }
+        .wx-exit {
+            color: #07c160;
+            cursor: pointer;
+        }
+        .wx-chat-list {
+            height: calc(100% - 50px);
+            overflow-y: auto;
+        }
+        .wx-user {
+            padding: 12px 15px;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+        }
+        .wx-user:hover {
+            background: #f5f5f5;
+        }
+
+        /* 聊天窗口 */
+        .chat-window {
+            display: none;
+            height: 100%;
+        }
+        .chat-title {
+            padding: 10px;
+            background: #f5f5f5;
+            text-align: center;
+            border-bottom: 1px solid #eee;
+        }
+        .chat-back {
+            float: left;
+            cursor: pointer;
+            color: #07c160;
+        }
+        .chat-content {
+            height: calc(100% - 100px);
+            padding: 10px;
+            overflow-y: auto;
+            background: #ebebeb;
+        }
+        .chat-item {
+            margin-bottom: 15px;
+            max-width: 70%;
+            clear: both;
+        }
+        .chat-left {
+            float: left;
+            background: white;
+            padding: 8px 12px;
+            border-radius: 8px;
+        }
+        .chat-right {
+            float: right;
+            background: #07c160;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 8px;
+        }
+        .chat-date {
+            text-align: center;
+            color: #999;
+            font-size: 12px;
+            margin: 10px 0;
+            clear: both;
+        }
+
+        /* 任务栏 */
+        .taskbar {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 45px;
+            background: #2b2b2b;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- 桌面 -->
+    <div class="desktop">
+        <div class="desktop-icon" id="open-mail">
+            <img src="https://pic.58pic.com/58pic/16/52/25/77b58PIC8y.jpg" alt="邮箱">
+            <span>邮箱</span>
+        </div>
+        <div class="desktop-icon" id="open-wechat">
+            <img src="https://www.iconpacks.net/icons/2/free-wechat-icon-2676-thumb.png" alt="微信">
+            <span>微信</span>
+        </div>
+    </div>
+
+    <!-- 邮件提示 -->
+    <div class="mail-toast" id="mailToast">
+        <strong>新邮件通知</strong><br>
+        小黄 发来一封新邮件
+    </div>
+
+    <!-- 邮箱窗口 -->
+    <div class="window" id="mailWindow">
+        <div class="window-header">
+            <span>邮箱</span>
+            <button class="window-close" id="closeMail">×</button>
+        </div>
+        <div class="window-body">
+            <h3>收件箱</h3>
+            <div class="mail-list">
+                <div class="mail-item" id="openLetter">
+                    <strong>小黄</strong> - 救命！我被困住了！
+                </div>
+            </div>
+            <div class="mail-content" id="letterContent">
+                <h3>泡芙！！</h3>
+                <p>当时我就是点进了这个网页解谜游戏被困住了！</p>
+                <p>你只要解开这个游戏就可以放我出来了！</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 微信窗口 -->
+    <div class="window" id="wechatWindow">
+        <div class="window-header">
+            <span>微信</span>
+            <button class="window-close" id="closeWechat">×</button>
+        </div>
+        <div class="window-body">
+            <!-- 登录 -->
+            <div class="wx-login" id="wxLogin">
+                <h2>微信登录</h2>
+                <input type="text" id="wxAccount" placeholder="请输入微信号"><br>
+                <div class="wx-tip">提示：姓名拼音</div>
+                <input type="text" id="wxPwd" placeholder="请输入密码"><br>
+                <div class="wx-tip">提示：日期</div>
+                <button id="wxLoginBtn">登录</button>
+            </div>
+
+            <!-- 主界面 -->
+            <div class="wx-main" id="wxMain">
+                <div class="wx-top">
+                    <span>林薇安</span>
+                    <span class="wx-exit" id="wxExit">退出登录</span>
+                </div>
+                <div class="wx-chat-list">
+                    <div class="wx-user" data-to="ayuan">阿远</div>
+                    <div class="wx-user" data-to="mom">妈妈</div>
+                    <div class="wx-user" data-to="uncle">陈叔叔</div>
+                    <div class="wx-user" data-to="xiaolin">小林</div>
+                </div>
+            </div>
+
+            <!-- 聊天窗口 -->
+            <div class="chat-window" id="chatWindow">
+                <div class="chat-title">
+                    <span class="chat-back" id="chatBack">← 返回</span>
+                    <span id="chatName">聊天对象</span>
+                </div>
+                <div class="chat-content" id="chatContent"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 任务栏 -->
+    <div class="taskbar"></div>
+
+    <script>
+        // 页面加载3秒后弹出邮件提示
+        setTimeout(() => {
+            document.getElementById('mailToast').style.display = 'block';
+        }, 3000);
+
+        // 打开邮箱
+        document.getElementById('mailToast').onclick = () => {
+            document.getElementById('mailToast').style.display = 'none';
+            document.getElementById('mailWindow').style.display = 'block';
+        };
+        document.getElementById('open-mail').onclick = () => {
+            document.getElementById('mailWindow').style.display = 'block';
+        };
+        document.getElementById('closeMail').onclick = () => {
+            document.getElementById('mailWindow').style.display = 'none';
+        };
+
+        // 打开邮件内容
+        document.getElementById('openLetter').onclick = () => {
+            document.getElementById('letterContent').style.display = 'block';
+        };
+
+        // 打开微信
+        document.getElementById('open-wechat').onclick = () => {
+            document.getElementById('wechatWindow').style.display = 'block';
+        };
+        document.getElementById('closeWechat').onclick = () => {
+            document.getElementById('wechatWindow').style.display = 'none';
+        };
+
+        // 微信登录
+        document.getElementById('wxLoginBtn').onclick = () => {
+            let account = document.getElementById('wxAccount').value.trim();
+            let pwd = document.getElementById('wxPwd').value.trim();
+            if (account === 'linweian' && pwd === '20010822') {
+                document.getElementById('wxLogin').style.display = 'none';
+                document.getElementById('wxMain').style.display = 'block';
+            } else {
+                alert('账号或密码错误！');
+            }
+        };
+
+        // 退出登录
+        document.getElementById('wxExit').onclick = () => {
+            document.getElementById('wxMain').style.display = 'none';
+            document.getElementById('wxLogin').style.display = 'block';
+            document.getElementById('wxAccount').value = '';
+            document.getElementById('wxPwd').value = '';
+        };
+
+        // 聊天数据
+        const chatData = {
+            ayuan: [
+                { date: '2026-02-10', text: '宝贝，今天上班累不累', type: 'left' },
+                { date: '2026-02-10', text: '不累呀，你呢', type: 'right' },
+                { date: '2026-03-05', text: '周末一起去看电影吧', type: 'left' },
+                { date: '2026-03-05', text: '好呀～', type: 'right' },
+                { date: '2026-04-10', text: '下个月16号是你生日，想要什么礼物', type: 'right' },
+                { date: '2026-04-22', text: '早上好~', type: 'right' },
+                { date: '2026-04-22', text: '在干嘛呀', type: 'right' },
+                { date: '2026-04-22', text: '给你打电话也不接，家里公司你都不在，你到底在哪里', type: 'right' }
+            ],
+            mom: [
+                { date: '2026-04-20', text: '安安，吃饭了吗', type: 'left' },
+                { date: '2026-04-20', text: '吃啦妈妈', type: 'right' },
+                { date: '2026-04-21', text: '最近天气凉，多穿点', type: 'left' },
+                { date: '2026-04-21', text: '知道啦', type: 'right' }
+            ],
+            uncle: [
+                { date: '2026-04-22', text: '陈叔叔，阿远回家了吗', type: 'right' },
+                { date: '2026-04-22', text: '没有回家，怎么了', type: 'left' },
+                { date: '2026-04-22', text: '我联系不上他了，电话不接，人也找不到', type: 'right' },
+                { date: '2026-04-22', text: '别着急安安，我也问问他朋友', type: 'left' }
+            ],
+            xiaolin: [
+                { date: '2026-04-23', text: '小林，我男朋友不见了', type: 'right' },
+                { date: '2026-04-23', text: '安安别慌，慢慢说，怎么回事', type: 'left' },
+                { date: '2026-04-23', text: '从昨天早上开始就联系不上了，家里公司都没人', type: 'right' },
+                { date: '2026-04-23', text: '会不会是有事耽搁了，别太着急', type: 'left' },
+                { date: '2026-04-23', text: '你试试登录他微信看看呢', type: 'left' },
+                { date: '2026-04-23', text: '密码不是他生日，我试了', type: 'right' },
+                { date: '2026-04-23', text: '再试试其他重要日期，邮箱也一起登登看', type: 'left' },
+                { date: '2026-04-23', text: '好，我找找线索', type: 'right' }
+            ]
+        };
+
+        // 打开聊天
+        const users = document.querySelectorAll('.wx-user');
+        users.forEach(u => {
+            u.onclick = () => {
+                let key = u.dataset.to;
+                let name = u.innerText;
+                document.getElementById('wxMain').style.display = 'none';
+                document.getElementById('chatWindow').style.display = 'block';
+                document.getElementById('chatName').innerText = name;
+                
+                // 渲染消息
+                let html = '';
+                let lastDate = '';
+                chatData[key].forEach(item => {
+                    if (item.date !== lastDate) {
+                        html += `<div class="chat-date">${item.date}</div>`;
+                        lastDate = item.date;
+                    }
+                    html += `<div class="chat-item ${item.type === 'left' ? 'chat-left' : 'chat-right'}">${item.text}</div>`;
+                });
+                document.getElementById('chatContent').innerHTML = html;
+            };
+        });
+
+        // 返回聊天列表
+        document.getElementById('chatBack').onclick = () => {
+            document.getElementById('chatWindow').style.display = 'none';
+            document.getElementById('wxMain').style.display = 'block';
+        };
+    </script>
+</body>
+</html>
