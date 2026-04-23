@@ -512,20 +512,37 @@
         document.getElementById('mailNoti').style.display = 'block';
     }, 3000);
 
-    // 打开邮箱
-    document.getElementById('mailNoti').onclick = () => {
-        document.getElementById('mailNoti').style.display = 'none';
-        document.getElementById('mailWindow').style.display = 'block';
-    };
-    document.getElementById('openMail').onclick = () => {
-        document.getElementById('mailWindow').style.display = 'block';
-    };
-    document.getElementById('closeMail').onclick = () => {
-        document.getElementById('mailWindow').style.display = 'none';
-    };
-    document.getElementById('openMsg').onclick = () => {
-        document.getElementById('mailDetail').style.display = 'block';
-    };
+   // 邮箱登录/退出功能
+document.getElementById('mailLoginBtn').onclick = () => {
+    let acc = document.getElementById('mailAccount').value.trim();
+    let pwd = document.getElementById('mailPwd').value.trim();
+    // 这里可以设置你想让玩家输入的账号密码，我先留空，你可以自己加逻辑
+    // 比如 if(acc === 'xxx@qq.com' && pwd === 'xxx') { ... }
+    document.getElementById('mailLoginPage').style.display = 'none';
+    document.getElementById('mailMainPage').style.display = 'block';
+};
+
+document.getElementById('mailLogout').onclick = () => {
+    document.getElementById('mailMainPage').style.display = 'none';
+    document.getElementById('mailLoginPage').style.display = 'flex';
+    document.getElementById('mailAccount').value = '';
+    document.getElementById('mailPwd').value = '';
+};
+
+// 打开邮箱
+document.getElementById('mailNoti').onclick = () => {
+    document.getElementById('mailNoti').style.display = 'none';
+    document.getElementById('mailWindow').style.display = 'block';
+};
+document.getElementById('openMail').onclick = () => {
+    document.getElementById('mailWindow').style.display = 'block';
+};
+document.getElementById('closeMail').onclick = () => {
+    document.getElementById('mailWindow').style.display = 'none';
+};
+document.getElementById('openMsg').onclick = () => {
+    document.getElementById('mailDetail').style.display = 'block';
+};
 
     // 打开微信
     document.getElementById('openWeChat').onclick = () => {
