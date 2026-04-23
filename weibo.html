@@ -184,18 +184,34 @@
             line-height: 1.6;
             margin-bottom: 12px;
         }
-        .weibo-images {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 12px;
-        }
-        .weibo-img {
-            width: 120px;
-            height: 120px;
-            border-radius: 8px;
-            object-fit: cover;
-            background: #eee;
-        }
+       /* 微博图片容器 */
+.weibo-images {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 12px;
+    flex-wrap: wrap; /* 多图自动换行 */
+}
+
+/* 微博图片基础样式 */
+.weibo-img {
+    border-radius: 8px;
+    object-fit: cover;
+    background: #eee;
+}
+
+/* 单张图片：自适应宽度，不撑爆 */
+.weibo-images:has(.weibo-img:only-child) .weibo-img {
+    max-width: 100%;
+    max-height: 400px;
+    width: auto;
+    height: auto;
+}
+
+/* 多张图片：固定为120×120缩略图 */
+.weibo-images:not(:has(.weibo-img:only-child)) .weibo-img {
+    width: 120px;
+    height: 120px;
+}
         .weibo-stats {
             display: flex;
             justify-content: space-between;
