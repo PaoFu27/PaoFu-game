@@ -911,59 +911,62 @@ document.getElementById("openWeibo").onclick = () => {
 const resultBox = document.getElementById("searchResult");
 
 // 搜索数据（可以以后继续加）
-const searchInput = document.getElementById("desktopSearch");
-const resultBox = document.getElementById("searchResult");
+document.addEventListener("DOMContentLoaded", () => {
 
-const searchData = [
-    {
-        keyword: "星途",
-        name: "星途公司",
-        action: () => {
-            window.open("XingTu.html", "_blank");
+    const searchInput = document.getElementById("desktopSearch");
+    const resultBox = document.getElementById("searchResult");
+
+    const searchData = [
+        {
+            keyword: "星途",
+            name: "星途公司",
+            action: () => {
+                window.open("XingTu.html", "_blank");
+            }
         }
-    }
-];
+    ];
 
-searchInput.addEventListener("input", () => {
+    searchInput.addEventListener("input", () => {
 
-    let val = searchInput.value.trim();
+        let val = searchInput.value.trim();
 
-    if (!val) {
-        resultBox.style.display = "none";
-        return;
-    }
-
-    let list = searchData.filter(item =>
-        item.keyword.includes(val)
-    );
-
-    if (list.length === 0) {
-        resultBox.style.display = "none";
-        return;
-    }
-
-    resultBox.style.display = "block";
-    resultBox.innerHTML = "";
-
-    list.forEach(item => {
-        let div = document.createElement("div");
-        div.className = "search-item";
-        div.innerText = item.name;
-
-        div.onclick = () => {
-            item.action();
+        if (!val) {
             resultBox.style.display = "none";
-            searchInput.value = "";
-        };
+            return;
+        }
 
-        resultBox.appendChild(div);
+        let list = searchData.filter(item =>
+            item.keyword.includes(val)
+        );
+
+        if (list.length === 0) {
+            resultBox.style.display = "none";
+            return;
+        }
+
+        resultBox.style.display = "block";
+        resultBox.innerHTML = "";
+
+        list.forEach(item => {
+            let div = document.createElement("div");
+            div.className = "search-item";
+            div.innerText = item.name;
+
+            div.onclick = () => {
+                item.action();
+                resultBox.style.display = "none";
+                searchInput.value = "";
+            };
+
+            resultBox.appendChild(div);
+        });
     });
-});
 
-// 点击空白关闭
-document.addEventListener("click", (e) => {
-    if (!document.querySelector(".desktop-search").contains(e.target)) {
-        resultBox.style.display = "none";
-    }
+    document.addEventListener("click", (e) => {
+        if (!document.querySelector(".desktop-search").contains(e.target)) {
+            resultBox.style.display = "none";
+        }
+    });
+
 });
 </script>
