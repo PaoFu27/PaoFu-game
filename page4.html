@@ -229,7 +229,14 @@
     transition: background 0.2s;
     background: #fff;
 }
-/* 未读蓝色高亮 */
+/* 侧边栏菜单点击高亮（选中变蓝） */
+.mail-sidebar div.active {
+    background: #0066cc !important;
+    color: white !important;
+    font-weight: bold;
+}
+
+/* 未读高亮 */
 .mail-item.unread {
     background-color: #edf4ff !important;
     font-weight: 600 !important;
@@ -238,10 +245,10 @@
     background-color: #e0ecff !important;
 }
 
-/* 已删除邮件灰色样式 */
+/* 已删除灰色 */
 .mail-item.deleted {
     color: #888 !important;
-    background-color: #f9f9f9 !important;
+    background: #f6f6f6 !important;
 }
 .mail-avatar {
     width: 36px;
@@ -874,12 +881,12 @@ const mailAccounts = {
     "chenyuan@xingtu-tech.com": "19990516"
 };
 
-// 开场通知
+// 通知
 setTimeout(() => {
     document.getElementById("mailNoti").style.display = "block";
 }, 3000);
 
-// 通知点开 → 小黄邮箱
+// 打开通知邮箱
 document.getElementById("mailNoti").onclick = () => {
     document.getElementById("mailNoti").style.display = "none";
     document.getElementById("mailWindow").style.display = "block";
@@ -890,14 +897,14 @@ document.getElementById("mailNoti").onclick = () => {
     renderMailBox(normalMailInbox);
 };
 
-// 桌面邮箱图标
+// 打开邮箱图标
 document.getElementById("openMail").onclick = () => {
     document.getElementById("mailWindow").style.display = "block";
     document.getElementById("mailLoginPage").style.display = "flex";
     document.getElementById("mailMainPage").style.display = "none";
 };
 
-// 关闭邮箱
+// 关闭
 document.getElementById("closeMail").onclick = () => {
     document.getElementById("mailWindow").style.display = "none";
 };
@@ -906,7 +913,7 @@ document.getElementById("closeMail").onclick = () => {
 document.getElementById("mailLoginBtn").onclick = () => {
     let u = document.getElementById("mailUser").value.trim();
     let p = document.getElementById("mailPwd").value.trim();
-    if (mailAccounts[u] && mailAccounts[u] === p) {
+    if (mailAccounts[u] === p) {
         currentMailUser = u;
         mailActiveTab = "inbox";
         document.getElementById("mailLoginPage").style.display = "none";
@@ -923,32 +930,82 @@ document.getElementById("mailLogout").onclick = () => {
     mailActiveTab = "inbox";
     document.getElementById("mailMainPage").style.display = "none";
     document.getElementById("mailLoginPage").style.display = "flex";
-    document.getElementById("mailList").innerHTML = "";
-    document.getElementById("mailDetail").style.display = "none";
 };
 
-// 侧边栏绑定（修复已发送、已删除点不开）
-document.addEventListener("DOMContentLoaded", function(){
-    // 收件箱
-    document.querySelector(".mail-sidebar div:nth-child(3)").addEventListener("click", function(){
-        mailActiveTab = "inbox";
-        if(currentMailUser === "chenyuan@xingtu-tech.com"){
-            renderMailBox(chenyuanInbox);
-        }else{
-            renderMailBox(normalMailInbox);
-        }
+// 菜单点击（已发送、已删除、收件箱 全部正常）
+function setActiveTab(tab) {
+    mailActiveTab = tab;
+
+    // 菜单高亮
+    document.querySelectorAll(".mail-sidebar div").forEach(el => el.classList.remove("active"));
+    const items = document.querySelectorAll(".mail-sidebar div");
+    if (tab === "inbox") items[2].classList.add("active");
+    if (tab === "send") items[4].classList.add("active");
+    if (tab === "trash") items[6].classList.add("active");
+
+    // 渲染对应邮件
+    if (currentMailUser) {
+        if (tab === "inbox") renderMailBox(chenyuanInbox);
+        if (tab === "send") renderMailBox(chenyuanSend);
+        if (tab === "trash") renderMailBox(chenyuanTrash);
+    } else {
+        if (tab === "inbox") renderMailBox(normalMailInbox);
+        else renderMailBox([]);
+    }
+}
+
+// 绑定菜单点击
+document.querySelectorAll(".mail-sidebar div")[2].onclick = () => setActiveTab("inbox");
+document.querySelectorAll(".mail-sidebar div")[4].onclick = () => setActiveTab("send");
+document.querySelectorAll(".mail-sidebar div")[6].onclick = () => setActiveTab("trash");
+
+// 渲染邮件
+function renderMailBox(data) {
+    const list = document.getElementById("mailList");
+    document.getElementById("mailDetail").style.display = "none";
+    window.nowMailData = data;
+
+    let html = "";
+    data.forEach((item, idx) => {
+        const unread = item.unread ? "unread" : "";
+        const del = mailActiveTab === "trash" ? "deleted" : "";
+        const char = item.sender.charAt(0);
+        html += `
+        <div class="mail-item ${unread} ${del}" onclick="openMail(${idx})" data-idx="${idx}">
+            <div class="mail-avatar">${char}</div>
+            <div class="mail-info">
+                <div class="mail-title">${item.title}</div>
+                <div class="mail-desc">${item.sender}：${item.desc}</div>
+            </div>
+            <div class="mail-time">${item.date}</div>
+        </div>`;
     });
-    // 已发送
-    document.querySelector(".mail-sidebar div:nth-child(5)").addEventListener("click", function(){
-        mailActiveTab = "send";
-        renderMailBox(currentMailUser ? chenyuanSend : []);
-    });
-    // 已删除
-    document.querySelector(".mail-sidebar div:nth-child(7)").addEventListener("click", function(){
-        mailActiveTab = "trash";
-        renderMailBox(currentMailUser ? chenyuanTrash : []);
-    });
-});
+    list.innerHTML = html;
+}
+
+// 打开邮件 + 自动已读
+function openMail(idx) {
+    const data = window.nowMailData;
+    if (data[idx].unread) {
+        data[idx].unread = false;
+        document.querySelector(`.mail-item[data-idx="${idx}"]`).classList.remove("unread");
+    }
+
+    document.getElementById("mailList").style.display = "none";
+    const detail = document.getElementById("mailDetail");
+    detail.style.display = "block";
+    detail.innerHTML = `
+        <h2>${data[idx].title}</h2>
+        <div>发件人：${data[idx].sender} &nbsp;&nbsp; 日期：${data[idx].date}</div>
+        <div style="margin-top:20px;">${data[idx].content}</div>
+        <button onclick="backToList()" style="margin-top:20px;padding:6px 14px;background:#06c;color:white;border:none;border-radius:4px;">返回</button>
+    `;
+}
+
+function backToList() {
+    document.getElementById("mailList").style.display = "block";
+    document.getElementById("mailDetail").style.display = "none";
+}
 
 // 渲染邮件列表（已删除自动灰色）
 function renderMailBox(data){
