@@ -630,42 +630,67 @@ setTimeout(() => {
 
 
 /* ===============================
-   邮箱系统（修复版）
+   邮箱系统（最终修复完整版）
 =================================*/
-
-document.getElementById("mailNoti").onclick = () => {
-    document.getElementById("mailNoti").style.display = "none";
-    document.getElementById("mailWindow").style.display = "block";
-    document.getElementById("mailLoginPage").style.display = "flex";
-    document.getElementById("mailMainPage").style.display = "none";
-};
-
-document.getElementById("openMail").onclick = () => {
-    document.getElementById("mailWindow").style.display = "block";
-    document.getElementById("mailLoginPage").style.display = "flex";
-    document.getElementById("mailMainPage").style.display = "none";
-};
-
-document.getElementById("closeMail").onclick = () => {
-    document.getElementById("mailWindow").style.display = "none";
-};
-
-document.getElementById("openMsg").onclick = () => {
-    document.getElementById("mailDetail").style.display = "block";
-};
-
-/* ===============================
-   账号系统
-=================================*/
-
-const mailAccounts = {
-    "chenyuan@xingtu-tech.com": "19990516"
-};
 
 let currentMailUser = "";
 
 /* ===============================
-   登录（只保留这一段！！）
+   邮箱打开（桌面通知：直接进已登录邮箱）
+=================================*/
+document.getElementById("mailNoti").onclick = () => {
+    document.getElementById("mailNoti").style.display = "none";
+    document.getElementById("mailWindow").style.display = "block";
+
+    // 默认直接进入主界面（跳过登录）
+    document.getElementById("mailLoginPage").style.display = "none";
+    document.getElementById("mailMainPage").style.display = "block";
+
+    // 如果已经登录陈远，加载邮件
+    if (currentMailUser === "chenyuan@xingtu-tech.com") {
+        loadMail(currentMailUser);
+    }
+};
+
+
+/* ===============================
+   打开邮箱（桌面图标：必须登录）
+=================================*/
+document.getElementById("openMail").onclick = () => {
+    document.getElementById("mailWindow").style.display = "block";
+
+    // 显示登录页
+    document.getElementById("mailLoginPage").style.display = "flex";
+    document.getElementById("mailMainPage").style.display = "none";
+};
+
+
+/* ===============================
+   关闭邮箱
+=================================*/
+document.getElementById("closeMail").onclick = () => {
+    document.getElementById("mailWindow").style.display = "none";
+};
+
+
+/* ===============================
+   打开邮件详情
+=================================*/
+document.getElementById("openMsg").onclick = () => {
+    document.getElementById("mailDetail").style.display = "block";
+};
+
+
+/* ===============================
+   账号系统
+=================================*/
+const mailAccounts = {
+    "chenyuan@xingtu-tech.com": "19990516"
+};
+
+
+/* ===============================
+   登录逻辑
 =================================*/
 document.getElementById("mailLoginBtn").onclick = () => {
 
@@ -686,17 +711,15 @@ document.getElementById("mailLoginBtn").onclick = () => {
     }
 };
 
+
 /* ===============================
-   邮件内容（陈远邮箱）
+   加载邮件（陈远邮箱）
 =================================*/
 function loadMail(user) {
 
     const box = document.getElementById("mailContent");
 
-    if (!box) {
-        console.error("mailContent 没找到");
-        return;
-    }
+    if (!box) return;
 
     if (user === "chenyuan@xingtu-tech.com") {
 
@@ -704,55 +727,78 @@ function loadMail(user) {
             <h3>收件箱</h3>
 
             <div class="mail-item" onclick="openMail(0)">
-                <strong>孙财务（星途）</strong> · 奖金到账
+                <strong>孙财务（星途公司）</strong> · 奖金到账通知
             </div>
 
             <div class="mail-item" onclick="openMail(1)">
-                <strong>未知发件人</strong> · 停止研发
+                <strong>未知发件人</strong> · ⚠ 停止研发
             </div>
 
             <div class="mail-item" onclick="openMail(2)">
-                <strong>廖哲</strong> · 星核项目奖励
+                <strong>廖哲</strong> · “星核”项目奖励
             </div>
 
             <div class="mail-item" onclick="openMail(3)">
-                <strong>系统</strong> · 安全提醒
+                <strong>系统</strong> · 登录异常提醒
             </div>
         `;
     }
 }
 
+
 /* ===============================
-   打开邮件内容
+   邮件内容详情
 =================================*/
 const mailData = [
     {
         title: "奖金到账通知",
-        content: "孙财务：星途公司已完成奖金发放，本次与你负责的项目表现直接相关。"
+        content: `
+        <p>星途公司财务部（孙财务）：</p>
+        <p>陈远先生，您在“星核系统优化项目”中的表现已确认。</p>
+        <p>本月绩效奖金已于系统发放完成，请注意查收账户。</p>
+        <p>—— 星途公司财务部</p>
+        `
     },
     {
-        title: "警告",
-        content: "停止研发！星图系统必须立即终止。否则后果自负。"
+        title: "紧急警告",
+        content: `
+        <h3 style="color:red;">⚠ 停止研发</h3>
+        <p>检测到“星图系统”异常扩展行为。</p>
+        <p>请立即终止所有相关研发工作。</p>
+        <p>此为最高优先级指令。</p>
+        `
     },
     {
         title: "星核项目奖励",
-        content: "你带领团队完成突破性进展，公司决定追加专项奖金，并进入核心研发组。"
+        content: `
+        <p>廖哲：</p>
+        <p>你带领团队在“星核项目”中取得突破性进展。</p>
+        <p>系统稳定性与算法效率显著提升，公司决定追加专项奖金。</p>
+        <p>你已进入核心研发序列。</p>
+        `
     },
     {
         title: "系统通知",
-        content: "检测到异常登录行为，请注意账户安全。"
+        content: `
+        <p>检测到异常登录记录。</p>
+        <p>IP 来源不明，请注意账户安全。</p>
+        `
     }
 ];
 
+
+/* ===============================
+   打开邮件函数
+=================================*/
 function openMail(i){
-    const d = mailData[i];
+
     const box = document.getElementById("mailDetail");
 
     box.style.display = "block";
     box.innerHTML = `
-        <h2>${d.title}</h2>
+        <h2>${mailData[i].title}</h2>
         <hr>
-        <p>${d.content}</p>
+        ${mailData[i].content}
     `;
 }
 
