@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>机密文档 - 权限验证</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Courier New", monospace;
+        }
+
+        body {
+            background: #111;
+            color: #00ff00;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            border: 1px solid #00ff00;
+            padding: 40px;
+            background: #000;
+        }
+
+        .title {
+            font-size: 24px;
+            margin-bottom: 30px;
+            text-align: center;
+                color: #ff0000;
+        }
+
+        .lock-box {
+            text-align: center;
+            margin: 40px 0;
+        }
+
+        input {
+            padding: 12px 16px;
+            width: 280px;
+            background: #222;
+            border: 1px solid #00ff00;
+            color: #00ff00;
+            font-size: 16px;
+            outline: none;
+            text-align: center;
+        }
+
+        button {
+            margin-top: 15px;
+            padding: 10px 22px;
+            background: #00ff00;
+            color: #000;
+            border: none;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .hint {
+            color: #ccc;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+
+        /* 解锁后的正常文档样式 */
+        .real-document {
+            display: none;
+            background: #fff;
+            color: #222;
+            padding: 50px;
+            font-family: "SimSun", "Microsoft YaHei", sans-serif;
+            line-height: 1.8;
+            border-radius: 2px;
+        }
+
+        .real-document h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 24px;
+        }
+        .real-document p {
+            font-size: 16px;
+            margin-bottom: 18px;
+        }
+        .real-document .section {
+            margin: 25px 0;
+        }
+        .real-document strong {
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="title">【星核计划 · 内部机密文档】</div>
+
+    <!-- 密码输入区 -->
+    <div class="lock-box" id="lock">
+        <div>请输入文档解锁密码：</div>
+        <input type="password" id="password" placeholder="请输入8位字母密码">
+        <div class="hint">提示：由小写字母构成</div>
+        <button onclick="unlock()">解锁文档</button>
+    </div>
+
+    <!-- 解锁后显示的正常文档 -->
+    <div class="real-document" id="content">
+        <h2>关于星途科技“星核计划”的真实运作机制</h2>
+
+        <p>星途科技对外宣称，星核计划是用于优化城市管理、提升公共服务的人工智能中枢系统。</p>
+        <p>但该项目的真实用途，与民生服务无关，而是一套完整的<strong>人格预测与群体行为控制系统</strong>。</p>
+
+        <div class="section">
+            <p><strong>一、数据采集范围（全面侵入式）</strong></p>
+            <p>系统通过城市体验计划获取用户授权后，会在后台持续采集：</p>
+            <p>• 实时位置轨迹与行动规律</p>
+            <p>• 社交关系、聊天内容、情绪倾向</p>
+            <p>• 消费记录、财务状况、信用水平</p>
+            <p>• 通话记录、通讯录、社交圈子</p>
+            <p>• 医疗健康、体检报告、生理状态</p>
+            <p>• 作息习惯、行为偏好、性格特征</p>
+        </div>
+
+        <div class="section">
+            <p><strong>二、系统真实功能：人格建模与风险预判</strong></p>
+            <p>系统为每一位用户建立专属的<strong>数字人格模型</strong>，并用于预测：</p>
+            <p>• 个体是否会对企业行为产生质疑</p>
+            <p>• 个体是否具备反抗或曝光行为的倾向</p>
+            <p>• 个体未来健康风险与疾病概率</p>
+            <p>• 个体财务稳定性与破产风险</p>
+            <p>• 个体是否容易被引导、被操控</p>
+            <p>• 个体是否适合被定向处置</p>
+        </div>
+
+        <div class="section">
+            <p><strong>三、系统干预能力（未公开）</strong></p>
+            <p>该系统不仅具备预测能力，还可实施定向干预：</p>
+            <p>• 通过信息推送影响个人决策</p>
+            <p>• 操纵社交关系与社会评价</p>
+            <p>• 制造针对性事件破坏个人社会信誉</p>
+            <p>• 提前消除对系统不利的个体影响</p>
+        </div>
+
+        <div class="section">
+            <p><strong>四、已产生的实际危害与受害者影响</strong></p>
+            <p>大量普通市民在不知情的情况下成为受影响对象：</p>
+            <p>• 个人隐私被无限制采集与永久储存</p>
+            <p>• 生活轨迹、社交圈子、健康状况被完全监控</p>
+            <p>• 部分人因模型判定为“高风险”，遭遇莫名的社交排斥</p>
+            <p>• 部分人被系统标记后，工作、信用、出行出现异常阻碍</p>
+            <p>• 部分人被定向推送负面信息，导致情绪与精神压力剧增</p>
+            <p>• 部分人遭遇名誉损害，生活与工作秩序被破坏</p>
+            <p>• 个体失去自主选择空间，行为与决策被系统暗中引导</p>
+        </div>
+
+        <div class="section">
+            <p><strong>五、总结</strong></p>
+            <p>星核计划并非智慧城市工程，而是一套以数据为基础、以人格预测为手段、以行为控制为目标的深层干预系统。</p>
+            <p>所谓的城市体验计划，只是获取人格数据、训练模型、完善控制能力的入口。</p>
+        </div>
+    </div>
+</div>
+
+<script>
+    function unlock() {
+        const pw = document.getElementById('password').value.trim();
+        if (pw === 'dcrqqdcs') {
+            document.getElementById('lock').style.display = 'none';
+            document.getElementById('content').style.display = 'block';
+        } else {
+            alert('密码错误，无法访问文档内容');
+        }
+    }
+</script>
+
+</body>
+</html>
