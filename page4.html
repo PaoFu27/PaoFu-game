@@ -189,49 +189,114 @@
             cursor: pointer;
         }
 
-        /* ========== QQ邮箱 高仿 ========== */
-        .mail-window {
-            width: 900px;
-            height: 620px;
-            background: white;
-        }
+      /* ========== QQ邮箱 高仿 增强版 ========== */
+.mail-window {
+    width: 900px;
+    height: 620px;
+    background: white;
+}
+.mail-sidebar {
+    width: 200px;
+    background: #f8f8f8;
+    height: calc(100% - 42px);
+    float: left;
+    padding: 16px;
+    border-right: 1px solid #eee;
+}
+.mail-main {
+    width: calc(100% - 200px);
+    height: calc(100% - 42px);
+    float: left;
+    padding: 0;
+    overflow-y: auto;
+    background: #fff;
+}
 
-        .mail-sidebar {
-            width: 200px;
-            background: #f8f8f8;
-            height: calc(100% - 42px);
-            float: left;
-            padding: 16px;
-            border-right: 1px solid #eee;
-        }
+/* 仿真邮件列表 */
+.mail-list-header {
+    padding: 12px 20px;
+    background: #f9f9f9;
+    border-bottom: 1px solid #eee;
+    font-weight: 500;
+    font-size: 14px;
+}
+.mail-item {
+    display: flex;
+    align-items: center;
+    padding: 12px 20px;
+    border-bottom: 1px solid #f5f5f5;
+    cursor: pointer;
+    transition: background 0.2s;
+    background: #fff;
+}
+.mail-item.unread {
+    background: #f0f7ff;
+    font-weight: 500;
+}
+.mail-item:hover {
+    background: #f5f8ff;
+}
+.mail-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: #0096ff;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 12px;
+    flex-shrink: 0;
+}
+.mail-info {
+    flex: 1;
+    min-width: 0;
+}
+.mail-title {
+    font-size: 14px;
+    color: #333;
+    margin-bottom: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.mail-desc {
+    font-size: 12px;
+    color: #666;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.mail-time {
+    font-size: 12px;
+    color: #999;
+    flex-shrink: 0;
+    margin-left: 10px;
+}
 
-        .mail-main {
-            width: calc(100% - 200px);
-            height: calc(100% - 42px);
-            float: left;
-            padding: 20px;
-            overflow-y: auto;
-        }
-
-        .mail-item {
-            padding: 12px 14px;
-            border-bottom: 1px solid #eee;
-            cursor: pointer;
-            border-radius: 6px;
-        }
-
-        .mail-item:hover {
-            background: #f5f5f5;
-        }
-
-        .mail-detail {
-            margin-top: 20px;
-            padding: 20px;
-            background: #fafafa;
-            border-radius: 8px;
-            line-height: 1.8;
-            display: none;
-        }
+/* 邮件详情 */
+.mail-detail {
+    padding: 30px;
+    line-height: 1.8;
+    background: #fff;
+    display: none;
+}
+.mail-detail h2 {
+    font-size: 18px;
+    margin-bottom: 10px;
+    color: #333;
+}
+.mail-detail-info {
+    color: #666;
+    font-size: 12px;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+}
+.mail-detail-content {
+    font-size: 14px;
+    color: #333;
+}
 
         /* ========== 微信PC 高仿 ========== */
         .wx-window {
@@ -529,8 +594,8 @@
 
     <!-- 主界面 -->
     <div id="mailMainPage" style="display:none; height:calc(100% - 42px);">
-        <div style="width:200px; background:#f0f2f5; height:100%; float:left; padding:16px; border-right:1px solid #e8e8e8;">
-            <div style="background:#0066cc; color:white; padding:10px; border-radius:4px; text-align:center; margin-bottom:20px;">写信</div>
+        <div class="mail-sidebar">
+            <div style="background:#0066cc; color:white; padding:10px; border-radius:4px; text-align:center; margin-bottom:20px;cursor:pointer;">写信</div>
             <div style="padding:10px; background:#dce8f7; color:#0066cc; border-radius:4px; margin-bottom:10px;">收件箱</div>
             <div style="padding:10px; color:#333; margin-bottom:10px;">星标邮件</div>
             <div style="padding:10px; color:#333; margin-bottom:10px;">已发送</div>
@@ -540,20 +605,14 @@
             <div style="margin-top:60px; color:#0066cc; cursor:pointer;" id="mailLogout">退出登录</div>
         </div>
 
-        <div id="mailContent" style="width:calc(100% - 200px); height:100%; float:left; padding:20px; background:white; overflow-y:auto;">
-            <h3 style="margin-bottom:20px;">收件箱</h3>
-            <div class="mail-item" id="openMsg" style="padding:12px; border-bottom:1px solid #eee; cursor:pointer;">
-                <strong>小黄</strong> · 救命！我被困住了！
-            </div>
-            <div class="mail-detail" id="mailDetail" style="margin-top:20px; padding:20px; background:#fafafa; border-radius:8px; display:none;">
-                <h3>泡芙！！</h3>
-                <p>当时我就是点进了这个网页解谜游戏被困住了！</p>
-                <p>你只要把这个网页解谜游戏解开就可以救我出来了！这个网页解谜游戏的故事背景还有最后如何解开只能你自己慢慢摸索出来了</p>
-            </div>
+        <div class="mail-main">
+            <div class="mail-list-header">收件箱</div>
+            <div id="mailList"></div>
+            <div class="mail-detail" id="mailDetail"></div>
         </div>
     </div>
 </div>
-
+    
 <!-- 微信窗口 -->
 <div class="window wx-window" id="wxWindow">
     <div class="window-header">
@@ -630,176 +689,197 @@ setTimeout(() => {
 
 
 /* ===============================
-   邮箱系统（最终修复完整版）
+   邮箱系统 - 双账号隔离版
+   1.通知点开 = 普通游客邮箱（只有小黄邮件）
+   2.手动登录陈远账号 = 解锁工作邮件
+   3.退出登录清空账号，切回空白/普通邮箱
 =================================*/
-
 let currentMailUser = "";
 
-/* ===============================
-   邮箱打开（桌面通知：直接进已登录邮箱）
-=================================*/
-document.getElementById("mailNoti").onclick = () => {
-    document.getElementById("mailNoti").style.display = "none";
-    document.getElementById("mailWindow").style.display = "block";
-
-    // 默认直接进入主界面（跳过登录）
-    document.getElementById("mailLoginPage").style.display = "none";
-    document.getElementById("mailMainPage").style.display = "block";
-
-    // 如果已经登录陈远，加载邮件
-    if (currentMailUser === "chenyuan@xingtu-tech.com") {
-        loadMail(currentMailUser);
+// 两套独立邮件数据
+// ① 普通默认邮箱（通知弹窗点开默认进入）
+const normalMailData = [
+    {
+        title: "救命！我被困住了！",
+        sender: "小黄",
+        time: "今日 08:15",
+        unread: true,
+        desc: "泡芙！我被困在网页解谜游戏里了，快来救我",
+        content: `
+        <h3>泡芙！！</h3>
+        <p>当时我就是点进了这个网页解谜游戏被困住了！</p>
+        <p>你只要把这个网页解谜游戏解开就可以救我出来了！</p>
+        <p>这个网页解谜游戏的故事背景还有最后如何解开只能你自己慢慢摸索出来了</p>
+        `
     }
-};
+];
 
+// ② 陈远专属工作邮件
+const chenyuanMailData = [
+    {
+        title: "奖金到账通知",
+        sender: "孙财务（星途公司）",
+        time: "09:23",
+        unread: true,
+        desc: "您在星核系统优化项目中的绩效奖金已发放完成",
+        content: `<p>星途公司财务部（孙财务）：</p>
+        <p>陈远先生，您在“星核系统优化项目”中的表现已确认。</p>
+        <p>本月绩效奖金已于系统发放完成，请注意查收账户。</p>
+        <p>—— 星途公司财务部</p>`
+    },
+    {
+        title: "⚠ 停止研发",
+        sender: "未知发件人",
+        time: "昨天 16:40",
+        unread: true,
+        desc: "检测到星图系统异常扩展行为，请立即终止所有研发",
+        content: `<h3 style="color:red;">⚠ 停止研发</h3>
+        <p>检测到“星图系统”异常扩展行为。</p>
+        <p>请立即终止所有相关研发工作。</p>
+        <p>此为最高优先级指令。</p>`
+    },
+    {
+        title: "“星核”项目奖励",
+        sender: "廖哲",
+        time: "周一 11:12",
+        unread: false,
+        desc: "你带领团队取得突破性进展，公司决定追加专项奖金",
+        content: `<p>廖哲：</p>
+        <p>你带领团队在“星核项目”中取得突破性进展。</p>
+        <p>系统稳定性与算法效率显著提升，公司决定追加专项奖金。</p>
+        <p>你已进入核心研发序列。</p>`
+    },
+    {
+        title: "登录异常提醒",
+        sender: "系统",
+        time: "周日 20:18",
+        unread: false,
+        desc: "检测到异常登录记录，IP来源不明，请注意账户安全",
+        content: `<p>检测到异常登录记录。</p>
+        <p>IP 来源不明，请注意账户安全。</p>`
+    },
+    {
+        title: "项目进度确认",
+        sender: "研发部",
+        time: "上周三",
+        unread: false,
+        desc: "请确认星图坐标V2.0版本本周交付进度",
+        content: `<p>陈远：</p>
+        <p>星图坐标V2.0版本需在本周五完成测试并上线。</p>
+        <p>相关接口文档已同步至开发平台，请及时查看。</p>`
+    }
+];
 
-/* ===============================
-   打开邮箱（桌面图标：必须登录）
-=================================*/
-document.getElementById("openMail").onclick = () => {
-    document.getElementById("mailWindow").style.display = "block";
-
-    // 显示登录页
-    document.getElementById("mailLoginPage").style.display = "flex";
-    document.getElementById("mailMainPage").style.display = "none";
-};
-
-
-/* ===============================
-   关闭邮箱
-=================================*/
-document.getElementById("closeMail").onclick = () => {
-    document.getElementById("mailWindow").style.display = "none";
-};
-
-
-/* ===============================
-   打开邮件详情
-=================================*/
-document.getElementById("openMsg").onclick = () => {
-    document.getElementById("mailDetail").style.display = "block";
-};
-
-
-/* ===============================
-   账号系统
-=================================*/
+// 账号列表
 const mailAccounts = {
     "chenyuan@xingtu-tech.com": "19990516"
 };
 
+// 开场邮件通知
+setTimeout(() => {
+    document.getElementById("mailNoti").style.display = "block";
+}, 3000);
 
-/* ===============================
-   登录逻辑
-=================================*/
+// ========== 关键逻辑：通知点开 → 直接加载普通邮箱 ==========
+document.getElementById("mailNoti").onclick = () => {
+    document.getElementById("mailNoti").style.display = "none";
+    document.getElementById("mailWindow").style.display = "block";
+    // 强制退出登录状态，进入默认普通邮箱
+    currentMailUser = "";
+    document.getElementById("mailLoginPage").style.display = "none";
+    document.getElementById("mailMainPage").style.display = "block";
+    // 加载小黄那一封邮件
+    loadMailList(normalMailData);
+};
+
+// 桌面邮箱图标 → 打开先显示登录页
+document.getElementById("openMail").onclick = () => {
+    document.getElementById("mailWindow").style.display = "block";
+    document.getElementById("mailLoginPage").style.display = "flex";
+    document.getElementById("mailMainPage").style.display = "none";
+};
+
+// 关闭邮箱
+document.getElementById("closeMail").onclick = () => {
+    document.getElementById("mailWindow").style.display = "none";
+};
+
+// 邮箱登录逻辑
 document.getElementById("mailLoginBtn").onclick = () => {
-
     let u = document.getElementById("mailUser").value.trim();
     let p = document.getElementById("mailPwd").value.trim();
 
     if (mailAccounts[u] && mailAccounts[u] === p) {
-
+        // 登录陈远账号
         currentMailUser = u;
-
         document.getElementById("mailLoginPage").style.display = "none";
         document.getElementById("mailMainPage").style.display = "block";
-
-        loadMail(u);
-
+        // 加载陈远专属邮件
+        loadMailList(chenyuanMailData);
     } else {
         alert("账号或密码错误");
     }
 };
 
+// 退出登录
+document.getElementById("mailLogout").onclick = () => {
+    currentMailUser = "";
+    document.getElementById("mailMainPage").style.display = "none";
+    document.getElementById("mailLoginPage").style.display = "flex";
+    // 清空内容
+    document.getElementById("mailList").innerHTML = "";
+    document.getElementById("mailDetail").style.display = "none";
+};
 
-/* ===============================
-   加载邮件（陈远邮箱）
-=================================*/
-function loadMail(user) {
+// 通用渲染邮件列表方法
+function loadMailList(data) {
+    const list = document.getElementById("mailList");
+    const detail = document.getElementById("mailDetail");
+    detail.style.display = "none";
 
-    const box = document.getElementById("mailContent");
-
-    if (!box) return;
-
-    if (user === "chenyuan@xingtu-tech.com") {
-
-        box.innerHTML = `
-            <h3>收件箱</h3>
-
-            <div class="mail-item" onclick="openMail(0)">
-                <strong>孙财务（星途公司）</strong> · 奖金到账通知
+    let html = "";
+    data.forEach((item, index) => {
+        const unreadClass = item.unread ? "unread" : "";
+        const avatarText = item.sender.charAt(0);
+        html += `
+        <div class="mail-item ${unreadClass}" onclick="openMail(${index}, data)">
+            <div class="mail-avatar">${avatarText}</div>
+            <div class="mail-info">
+                <div class="mail-title">${item.title}</div>
+                <div class="mail-desc">${item.sender}：${item.desc}</div>
             </div>
+            <div class="mail-time">${item.time}</div>
+        </div>`;
+    });
+    list.innerHTML = html;
 
-            <div class="mail-item" onclick="openMail(1)">
-                <strong>未知发件人</strong> · ⚠ 停止研发
-            </div>
-
-            <div class="mail-item" onclick="openMail(2)">
-                <strong>廖哲</strong> · “星核”项目奖励
-            </div>
-
-            <div class="mail-item" onclick="openMail(3)">
-                <strong>系统</strong> · 登录异常提醒
-            </div>
-        `;
-    }
+    // 挂载当前邮件数据到全局，供查看详情使用
+    window.nowMailData = data;
 }
 
+// 打开邮件详情
+function openMail(index) {
+    const item = window.nowMailData[index];
+    const detail = document.getElementById("mailDetail");
+    document.getElementById("mailList").style.display = "none";
+    detail.style.display = "block";
 
-/* ===============================
-   邮件内容详情
-=================================*/
-const mailData = [
-    {
-        title: "奖金到账通知",
-        content: `
-        <p>星途公司财务部（孙财务）：</p>
-        <p>陈远先生，您在“星核系统优化项目”中的表现已确认。</p>
-        <p>本月绩效奖金已于系统发放完成，请注意查收账户。</p>
-        <p>—— 星途公司财务部</p>
-        `
-    },
-    {
-        title: "紧急警告",
-        content: `
-        <h3 style="color:red;">⚠ 停止研发</h3>
-        <p>检测到“星图系统”异常扩展行为。</p>
-        <p>请立即终止所有相关研发工作。</p>
-        <p>此为最高优先级指令。</p>
-        `
-    },
-    {
-        title: "星核项目奖励",
-        content: `
-        <p>廖哲：</p>
-        <p>你带领团队在“星核项目”中取得突破性进展。</p>
-        <p>系统稳定性与算法效率显著提升，公司决定追加专项奖金。</p>
-        <p>你已进入核心研发序列。</p>
-        `
-    },
-    {
-        title: "系统通知",
-        content: `
-        <p>检测到异常登录记录。</p>
-        <p>IP 来源不明，请注意账户安全。</p>
-        `
-    }
-];
-
-
-/* ===============================
-   打开邮件函数
-=================================*/
-function openMail(i){
-
-    const box = document.getElementById("mailDetail");
-
-    box.style.display = "block";
-    box.innerHTML = `
-        <h2>${mailData[i].title}</h2>
-        <hr>
-        ${mailData[i].content}
+    detail.innerHTML = `
+        <h2>${item.title}</h2>
+        <div class="mail-detail-info">
+            发件人：${item.sender} &nbsp;&nbsp; 时间：${item.time}
+        </div>
+        <div class="mail-detail-content">${item.content}</div>
+        <div style="margin-top:30px;">
+            <button onclick="backToList()" style="padding:6px 16px;background:#0066cc;color:white;border:none;border-radius:4px;cursor:pointer;">返回列表</button>
+        </div>
     `;
+}
+
+// 返回邮件列表
+function backToList() {
+    document.getElementById("mailList").style.display = "block";
+    document.getElementById("mailDetail").style.display = "none";
 }
 
    /* ===============================
