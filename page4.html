@@ -521,7 +521,7 @@
     <div id="mailLoginPage" style="height: calc(100% - 42px); background: #f5f7fa; display: flex; align-items: center; justify-content: center;">
         <div style="text-align:center; background:white; padding:40px; border-radius:12px; box-shadow:0 2px 10px rgba(0,0,0,0.1);">
             <div style="font-size:28px; font-weight:bold; color:#0066cc; margin-bottom:30px;">邮箱</div>
-            <input id="mailAccount" placeholder="邮箱账号" style="width:260px; padding:10px; margin-bottom:15px; border:1px solid #ddd; border-radius:4px;"><br>
+            <input id="mailUser" placeholder="邮箱账号" style="width:260px; padding:10px; margin-bottom:15px; border:1px solid #ddd; border-radius:4px;"><br>
             <input id="mailPwd" placeholder="密码" type="password" style="width:260px; padding:10px; margin-bottom:20px; border:1px solid #ddd; border-radius:4px;"><br>
             <button id="mailLoginBtn" style="width:260px; padding:10px; background:#0066cc; color:white; border:none; border-radius:4px; cursor:pointer;">登录</button>
         </div>
@@ -630,14 +630,14 @@ setTimeout(() => {
 
 
 /* ===============================
-   邮箱系统
+   邮箱系统（修复版）
 =================================*/
+
 document.getElementById("mailNoti").onclick = () => {
     document.getElementById("mailNoti").style.display = "none";
     document.getElementById("mailWindow").style.display = "block";
-    document.getElementById("mailLoginPage").style.display = "none";
-    document.getElementById("mailMainPage").style.display = "block";
-    document.getElementById("mailDetail").style.display = "block";
+    document.getElementById("mailLoginPage").style.display = "flex";
+    document.getElementById("mailMainPage").style.display = "none";
 };
 
 document.getElementById("openMail").onclick = () => {
@@ -654,15 +654,102 @@ document.getElementById("openMsg").onclick = () => {
     document.getElementById("mailDetail").style.display = "block";
 };
 
-document.getElementById("mailLoginBtn").onclick = () => {
-    document.getElementById("mailLoginPage").style.display = "none";
-    document.getElementById("mailMainPage").style.display = "block";
+/* ===============================
+   账号系统
+=================================*/
+
+const mailAccounts = {
+    "chenyuan@xingtu-tech.com": "19990516"
 };
 
-document.getElementById("mailLogout").onclick = () => {
-    document.getElementById("mailMainPage").style.display = "none";
-    document.getElementById("mailLoginPage").style.display = "flex";
+let currentMailUser = "";
+
+/* ===============================
+   登录（只保留这一段！！）
+=================================*/
+document.getElementById("mailLoginBtn").onclick = () => {
+
+    let u = document.getElementById("mailUser").value.trim();
+    let p = document.getElementById("mailPwd").value.trim();
+
+    if (mailAccounts[u] && mailAccounts[u] === p) {
+
+        currentMailUser = u;
+
+        document.getElementById("mailLoginPage").style.display = "none";
+        document.getElementById("mailMainPage").style.display = "block";
+
+        loadMail(u);
+
+    } else {
+        alert("账号或密码错误");
+    }
 };
+
+/* ===============================
+   邮件内容（陈远邮箱）
+=================================*/
+function loadMail(user) {
+
+    const box = document.querySelector(".mail-main");
+
+    if (user === "chenyuan@xingtu-tech.com") {
+
+        box.innerHTML = `
+            <h3>收件箱</h3>
+
+            <div class="mail-item" onclick="openMail(0)">
+                <strong>孙财务（星途公司）</strong> · 奖金已到账
+            </div>
+
+            <div class="mail-item" onclick="openMail(1)">
+                <strong>未知发件人</strong> · ⚠ 停止研发
+            </div>
+
+            <div class="mail-item" onclick="openMail(2)">
+                <strong>廖哲</strong> · 星核项目奖励通知
+            </div>
+
+            <div class="mail-item" onclick="openMail(3)">
+                <strong>系统</strong> · 登录异常提醒
+            </div>
+        `;
+    }
+}
+
+/* ===============================
+   打开邮件内容
+=================================*/
+const mailData = [
+    {
+        title: "奖金到账通知",
+        content: "孙财务：星途公司已完成奖金发放，本次与你负责的项目表现直接相关。"
+    },
+    {
+        title: "警告",
+        content: "停止研发！星图系统必须立即终止。否则后果自负。"
+    },
+    {
+        title: "星核项目奖励",
+        content: "你带领团队完成突破性进展，公司决定追加专项奖金，并进入核心研发组。"
+    },
+    {
+        title: "系统通知",
+        content: "检测到异常登录行为，请注意账户安全。"
+    }
+];
+
+function openMail(i){
+    const d = mailData[i];
+    const box = document.getElementById("mailDetail");
+
+    box.style.display = "block";
+    box.innerHTML = `
+        <h2>${d.title}</h2>
+        <hr>
+        <p>${d.content}</p>
+    `;
+}
 
    /* ===============================
    微信系统
