@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>星途科技 - 探索未来，连接星辰</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        }
+
+        /* 全局颜色 - 科技蓝主题 */
+        :root {
+            --primary: #165DFF;
+            --dark: #0F172A;
+            --light: #F8FAFC;
+            --gray: #64748B;
+        }
+
+        body {
+            background-color: var(--light);
+            color: var(--dark);
+            line-height: 1.6;
+        }
+
+        /* 导航栏 */
+        nav {
+            background: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 999;
+            padding: 0 20px;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 70px;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        .nav-links a {
+            margin-left: 30px;
+            text-decoration: none;
+            color: var(--dark);
+            font-weight: 500;
+            transition: 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        /* 横幅区域 */
+        .hero {
+            margin-top: 70px;
+            height: 90vh;
+            background: linear-gradient(to right, #0F172A, #165DFF);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .hero-content h1 {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+
+        .hero-content p {
+            font-size: 20px;
+            max-width: 700px;
+            margin: 0 auto 40px;
+            opacity: 0.9;
+        }
+
+        .btn {
+            padding: 14px 32px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn:hover {
+            background: #0F48CC;
+            transform: translateY(-2px);
+        }
+
+        /* 通用区块样式 */
+        .section {
+            max-width: 1200px;
+            margin: 80px auto;
+            padding: 0 20px;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 32px;
+            margin-bottom: 50px;
+            color: var(--dark);
+        }
+
+        /* 公司介绍 */
+        .about {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 40px;
+            align-items: center;
+        }
+
+        .about-text {
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .about-text p {
+            font-size: 18px;
+            color: var(--gray);
+            margin-bottom: 15px;
+        }
+
+        /* 业务板块 */
+        .services {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .card {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            transition: 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card h3 {
+            font-size: 22px;
+            margin-bottom: 15px;
+            color: var(--primary);
+        }
+
+        .card p {
+            color: var(--gray);
+        }
+
+        /* 团队板块 */
+        .team {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            text-align: center;
+        }
+        .team-card {
+            background: white;
+            padding: 35px 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            transition: 0.3s;
+        }
+        .team-card:hover {
+            transform: translateY(-5px);
+        }
+        .team-card h3 {
+            font-size: 22px;
+            color: var(--dark);
+            margin-bottom: 6px;
+        }
+        .team-card .job {
+            color: var(--primary);
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+        .team-card .intro {
+            color: var(--gray);
+            font-size: 15px;
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
+        .team-card .email {
+            color: var(--primary);
+            font-size: 14px;
+            word-break: break-all;
+        }
+
+        /* 页脚 */
+        footer {
+            background: var(--dark);
+            color: white;
+            text-align: center;
+            padding: 40px 20px;
+            margin-top: 50px;
+        }
+
+        /* 移动端适配 */
+        @media (max-width: 768px) {
+            .hero-content h1 {
+                font-size: 32px;
+            }
+            .nav-links {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- 导航栏 -->
+<nav>
+    <div class="nav-container">
+        <a href="#" class="logo">星途科技</a>
+        <div class="nav-links">
+            <a href="#home">首页</a>
+            <a href="#about">关于我们</a>
+            <a href="#service">核心业务</a>
+            <a href="#team">团队</a>
+            <a href="#contact">联系我们</a>
+        </div>
+    </div>
+</nav>
+
+<!-- 主横幅 -->
+<section class="hero" id="home">
+    <div class="hero-content">
+        <h1>探索未来 · 连接星辰</h1>
+        <p>星途科技致力于用前沿技术开拓人类边界，从人工智能到深空探索，让科技成为通往星辰大海的道路。</p>
+        <a href="#about" class="btn">了解星途</a>
+    </div>
+</section>
+
+<!-- 关于我们 -->
+<section class="section" id="about">
+    <h2 class="section-title">关于星途</h2>
+    <div class="about">
+        <div class="about-text">
+            <p>星途科技成立于未来元年，是一家专注于前沿科技研发与应用的创新型科技企业。</p>
+            <p>我们以“技术驱动未来”为核心理念，在人工智能、大数据、云计算、智能硬件与深空技术领域持续深耕，为世界带来更高效、更智能、更前沿的解决方案。</p>
+            <p>星途不止于科技，更在于探索无限可能。</p>
+        </div>
+    </div>
+</section>
+
+<!-- 核心业务 -->
+<section class="section" id="service">
+    <h2 class="section-title">核心业务</h2>
+    <div class="services">
+        <div class="card">
+            <h3>人工智能</h3>
+            <p>自主研发大模型与智能算法，为企业与城市提供全场景AI能力。</p>
+        </div>
+        <div class="card">
+            <h3>云计算服务</h3>
+            <p>安全、稳定、高性能的云端计算与存储方案，支撑未来级业务需求。</p>
+        </div>
+        <div class="card">
+            <h3>深空探索技术</h3>
+            <p>研发航天级智能设备、星际通信与导航系统，拓展人类探索边界。</p>
+        </div>
+        <div class="card">
+            <h3>智能硬件</h3>
+            <p>下一代智能终端、物联网设备与机器人系统，让科技融入生活。</p>
+        </div>
+        <div class="card">
+            <h3>数据智能</h3>
+            <p>基于大数据的分析、决策与预测系统，为未来提供确定性。</p>
+        </div>
+        <div class="card">
+            <h3>元宇宙与交互</h3>
+            <p>构建下一代虚实融合世界，打造沉浸式体验与数字生态。</p>
+        </div>
+    </div>
+</section>
+
+<!-- 团队风采 -->
+<section class="section" id="team">
+    <h2 class="section-title">核心团队</h2>
+    <div class="team">
+        <div class="team-card">
+            <h3>江哲</h3>
+            <div class="job">创始人 & CEO</div>
+            <p class="intro">前航天科技研究院核心成员，10年+前沿技术管理经验，负责星途整体战略与未来布局。</p>
+            <p class="email">jiangzhe@xingtu-tech.com</p>
+        </div>
+        <div class="team-card">
+            <h3>林舟</h3>
+            <div class="job">联合创始人 & CTO</div>
+            <p class="intro">AI算法专家，主导大模型、云计算与智能系统底层技术研发。</p>
+            <p class="email">linzhou@xingtu-tech.com</p>
+        </div>
+        <div class="team-card">
+            <h3>苏晴</h3>
+            <div class="job">首席运营官 COO</div>
+            <p class="intro">全球化项目运营经验，负责商业落地、市场拓展与生态合作。</p>
+            <p class="email">suqing@xingtu-tech.com</p>
+        </div>
+        <div class="team-card">
+            <h3>陈远</h3>
+            <div class="job">研发总监</div>
+            <p class="intro">全栈技术负责人，带领团队实现产品从0到1的工程化落地。</p>
+            <p class="email">chenyuan@xingtu-tech.com</p>
+        </div>
+        <div class="team-card">
+            <h3>夏汐</h3>
+            <div class="job">设计总监</div>
+            <p class="intro">用户体验与未来视觉设计负责人，打造科技与艺术融合的产品体验。</p>
+            <p class="email">xiaxi@xingtu-tech.com</p>
+        </div>
+    </div>
+</section>
+
+<!-- 页脚 -->
+<footer id="contact">
+    <p>星途科技 © 2025 版权所有 | 探索未来，连接星辰</p>
+    <p style="margin-top:10px; opacity:0.7">官方邮箱：contact@xingtu-tech.com</p>
+</footer>
+
+</body>
+</html>
