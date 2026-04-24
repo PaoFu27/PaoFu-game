@@ -911,6 +911,9 @@ document.getElementById("openWeibo").onclick = () => {
 const resultBox = document.getElementById("searchResult");
 
 // 搜索数据（可以以后继续加）
+const searchInput = document.getElementById("desktopSearch");
+const resultBox = document.getElementById("searchResult");
+
 const searchData = [
     {
         keyword: "星途",
@@ -919,23 +922,8 @@ const searchData = [
             window.open("XingTu.html", "_blank");
         }
     }
-    {
-        keyword: "邮箱",
-        name: "邮箱系统",
-        action: () => {
-            document.getElementById("mailWindow").style.display = "block";
-        }
-    },
-    {
-        keyword: "微信",
-        name: "微信",
-        action: () => {
-            document.getElementById("wxWindow").style.display = "block";
-        }
-    }
 ];
 
-// 输入监听
 searchInput.addEventListener("input", () => {
 
     let val = searchInput.value.trim();
@@ -945,7 +933,9 @@ searchInput.addEventListener("input", () => {
         return;
     }
 
-    let list = searchData.filter(item => item.keyword.includes(val));
+    let list = searchData.filter(item =>
+        item.keyword.includes(val)
+    );
 
     if (list.length === 0) {
         resultBox.style.display = "none";
