@@ -577,49 +577,47 @@
 </div>
 
 <script>
-    // 3秒弹出邮件通知
-    setTimeout(() => {
-        document.getElementById('mailNoti').style.display = 'block';
-    }, 3000);
+/* ===============================
+   开场邮件通知
+=================================*/
+setTimeout(() => {
+    document.getElementById("mailNoti").style.display = "block";
+}, 3000);
 
-  // ====================== 邮箱功能 ======================
-// 点击右下角邮件通知 → 直接进入已登录邮箱并打开邮件
-document.getElementById('mailNoti').onclick = () => {
-    document.getElementById('mailNoti').style.display = 'none';
-    document.getElementById('mailWindow').style.display = 'block';
-    document.getElementById('mailLoginPage').style.display = 'none';
-    document.getElementById('mailMainPage').style.display = 'block';
-    document.getElementById('mailDetail').style.display = 'block';
+
+/* ===============================
+   邮箱系统
+=================================*/
+document.getElementById("mailNoti").onclick = () => {
+    document.getElementById("mailNoti").style.display = "none";
+    document.getElementById("mailWindow").style.display = "block";
+    document.getElementById("mailLoginPage").style.display = "none";
+    document.getElementById("mailMainPage").style.display = "block";
+    document.getElementById("mailDetail").style.display = "block";
 };
 
-// 点击桌面邮箱图标 → 显示登录页
-document.getElementById('openMail').onclick = () => {
-    document.getElementById('mailWindow').style.display = 'block';
-    document.getElementById('mailLoginPage').style.display = 'flex';
-    document.getElementById('mailMainPage').style.display = 'none';
-    document.getElementById('mailDetail').style.display = 'none';
+document.getElementById("openMail").onclick = () => {
+    document.getElementById("mailWindow").style.display = "block";
+    document.getElementById("mailLoginPage").style.display = "flex";
+    document.getElementById("mailMainPage").style.display = "none";
 };
 
-// 关闭邮箱窗口
-document.getElementById('closeMail').onclick = () => {
-    document.getElementById('mailWindow').style.display = 'none';
+document.getElementById("closeMail").onclick = () => {
+    document.getElementById("mailWindow").style.display = "none";
 };
 
-// 点击邮件 → 打开内容
-document.getElementById('openMsg').onclick = () => {
-    document.getElementById('mailDetail').style.display = 'block';
+document.getElementById("openMsg").onclick = () => {
+    document.getElementById("mailDetail").style.display = "block";
 };
 
-// 邮箱登录
-document.getElementById('mailLoginBtn').onclick = () => {
-    document.getElementById('mailLoginPage').style.display = 'none';
-    document.getElementById('mailMainPage').style.display = 'block';
+document.getElementById("mailLoginBtn").onclick = () => {
+    document.getElementById("mailLoginPage").style.display = "none";
+    document.getElementById("mailMainPage").style.display = "block";
 };
 
-// 邮箱退出登录
-document.getElementById('mailLogout').onclick = () => {
-    document.getElementById('mailMainPage').style.display = 'none';
-    document.getElementById('mailLoginPage').style.display = 'flex';
+document.getElementById("mailLogout").onclick = () => {
+    document.getElementById("mailMainPage").style.display = "none";
+    document.getElementById("mailLoginPage").style.display = "flex";
 };
 
    /* ===============================
