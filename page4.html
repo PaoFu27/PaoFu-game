@@ -229,13 +229,19 @@
     transition: background 0.2s;
     background: #fff;
 }
-/* 修复未读邮件蓝色高亮 */
+/* 未读蓝色高亮 */
 .mail-item.unread {
     background-color: #edf4ff !important;
     font-weight: 600 !important;
 }
 .mail-item.unread:hover {
     background-color: #e0ecff !important;
+}
+
+/* 已删除邮件灰色样式 */
+.mail-item.deleted {
+    color: #888 !important;
+    background-color: #f9f9f9 !important;
 }
 .mail-avatar {
     width: 36px;
@@ -690,16 +696,15 @@ setTimeout(() => {
 
 
 /* ===============================
-   邮箱最终修复版
-   1.未读蓝色高亮正常显示
-   2.收件箱 / 已发送 彻底分离
-   3.回信全部收纳进【已发送】
+   邮箱最终完整版
+   1. 修复已发送/已删除点不开
+   2. 未知匿名邮件自动进已删除
+   3. 已删除邮件灰色字体
 =================================*/
 let currentMailUser = "";
-// 全局标记：当前选中栏目
 let mailActiveTab = "inbox";
 
-// 普通游客邮箱（小黄 - 仅收件）
+// 普通游客邮箱（小黄）
 const normalMailInbox = [
     {
         title: "救命！我被困住了！",
@@ -716,11 +721,10 @@ const normalMailInbox = [
     }
 ];
 const normalMailSend = [];
+const normalMailTrash = [];
 
-// ========== 陈远 拆分：收件箱 / 已发送 ==========
-// 收件箱：别人发给陈远
+// 陈远邮箱数据
 const chenyuanInbox = [
-    // 最新 未读
     {
         title: "【系统】账号异常登录安全提醒",
         sender: "邮箱安全系统",
@@ -737,36 +741,9 @@ const chenyuanInbox = [
         `
     },
     {
-        title: "Re：⚠ 紧急警告：终止星核一切研发",
-        sender: "未知匿名发件人",
-        date: "2026-04-11",
-        unread: false,
-        desc: "身份无关紧要，附上加密文件，星核真相远超想象",
-        content: `
-            <p>我是谁，并不重要。</p>
-            <p>你们目前只负责系统表层优化，接触不到星核计划的核心本质，自然不清楚其中的秘密。</p>
-            <p>我已上传一份加密压缩文件至匿名云盘，密码隐藏。</p>
-            <p>我相信，当你解开加密、看到真相后，会做出正确的选择。</p>
-            <p>及时收手，是唯一的自保方式。</p>
-        `
-    },
-    {
-        title: "⚠ 紧急警告：终止星核一切研发",
-        sender: "未知匿名发件人",
-        date: "2026-04-10",
-        unread: false,
-        desc: "立即停止星核计划相关所有工作，否则后果不堪设想",
-        content: `
-            <h3 style="color:#c00;">警告｜最高优先级</h3>
-            <p>立刻停止所有与「星核计划」相关的研发、优化、测试工作。</p>
-            <p>该项目存在不可控的未知风险，继续深入研发会触发连锁隐患，带来你无法承担的后果。</p>
-            <p>不要追问、不要上报、不要继续推进。</p>
-        `
-    },
-    {
         title: "【银行通知】账户入账提醒",
         sender: "兴业银行官方",
-        date: "2026-04-21",
+        date: "2026-03-15",
         unread: false,
         desc: "入账金额：专项项目奖金，余额已更新",
         content: `
@@ -821,7 +798,6 @@ const chenyuanInbox = [
     }
 ];
 
-// 已发送：陈远所有回复邮件
 const chenyuanSend = [
     {
         title: "Re：⚠ 紧急警告：终止星核一切研发",
@@ -862,6 +838,37 @@ const chenyuanSend = [
     }
 ];
 
+// 匿名邮件全部进已删除
+const chenyuanTrash = [
+    {
+        title: "Re：⚠ 紧急警告：终止星核一切研发",
+        sender: "未知匿名发件人",
+        date: "2026-04-11",
+        unread: false,
+        desc: "身份无关紧要，附上加密文件，星核真相远超想象",
+        content: `
+            <p>我是谁，并不重要。</p>
+            <p>你们目前只负责系统表层优化，接触不到星核计划的核心本质，自然不清楚其中的秘密。</p>
+            <p>我已发送一份加密文件"reborn27"。</p>
+            <p>我相信，当你解开加密、看到真相后，会做出正确的选择。</p>
+            <p>密码是你们公司在报道中最常提到的那句话，而那是最大的谎言！</p>
+        `
+    },
+    {
+        title: "⚠ 紧急警告：终止星核一切研发",
+        sender: "未知匿名发件人",
+        date: "2026-04-10",
+        unread: false,
+        desc: "立即停止星核计划相关所有工作，否则后果不堪设想",
+        content: `
+            <h3 style="color:#c00;">警告｜最高优先级</h3>
+            <p>立刻停止所有与「星核计划」「星图系统」相关的研发、优化、测试工作。</p>
+            <p>该项目存在不可控的未知风险，继续深入研发会触发连锁隐患，带来你无法承担的后果。</p>
+            <p>不要追问、不要上报、不要继续推进。</p>
+        `
+    }
+];
+
 const mailAccounts = {
     "chenyuan@xingtu-tech.com": "19990516"
 };
@@ -871,7 +878,7 @@ setTimeout(() => {
     document.getElementById("mailNoti").style.display = "block";
 }, 3000);
 
-// 通知点开 → 小黄收件箱
+// 通知点开 → 小黄邮箱
 document.getElementById("mailNoti").onclick = () => {
     document.getElementById("mailNoti").style.display = "none";
     document.getElementById("mailWindow").style.display = "block";
@@ -919,21 +926,30 @@ document.getElementById("mailLogout").onclick = () => {
     document.getElementById("mailDetail").style.display = "none";
 };
 
-// 侧边栏栏目切换 绑定点击事件
-document.querySelector(".mail-sidebar div:nth-child(3)").onclick = function(){
-    mailActiveTab = "inbox";
-    if(currentMailUser === "chenyuan@xingtu-tech.com"){
-        renderMailBox(chenyuanInbox);
-    }else{
-        renderMailBox(normalMailInbox);
-    }
-};
-document.querySelector(".mail-sidebar div:nth-child(5)").onclick = function(){
-    mailActiveTab = "send";
-    renderMailBox(currentMailUser ? chenyuanSend : []);
-};
+// 侧边栏绑定（修复已发送、已删除点不开）
+document.addEventListener("DOMContentLoaded", function(){
+    // 收件箱
+    document.querySelector(".mail-sidebar div:nth-child(3)").addEventListener("click", function(){
+        mailActiveTab = "inbox";
+        if(currentMailUser === "chenyuan@xingtu-tech.com"){
+            renderMailBox(chenyuanInbox);
+        }else{
+            renderMailBox(normalMailInbox);
+        }
+    });
+    // 已发送
+    document.querySelector(".mail-sidebar div:nth-child(5)").addEventListener("click", function(){
+        mailActiveTab = "send";
+        renderMailBox(currentMailUser ? chenyuanSend : []);
+    });
+    // 已删除
+    document.querySelector(".mail-sidebar div:nth-child(7)").addEventListener("click", function(){
+        mailActiveTab = "trash";
+        renderMailBox(currentMailUser ? chenyuanTrash : []);
+    });
+});
 
-// 渲染邮件列表
+// 渲染邮件列表（已删除自动灰色）
 function renderMailBox(data){
     const list = document.getElementById("mailList");
     const detail = document.getElementById("mailDetail");
@@ -943,9 +959,10 @@ function renderMailBox(data){
     let html = "";
     data.forEach((item, index) => {
         const unreadClass = item.unread ? "unread" : "";
+        const deletedClass = mailActiveTab === "trash" ? "deleted" : "";
         const avatarText = item.sender.charAt(0);
         html += `
-        <div class="mail-item ${unreadClass}" onclick="openMail(${index})" data-idx="${index}">
+        <div class="mail-item ${unreadClass} ${deletedClass}" onclick="openMail(${index})" data-idx="${index}">
             <div class="mail-avatar">${avatarText}</div>
             <div class="mail-info">
                 <div class="mail-title">${item.title}</div>
@@ -1253,6 +1270,13 @@ document.addEventListener("DOMContentLoaded", () => {
         name: "城市体验计划报道",
         action: () => {
             window.open("chengshitiyan.html", "_blank");
+        }
+    },
+        {
+        keyword: "reborn27",
+        name: "reborn27加密文件",
+        action: () => {
+            window.open("jimiwenjian.html", "_blank");
         }
     },
         {
