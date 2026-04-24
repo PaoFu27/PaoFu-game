@@ -19,11 +19,6 @@
             /* Win11默认蓝色背景，用纯CSS实现，避免图片加载失败 */
             background: linear-gradient(135deg, #0078d4 0%, #0096ff 50%, #00bcf2 100%);
         }
-        <!-- 搜索栏 -->
-<div class="desktop-search">
-    <input id="desktopSearch" placeholder="搜索应用 / 文件 / 网页..." />
-    <div id="searchResult" class="search-result"></div>
-</div>
 
         /* 桌面图标区域 */
 .desktop {
@@ -468,6 +463,11 @@
     </style>
 </head>
 <body>
+    <!-- 搜索栏（必须放在body里！） -->
+<div class="desktop-search">
+    <input id="desktopSearch" placeholder="搜索应用 / 文件 / 网页..." />
+    <div id="searchResult" class="search-result"></div>
+</div>
 
 <!-- 桌面 -->
 <div class="desktop">
