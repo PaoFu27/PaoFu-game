@@ -19,6 +19,11 @@
             /* Win11默认蓝色背景，用纯CSS实现，避免图片加载失败 */
             background: linear-gradient(135deg, #0078d4 0%, #0096ff 50%, #00bcf2 100%);
         }
+        <!-- 搜索栏 -->
+<div class="desktop-search">
+    <input id="desktopSearch" placeholder="搜索应用 / 文件 / 网页..." />
+    <div id="searchResult" class="search-result"></div>
+</div>
 
         /* 桌面图标区域 */
 .desktop {
@@ -55,6 +60,45 @@
             font-size: 24px;
             color: white;
         }
+        .desktop-search {
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 420px;
+    z-index: 9999;
+}
+
+.desktop-search input {
+    width: 100%;
+    padding: 10px 14px;
+    border-radius: 10px;
+    border: none;
+    outline: none;
+    font-size: 14px;
+    background: rgba(255,255,255,0.85);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.search-result {
+    margin-top: 6px;
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+    display: none;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+}
+
+.search-item {
+    padding: 10px 12px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.search-item:hover {
+    background: #f2f2f2;
+}
 
         /* 任务栏 - Win11毛玻璃效果 */
         .taskbar {
@@ -863,4 +907,73 @@ document.getElementById("wxBackCy").onclick = () => {
 document.getElementById("openWeibo").onclick = () => {
     window.open("weibo.html", "_blank");
 };
+    const searchInput = document.getElementById("desktopSearch");
+const resultBox = document.getElementById("searchResult");
+
+// 搜索数据（可以以后继续加）
+const searchData = [
+    {
+        keyword: "星途",
+        name: "星图公司",
+        action: () => {
+            window.location.href = "XingTu.html";
+        }
+    },
+    {
+        keyword: "邮箱",
+        name: "邮箱系统",
+        action: () => {
+            document.getElementById("mailWindow").style.display = "block";
+        }
+    },
+    {
+        keyword: "微信",
+        name: "微信",
+        action: () => {
+            document.getElementById("wxWindow").style.display = "block";
+        }
+    }
+];
+
+// 输入监听
+searchInput.addEventListener("input", () => {
+
+    let val = searchInput.value.trim();
+
+    if (!val) {
+        resultBox.style.display = "none";
+        return;
+    }
+
+    let list = searchData.filter(item => item.keyword.includes(val));
+
+    if (list.length === 0) {
+        resultBox.style.display = "none";
+        return;
+    }
+
+    resultBox.style.display = "block";
+    resultBox.innerHTML = "";
+
+    list.forEach(item => {
+        let div = document.createElement("div");
+        div.className = "search-item";
+        div.innerText = item.name;
+
+        div.onclick = () => {
+            item.action();
+            resultBox.style.display = "none";
+            searchInput.value = "";
+        };
+
+        resultBox.appendChild(div);
+    });
+});
+
+// 点击空白关闭
+document.addEventListener("click", (e) => {
+    if (!document.querySelector(".desktop-search").contains(e.target)) {
+        resultBox.style.display = "none";
+    }
+});
 </script>
