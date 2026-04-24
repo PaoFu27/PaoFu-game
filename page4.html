@@ -695,23 +695,19 @@
 
 <script>
 /* ===============================
-   开场邮件通知
+   邮箱最终完美修复版
+   解决：无邮件、菜单乱选、点击无效、重复函数
 =================================*/
+
+// 开场邮件通知
 setTimeout(() => {
     document.getElementById("mailNoti").style.display = "block";
 }, 3000);
 
-
-/* ===============================
-   邮箱最终完整版
-   1. 修复已发送/已删除点不开
-   2. 未知匿名邮件自动进已删除
-   3. 已删除邮件灰色字体
-=================================*/
 let currentMailUser = "";
 let mailActiveTab = "inbox";
 
-// 普通游客邮箱（小黄）
+// 小黄邮箱
 const normalMailInbox = [
     {
         title: "救命！我被困住了！",
@@ -730,7 +726,7 @@ const normalMailInbox = [
 const normalMailSend = [];
 const normalMailTrash = [];
 
-// 陈远邮箱数据
+// 陈远 - 收件箱
 const chenyuanInbox = [
     {
         title: "【系统】账号异常登录安全提醒",
@@ -805,6 +801,7 @@ const chenyuanInbox = [
     }
 ];
 
+// 陈远 - 已发送
 const chenyuanSend = [
     {
         title: "Re：⚠ 紧急警告：终止星核一切研发",
@@ -838,14 +835,14 @@ const chenyuanSend = [
         content: `
             <p>廖总您好：</p>
             <p>感谢公司认可与专项奖励，后续我会全力跟进星核系统优化，保证项目稳定推进。</p>
-            <p>机密内容我会严格保管，遵守公司保密协议。</p>
+            <p>机密内容我会严格保管，遵守保密协议。</p>
             <br>
             <p>—— 陈远</p>
         `
     }
 ];
 
-// 匿名邮件全部进已删除
+// 陈远 - 已删除（神秘邮件）
 const chenyuanTrash = [
     {
         title: "Re：⚠ 紧急警告：终止星核一切研发",
@@ -855,11 +852,10 @@ const chenyuanTrash = [
         desc: "身份无关紧要，附上加密文件，星核真相远超想象",
         content: `
             <p>我是谁，并不重要。</p>
-            <p>你们目前只负责系统表层优化，接触不到星核计划的核心本质，自然不清楚其中的秘密。</p>
+            <p>你们目前只负责系统表层优化，接触不到星核计划的核心本质。</p>
             <p>我已发送一份加密文件"reborn27"。</p>
-            <p>我相信，当你解开加密、看到真相后，会做出正确的选择。</p>
-            <p>密码是你们公司在报道中最常提到的那句话，那是他们真实的想法！</p>
-            <p>如果你还是不相信，可以去回声论坛看看，不过有隐藏入口</p>
+            <p>密码是你们公司在报道中最常提到的那句话。</p>
+            <p>可以去回声论坛看看，有隐藏入口。</p>
         `
     },
     {
@@ -871,8 +867,7 @@ const chenyuanTrash = [
         content: `
             <h3 style="color:#c00;">警告｜最高优先级</h3>
             <p>立刻停止所有与「星核计划」「星图系统」相关的研发、优化、测试工作。</p>
-            <p>该项目存在不可控的未知风险，继续深入研发会触发连锁隐患，带来你无法承担的后果。</p>
-            <p>不要追问、不要上报、不要继续推进。</p>
+            <p>继续深入会带来无法承担的后果。</p>
         `
     }
 ];
@@ -881,12 +876,7 @@ const mailAccounts = {
     "chenyuan@xingtu-tech.com": "19990516"
 };
 
-// 通知
-setTimeout(() => {
-    document.getElementById("mailNoti").style.display = "block";
-}, 3000);
-
-// 打开通知邮箱
+// 打开通知邮件
 document.getElementById("mailNoti").onclick = () => {
     document.getElementById("mailNoti").style.display = "none";
     document.getElementById("mailWindow").style.display = "block";
@@ -904,7 +894,7 @@ document.getElementById("openMail").onclick = () => {
     document.getElementById("mailMainPage").style.display = "none";
 };
 
-// 关闭
+// 关闭邮箱
 document.getElementById("closeMail").onclick = () => {
     document.getElementById("mailWindow").style.display = "none";
 };
@@ -919,6 +909,7 @@ document.getElementById("mailLoginBtn").onclick = () => {
         document.getElementById("mailLoginPage").style.display = "none";
         document.getElementById("mailMainPage").style.display = "block";
         renderMailBox(chenyuanInbox);
+        setActiveTab("inbox");
     } else {
         alert("账号或密码错误");
     }
@@ -932,18 +923,16 @@ document.getElementById("mailLogout").onclick = () => {
     document.getElementById("mailLoginPage").style.display = "flex";
 };
 
-// 菜单点击（已发送、已删除、收件箱 全部正常）
+// 菜单切换（核心修复！）
 function setActiveTab(tab) {
     mailActiveTab = tab;
+    let items = document.querySelectorAll(".mail-sidebar div");
+    items.forEach(el => el.classList.remove("active"));
 
-    // 菜单高亮
-    document.querySelectorAll(".mail-sidebar div").forEach(el => el.classList.remove("active"));
-    const items = document.querySelectorAll(".mail-sidebar div");
     if (tab === "inbox") items[2].classList.add("active");
     if (tab === "send") items[4].classList.add("active");
     if (tab === "trash") items[6].classList.add("active");
 
-    // 渲染对应邮件
     if (currentMailUser) {
         if (tab === "inbox") renderMailBox(chenyuanInbox);
         if (tab === "send") renderMailBox(chenyuanSend);
@@ -954,61 +943,13 @@ function setActiveTab(tab) {
     }
 }
 
-// 绑定菜单点击
+// 绑定侧边栏点击
 document.querySelectorAll(".mail-sidebar div")[2].onclick = () => setActiveTab("inbox");
 document.querySelectorAll(".mail-sidebar div")[4].onclick = () => setActiveTab("send");
 document.querySelectorAll(".mail-sidebar div")[6].onclick = () => setActiveTab("trash");
 
-// 渲染邮件
+// 渲染邮件列表（唯一一份，无重复）
 function renderMailBox(data) {
-    const list = document.getElementById("mailList");
-    document.getElementById("mailDetail").style.display = "none";
-    window.nowMailData = data;
-
-    let html = "";
-    data.forEach((item, idx) => {
-        const unread = item.unread ? "unread" : "";
-        const del = mailActiveTab === "trash" ? "deleted" : "";
-        const char = item.sender.charAt(0);
-        html += `
-        <div class="mail-item ${unread} ${del}" onclick="openMail(${idx})" data-idx="${idx}">
-            <div class="mail-avatar">${char}</div>
-            <div class="mail-info">
-                <div class="mail-title">${item.title}</div>
-                <div class="mail-desc">${item.sender}：${item.desc}</div>
-            </div>
-            <div class="mail-time">${item.date}</div>
-        </div>`;
-    });
-    list.innerHTML = html;
-}
-
-// 打开邮件 + 自动已读
-function openMail(idx) {
-    const data = window.nowMailData;
-    if (data[idx].unread) {
-        data[idx].unread = false;
-        document.querySelector(`.mail-item[data-idx="${idx}"]`).classList.remove("unread");
-    }
-
-    document.getElementById("mailList").style.display = "none";
-    const detail = document.getElementById("mailDetail");
-    detail.style.display = "block";
-    detail.innerHTML = `
-        <h2>${data[idx].title}</h2>
-        <div>发件人：${data[idx].sender} &nbsp;&nbsp; 日期：${data[idx].date}</div>
-        <div style="margin-top:20px;">${data[idx].content}</div>
-        <button onclick="backToList()" style="margin-top:20px;padding:6px 14px;background:#06c;color:white;border:none;border-radius:4px;">返回</button>
-    `;
-}
-
-function backToList() {
-    document.getElementById("mailList").style.display = "block";
-    document.getElementById("mailDetail").style.display = "none";
-}
-
-// 渲染邮件列表（已删除自动灰色）
-function renderMailBox(data){
     const list = document.getElementById("mailList");
     const detail = document.getElementById("mailDetail");
     detail.style.display = "none";
@@ -1032,29 +973,23 @@ function renderMailBox(data){
     list.innerHTML = html;
 }
 
-// 打开邮件 + 自动标已读
+// 打开邮件（自动已读）
 function openMail(index) {
     const data = window.nowMailData;
-    if(data[index].unread === true){
+    if (data[index].unread) {
         data[index].unread = false;
-        const dom = document.querySelector(`.mail-item[data-idx="${index}"]`);
-        if(dom) dom.classList.remove("unread");
+        let dom = document.querySelector(`.mail-item[data-idx="${index}"]`);
+        if (dom) dom.classList.remove("unread");
     }
 
-    const item = data[index];
-    const detail = document.getElementById("mailDetail");
     document.getElementById("mailList").style.display = "none";
+    const detail = document.getElementById("mailDetail");
     detail.style.display = "block";
-
     detail.innerHTML = `
-        <h2>${item.title}</h2>
-        <div class="mail-detail-info">
-            发件人：${item.sender} &nbsp;&nbsp; 日期：${item.date}
-        </div>
-        <div class="mail-detail-content">${item.content}</div>
-        <div style="margin-top:30px;">
-            <button onclick="backToList()" style="padding:6px 16px;background:#0066cc;color:white;border:none;border-radius:4px;cursor:pointer;">返回列表</button>
-        </div>
+        <h2>${data[index].title}</h2>
+        <div>发件人：${data[index].sender} &nbsp;&nbsp; 日期：${data[index].date}</div>
+        <div style="margin-top:20px;">${data[index].content}</div>
+        <button onclick="backToList()" style="margin-top:20px;padding:6px 14px;background:#06c;color:white;border:none;border-radius:4px;">返回列表</button>
     `;
 }
 
