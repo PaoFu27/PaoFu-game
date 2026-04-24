@@ -1051,25 +1051,43 @@ function openMail(index) {
     const list = document.getElementById("mailList");
     const detail = document.getElementById("mailDetail");
 
-    // 🔥 强制状态同步（关键修复）
+    // 强制状态切换
     list.style.display = "none";
     detail.style.display = "block";
 
-    // 已读逻辑
-    if (data[index].unread) {
-        data[index].unread = false;
-    }
+    // 防止 undefined 崩溃
+    const mail = data[index];
+    if (!mail) return;
+
+    // 已读
+    mail.unread = false;
 
     detail.innerHTML = `
-        <h2>${data[index].title}</h2>
-        <div>发件人：${data[index].sender} &nbsp;&nbsp; 日期：${data[index].date}</div>
-        <div style="margin-top:20px;">${data[index].content}</div>
+        <h2>${mail.title}</h2>
+        <div>发件人：${mail.sender} &nbsp;&nbsp; 日期：${mail.date}</div>
+        <div style="margin-top:20px;">${mail.content}</div>
 
         <button onclick="backToList()" 
             style="margin-top:20px;padding:6px 14px;background:#06c;color:white;border:none;border-radius:4px;">
             返回列表
         </button>
     `;
+}
+    function backToList() {
+
+    const list = document.getElementById("mailList");
+    const detail = document.getElementById("mailDetail");
+
+    list.style.display = "block";
+    detail.style.display = "none";
+
+    if (currentMailUser) {
+        if (mailActiveTab === "inbox") renderMailBox(chenyuanInbox);
+        else if (mailActiveTab === "send") renderMailBox(chenyuanSend);
+        else if (mailActiveTab === "trash") renderMailBox(chenyuanTrash);
+    } else {
+        renderMailBox(normalMailInbox);
+    }
 }
    /* ===============================
    微信系统
