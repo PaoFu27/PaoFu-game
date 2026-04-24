@@ -609,15 +609,16 @@
     <!-- 主界面 -->
     <div id="mailMainPage" style="display:none; height:calc(100% - 42px);">
         <div class="mail-sidebar">
-            <div style="background:#0066cc; color:white; padding:10px; border-radius:4px; text-align:center; margin-bottom:20px;cursor:pointer;">写信</div>
-            <div style="padding:10px; background:#dce8f7; color:#0066cc; border-radius:4px; margin-bottom:10px;">收件箱</div>
-            <div style="padding:10px; color:#333; margin-bottom:10px;">星标邮件</div>
-            <div style="padding:10px; color:#333; margin-bottom:10px;">已发送</div>
-            <div style="padding:10px; color:#333; margin-bottom:10px;">草稿箱</div>
-            <div style="padding:10px; color:#333; margin-bottom:10px;">已删除</div>
-            <div style="padding:10px; color:#333; margin-bottom:10px;">垃圾箱</div>
-            <div style="margin-top:60px; color:#0066cc; cursor:pointer;" id="mailLogout">退出登录</div>
-        </div>
+    <div data-tab="write">写信</div>
+    <div data-tab="inbox">收件箱</div>
+    <div data-tab="star">星标邮件</div>
+    <div data-tab="send">已发送</div>
+    <div data-tab="draft">草稿箱</div>
+    <div data-tab="trash">已删除</div>
+    <div data-tab="junk">垃圾箱</div>
+
+    <div style="margin-top:60px; color:#0066cc; cursor:pointer;" id="mailLogout">退出登录</div>
+</div>
 
         <div class="mail-main">
             <div class="mail-list-header">收件箱</div>
@@ -925,43 +926,68 @@ document.getElementById("mailLogout").onclick = () => {
 
 // 菜单切换（核心修复！）
 function setActiveTab(tab) {
+
     mailActiveTab = tab;
-    let items = document.querySelectorAll(".mail-sidebar div");
-    items.forEach(el => el.classList.remove("active"));
 
-    if (tab === "inbox") items[2].classList.add("active");
-    if (tab === "send") items[4].classList.add("active");
-    if (tab === "trash") items[6].classList.add("active");
+    // 清除所有高亮
+    document.querySelectorAll(".mail-sidebar div[data-tab]").forEach(el => {
+        el.classList.remove("active");
+    });
 
+    // 设置当前高亮
+    document.querySelectorAll(".mail-sidebar div[data-tab]").forEach(el => {
+        if (el.dataset.tab === tab) {
+            el.classList.add("active");
+        }
+    });
+
+    // 关键：切换前先关闭详情页（否则会“空白假死”）
+    backToList();
+
+    // 邮件切换逻辑
     if (currentMailUser) {
+
         if (tab === "inbox") renderMailBox(chenyuanInbox);
-        if (tab === "send") renderMailBox(chenyuanSend);
-        if (tab === "trash") renderMailBox(chenyuanTrash);
+        else if (tab === "send") renderMailBox(chenyuanSend);
+        else if (tab === "trash") renderMailBox(chenyuanTrash);
+        else renderMailBox([]);
+
     } else {
+
         if (tab === "inbox") renderMailBox(normalMailInbox);
         else renderMailBox([]);
     }
 }
 
-// 绑定侧边栏点击
-document.querySelectorAll(".mail-sidebar div")[2].onclick = () => setActiveTab("inbox");
-document.querySelectorAll(".mail-sidebar div")[4].onclick = () => setActiveTab("send");
-document.querySelectorAll(".mail-sidebar div")[6].onclick = () => setActiveTab("trash");
+const sidebarItems = document.querySelectorAll(".mail-sidebar div[data-tab]");
 
+sidebarItems.forEach(item => {
+    item.onclick = () => {
+        setActiveTab(item.dataset.tab);
+    };
+});
 // 渲染邮件列表（唯一一份，无重复）
 function renderMailBox(data) {
+
     const list = document.getElementById("mailList");
     const detail = document.getElementById("mailDetail");
+
+    // 🔥 强制恢复列表显示（关键修复）
+    list.style.display = "block";
     detail.style.display = "none";
+
     window.nowMailData = data;
 
     let html = "";
+
     data.forEach((item, index) => {
+
         const unreadClass = item.unread ? "unread" : "";
         const deletedClass = mailActiveTab === "trash" ? "deleted" : "";
-        const avatarText = item.sender.charAt(0);
+        const avatarText = item.sender ? item.sender.charAt(0) : "?";
+
         html += `
-        <div class="mail-item ${unreadClass} ${deletedClass}" onclick="openMail(${index})" data-idx="${index}">
+        <div class="mail-item ${unreadClass} ${deletedClass}" data-idx="${index}" onclick="openMail(${index})">
             <div class="mail-avatar">${avatarText}</div>
             <div class="mail-info">
                 <div class="mail-title">${item.title}</div>
@@ -970,33 +996,37 @@ function renderMailBox(data) {
             <div class="mail-time">${item.date}</div>
         </div>`;
     });
+
     list.innerHTML = html;
 }
 
 // 打开邮件（自动已读）
 function openMail(index) {
+
     const data = window.nowMailData;
+
+    const list = document.getElementById("mailList");
+    const detail = document.getElementById("mailDetail");
+
+    // 🔥 强制状态同步（关键修复）
+    list.style.display = "none";
+    detail.style.display = "block";
+
+    // 已读逻辑
     if (data[index].unread) {
         data[index].unread = false;
-        let dom = document.querySelector(`.mail-item[data-idx="${index}"]`);
-        if (dom) dom.classList.remove("unread");
     }
 
-    document.getElementById("mailList").style.display = "none";
-    const detail = document.getElementById("mailDetail");
-    detail.style.display = "block";
     detail.innerHTML = `
         <h2>${data[index].title}</h2>
         <div>发件人：${data[index].sender} &nbsp;&nbsp; 日期：${data[index].date}</div>
         <div style="margin-top:20px;">${data[index].content}</div>
-        <button onclick="backToList()" style="margin-top:20px;padding:6px 14px;background:#06c;color:white;border:none;border-radius:4px;">返回列表</button>
-    `;
-}
 
-// 返回列表
-function backToList() {
-    document.getElementById("mailList").style.display = "block";
-    document.getElementById("mailDetail").style.display = "none";
+        <button onclick="backToList()" 
+            style="margin-top:20px;padding:6px 14px;background:#06c;color:white;border:none;border-radius:4px;">
+            返回列表
+        </button>
+    `;
 }
    /* ===============================
    微信系统
