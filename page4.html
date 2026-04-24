@@ -689,15 +689,11 @@ setTimeout(() => {
 
 
 /* ===============================
-   邮箱系统 - 双账号隔离版
-   1.通知点开 = 普通游客邮箱（只有小黄邮件）
-   2.手动登录陈远账号 = 解锁工作邮件
-   3.退出登录清空账号，切回空白/普通邮箱
+   邮箱系统 - 双账号隔离（修复点击版）
 =================================*/
 let currentMailUser = "";
 
 // 两套独立邮件数据
-// ① 普通默认邮箱（通知弹窗点开默认进入）
 const normalMailData = [
     {
         title: "救命！我被困住了！",
@@ -714,7 +710,6 @@ const normalMailData = [
     }
 ];
 
-// ② 陈远专属工作邮件
 const chenyuanMailData = [
     {
         title: "奖金到账通知",
@@ -770,7 +765,6 @@ const chenyuanMailData = [
     }
 ];
 
-// 账号列表
 const mailAccounts = {
     "chenyuan@xingtu-tech.com": "19990516"
 };
@@ -780,19 +774,17 @@ setTimeout(() => {
     document.getElementById("mailNoti").style.display = "block";
 }, 3000);
 
-// ========== 关键逻辑：通知点开 → 直接加载普通邮箱 ==========
+// 通知点开 → 普通邮箱（小黄邮件）
 document.getElementById("mailNoti").onclick = () => {
     document.getElementById("mailNoti").style.display = "none";
     document.getElementById("mailWindow").style.display = "block";
-    // 强制退出登录状态，进入默认普通邮箱
     currentMailUser = "";
     document.getElementById("mailLoginPage").style.display = "none";
     document.getElementById("mailMainPage").style.display = "block";
-    // 加载小黄那一封邮件
     loadMailList(normalMailData);
 };
 
-// 桌面邮箱图标 → 打开先显示登录页
+// 桌面图标 → 登录页
 document.getElementById("openMail").onclick = () => {
     document.getElementById("mailWindow").style.display = "block";
     document.getElementById("mailLoginPage").style.display = "flex";
@@ -804,17 +796,14 @@ document.getElementById("closeMail").onclick = () => {
     document.getElementById("mailWindow").style.display = "none";
 };
 
-// 邮箱登录逻辑
+// 登录
 document.getElementById("mailLoginBtn").onclick = () => {
     let u = document.getElementById("mailUser").value.trim();
     let p = document.getElementById("mailPwd").value.trim();
-
     if (mailAccounts[u] && mailAccounts[u] === p) {
-        // 登录陈远账号
         currentMailUser = u;
         document.getElementById("mailLoginPage").style.display = "none";
         document.getElementById("mailMainPage").style.display = "block";
-        // 加载陈远专属邮件
         loadMailList(chenyuanMailData);
     } else {
         alert("账号或密码错误");
@@ -826,23 +815,24 @@ document.getElementById("mailLogout").onclick = () => {
     currentMailUser = "";
     document.getElementById("mailMainPage").style.display = "none";
     document.getElementById("mailLoginPage").style.display = "flex";
-    // 清空内容
     document.getElementById("mailList").innerHTML = "";
     document.getElementById("mailDetail").style.display = "none";
 };
 
-// 通用渲染邮件列表方法
+// 渲染列表（只传 index，不要多余参数）
 function loadMailList(data) {
     const list = document.getElementById("mailList");
     const detail = document.getElementById("mailDetail");
     detail.style.display = "none";
+    window.nowMailData = data;
 
     let html = "";
     data.forEach((item, index) => {
         const unreadClass = item.unread ? "unread" : "";
         const avatarText = item.sender.charAt(0);
+        // 关键：onclick 只传 index
         html += `
-        <div class="mail-item ${unreadClass}" onclick="openMail(${index}, data)">
+        <div class="mail-item ${unreadClass}" onclick="openMail(${index})">
             <div class="mail-avatar">${avatarText}</div>
             <div class="mail-info">
                 <div class="mail-title">${item.title}</div>
@@ -852,12 +842,9 @@ function loadMailList(data) {
         </div>`;
     });
     list.innerHTML = html;
-
-    // 挂载当前邮件数据到全局，供查看详情使用
-    window.nowMailData = data;
 }
 
-// 打开邮件详情
+// 打开详情（只收 index，从全局拿数据）
 function openMail(index) {
     const item = window.nowMailData[index];
     const detail = document.getElementById("mailDetail");
@@ -876,12 +863,11 @@ function openMail(index) {
     `;
 }
 
-// 返回邮件列表
+// 返回列表
 function backToList() {
     document.getElementById("mailList").style.display = "block";
     document.getElementById("mailDetail").style.display = "none";
 }
-
    /* ===============================
    微信系统
 =================================*/
