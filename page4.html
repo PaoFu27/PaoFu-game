@@ -662,6 +662,29 @@ document.getElementById("wxLoginBtn").onclick = () => {
         alert("账号或密码错误");
     }
 };
+    /* ===============================
+   退出登录（修复）
+=================================*/
+
+// 林薇安退出
+document.getElementById("wxExit").onclick = () => {
+
+    document.getElementById("wxLogin").style.display = "flex";
+    document.getElementById("wxContainer").style.display = "none";
+    document.getElementById("wxContainerCy").style.display = "none";
+
+    document.getElementById("wxChatRight").style.display = "none";
+};
+
+// 陈远退出
+document.getElementById("wxExitCy").onclick = () => {
+
+    document.getElementById("wxLogin").style.display = "flex";
+    document.getElementById("wxContainer").style.display = "none";
+    document.getElementById("wxContainerCy").style.display = "none";
+
+    document.getElementById("wxChatRightCy").style.display = "none";
+};
 
 
 /* ===============================
