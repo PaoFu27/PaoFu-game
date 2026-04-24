@@ -622,208 +622,224 @@ document.getElementById('mailLogout').onclick = () => {
     document.getElementById('mailLoginPage').style.display = 'flex';
 };
 
-    // 打开微信
-    document.getElementById('openWeChat').onclick = () => {
-        document.getElementById('wxWindow').style.display = 'block';
-    };
-    document.getElementById('closeWeChat').onclick = () => {
-        document.getElementById('wxWindow').style.display = 'none';
-    };
+   /* ===============================
+   微信系统
+=================================*/
+let currentUser = "";
 
-   // 微信登录（林薇安 + 陈远 双账号）
-document.getElementById('wxLoginBtn').onclick = () => {
-    let u = document.getElementById('wxUser').value.trim();
-    let p = document.getElementById('wxPwd').value.trim();
+document.getElementById("openWeChat").onclick = () => {
+    document.getElementById("wxWindow").style.display = "block";
+};
+
+
+/* ===============================
+   登录
+=================================*/
+document.getElementById("wxLoginBtn").onclick = () => {
+
+    let u = document.getElementById("wxUser").value.trim();
+    let p = document.getElementById("wxPwd").value.trim();
 
     // 林薇安
-    if(u === 'linweian' && p === '20010822'){
-        document.getElementById('wxLogin').style.display = 'none';
-        document.getElementById('wxContainer').style.display = 'block'; // 显示林薇安微信
-        document.getElementById('wxContainerCy').style.display = 'none';
+    if (u === "linweian" && p === "20010822") {
+
+        currentUser = "linweian";
+
+        document.getElementById("wxLogin").style.display = "none";
+        document.getElementById("wxContainer").style.display = "block";
+        document.getElementById("wxContainerCy").style.display = "none";
     }
-    // 陈远 ✅
-    else if(u === 'chenyuan' && p === '20231107'){
-        document.getElementById('wxLogin').style.display = 'none';
-        document.getElementById('wxContainerCy').style.display = 'block'; // 显示陈远微信
-        document.getElementById('wxContainer').style.display = 'none';
+
+    // 陈远
+    else if (u === "chenyuan" && p === "20231107") {
+
+        currentUser = "chenyuan";
+
+        document.getElementById("wxLogin").style.display = "none";
+        document.getElementById("wxContainerCy").style.display = "block";
+        document.getElementById("wxContainer").style.display = "none";
     }
+
     else {
-        alert('账号或密码错误');
+        alert("账号或密码错误");
     }
 };
 
-   document.getElementById('closeWeChat').onclick = () => {
-    document.getElementById('wxWindow').style.display = 'none';
-    // 退出时重置两个微信界面
-    document.getElementById('wxLogin').style.display = 'flex';
-    document.getElementById('wxContainer').style.display = 'none';
-    document.getElementById('wxContainerCy').style.display = 'none';
+
+/* ===============================
+   关闭微信
+=================================*/
+document.getElementById("closeWeChat").onclick = () => {
+
+    document.getElementById("wxWindow").style.display = "none";
+
+    document.getElementById("wxLogin").style.display = "flex";
+    document.getElementById("wxContainer").style.display = "none";
+    document.getElementById("wxContainerCy").style.display = "none";
+
+    document.getElementById("wxChatRight").style.display = "none";
+    document.getElementById("wxChatRightCy").style.display = "none";
+
+    currentUser = "";
 };
 
-    // 聊天数据（阿远对话大幅扩充，4.22前全部回复）
-    const chatData = {
-        ayuan: [
-            {date:'2026-02-05',text:'宝贝早安～',type:'left'},
-            {date:'2026-02-05',text:'早呀，今天也要加油',type:'right'},
-            {date:'2026-02-08',text:'晚上一起吃饭不',type:'left'},
-            {date:'2026-02-08',text:'好呀，去吃你喜欢的火锅',type:'right'},
-            {date:'2026-02-14',text:'情人节快乐宝贝',type:'left'},
-            {date:'2026-02-14',text:'快乐～爱你',type:'right'},
-            {date:'2026-03-01',text:'这周末天气好，去公园走走',type:'left'},
-            {date:'2026-03-01',text:'可以呀，我带上相机',type:'right'},
-            {date:'2026-03-07',text:'最近工作忙不忙',type:'left'},
-            {date:'2026-03-07',text:'有点忙，不过还好',type:'right'},
-            {date:'2026-03-12',text:'晚安啦',type:'left'},
-            {date:'2026-03-12',text:'晚安，做个好梦',type:'right'},
-            {date:'2026-03-18',text:'想你啦',type:'left'},
-            {date:'2026-03-18',text:'我也想你',type:'right'},
-            {date:'2026-03-25',text:'周末去看新上映的电影',type:'left'},
-            {date:'2026-03-25',text:'好，我买票',type:'right'},
-            {date:'2026-04-02',text:'最近过得怎么样',type:'left'},
-            {date:'2026-04-02',text:'挺好的，你呢',type:'right'},
-            {date:'2026-04-05',text:'一切顺利',type:'left'},
-            {date:'2026-04-10',text:'下个月16号是你生日，想要什么礼物',type:'right'},
-            {date:'2026-04-10',text:'只要你陪着就好啦',type:'left'},
-            {date:'2026-04-15',text:'快到你生日啦，期待不',type:'right'},
-            {date:'2026-04-15',text:'超级期待！',type:'left'},
-            {date:'2026-04-20',text:'今天忙了一天',type:'left'},
-            {date:'2026-04-20',text:'辛苦啦，早点休息',type:'right'},
-            {date:'2026-04-21',text:'晚安安安',type:'left'},
-            {date:'2026-04-21',text:'晚安～',type:'right'},
-            {date:'2026-04-22',text:'早上好~',type:'right'},
-            {date:'2026-04-22',text:'在干嘛呀',type:'right'},
-            {date:'2026-04-22',text:'给你打电话也不接，家里公司你都不在，你到底在哪里',type:'right'}
-        ],
-        mom: [
-            {date:'2026-04-19',text:'安安，吃饭了吗',type:'left'},
-            {date:'2026-04-19',text:'吃啦',type:'right'},
-            {date:'2026-04-21',text:'天气凉，多穿衣',type:'left'},
-            {date:'2026-04-21',text:'知道啦妈妈',type:'right'}
-        ],
-        uncle: [
-            {date:'2026-04-22',text:'陈叔叔，阿远回家了吗',type:'right'},
-            {date:'2026-04-22',text:'没有回家，怎么了',type:'left'},
-            {date:'2026-04-22',text:'我联系不上他了',type:'right'},
-            {date:'2026-04-22',text:'别着急，我帮你问问',type:'left'}
-        ],
-        xiaolin: [
-            {date:'2026-04-23',text:'小林，我男朋友不见了',type:'right'},
-            {date:'2026-04-23',text:'安安别慌，慢慢说',type:'left'},
-            {date:'2026-04-23',text:'昨天开始就找不到他',type:'right'},
-            {date:'2026-04-23',text:'你试试登他微信和邮箱',type:'left'},
-            {date:'2026-04-23',text:'我试试找密码',type:'right'}
-        ]
-    };
-    const chatDataCy = {
-    anan: [
-        {date:'2026-02-05',text:'宝贝早安～',type:'right'},
-        {date:'2026-02-05',text:'早呀，今天也要加油',type:'left'},
-        {date:'2026-02-08',text:'晚上一起吃饭不',type:'right'},
-        {date:'2026-02-08',text:'好呀，去吃你喜欢的火锅',type:'left'},
-        {date:'2026-02-14',text:'情人节快乐宝贝',type:'right'},
-        {date:'2026-02-14',text:'快乐～爱你',type:'left'},
-        {date:'2026-03-01',text:'这周末天气好，去公园走走',type:'right'},
-        {date:'2026-03-01',text:'可以呀，我带上相机',type:'left'},
-        {date:'2026-03-07',text:'最近工作忙不忙',type:'right'},
-        {date:'2026-03-07',text:'有点忙，不过还好',type:'left'},
-        {date:'2026-03-12',text:'晚安啦',type:'right'},
-        {date:'2026-03-12',text:'晚安，做个好梦',type:'left'},
-        {date:'2026-03-18',text:'想你啦',type:'right'},
-        {date:'2026-03-18',text:'我也想你',type:'left'},
-        {date:'2026-03-25',text:'周末去看新上映的电影',type:'right'},
-        {date:'2026-03-25',text:'好，我买票',type:'left'},
-        {date:'2026-04-02',text:'最近过得怎么样',type:'right'},
-        {date:'2026-04-02',text:'挺好的，你呢',type:'left'},
-        {date:'2026-04-05',text:'一切顺利',type:'right'},
-        {date:'2026-04-10',text:'下个月16号是你生日，想要什么礼物',type:'left'},
-        {date:'2026-04-10',text:'只要你陪着就好啦',type:'right'},
-        {date:'2026-04-15',text:'快到你生日啦，期待不',type:'left'},
-        {date:'2026-04-15',text:'超级期待！',type:'right'},
-        {date:'2026-04-20',text:'今天忙了一天',type:'right'},
-        {date:'2026-04-20',text:'辛苦啦，早点休息',type:'left'},
-        {date:'2026-04-21',text:'晚安安安',type:'right'},
-        {date:'2026-04-21',text:'晚安～',type:'left'},
-        {date:'2026-04-22',text:'早上好~',type:'left'},
-        {date:'2026-04-22',text:'在干嘛呀',type:'left'},
-        {date:'2026-04-22',text:'给你打电话也不接，家里公司你都不在，你到底在哪里',type:'left'}
+
+/* ===============================
+   聊天数据（统一）
+=================================*/
+const messages = {
+
+    lover: [
+        {date:"2026-02-05", sender:"chenyuan", text:"宝贝早安～"},
+        {date:"2026-02-05", sender:"linweian", text:"早呀，今天也要加油"},
+        {date:"2026-02-08", sender:"chenyuan", text:"晚上一起吃饭不"},
+        {date:"2026-02-08", sender:"linweian", text:"好呀，去吃你喜欢的火锅"},
+        {date:"2026-02-14", sender:"chenyuan", text:"情人节快乐宝贝"},
+        {date:"2026-02-14", sender:"linweian", text:"快乐～爱你"},
+        {date:"2026-03-01", sender:"chenyuan", text:"这周末天气好，去公园走走"},
+        {date:"2026-03-01", sender:"linweian", text:"可以呀，我带上相机"},
+        {date:"2026-03-07", sender:"chenyuan", text:"最近工作忙不忙"},
+        {date:"2026-03-07", sender:"linweian", text:"有点忙，不过还好"},
+        {date:"2026-03-18", sender:"chenyuan", text:"想你啦"},
+        {date:"2026-03-18", sender:"linweian", text:"我也想你"},
+        {date:"2026-03-25", sender:"chenyuan", text:"周末去看新上映的电影"},
+        {date:"2026-03-25", sender:"linweian", text:"好，我买票"},
+        {date:"2026-04-10", sender:"linweian", text:"下个月16号是你生日，想要什么礼物"},
+        {date:"2026-04-10", sender:"chenyuan", text:"只要你陪着就好啦"},
+        {date:"2026-04-20", sender:"chenyuan", text:"今天忙了一天"},
+        {date:"2026-04-20", sender:"linweian", text:"辛苦啦，早点休息"},
+        {date:"2026-04-20", sender:"chenyuan", text:"晚安安安"},
+        {date:"2026-04-20", sender:"linweian", text:"晚安～"},
+        {date:"2026-04-22", sender:"linweian", text:"早上好~"},
+        {date:"2026-04-22", sender:"linweian", text:"在干嘛呀"},
+        {date:"2026-04-22", sender:"linweian", text:"给你打电话也不接，家里公司你都不在，你到底在哪里"}
+    ],
+
+    mom: [
+        {date:"2026-04-19", sender:"mom", text:"安安，吃饭了吗"},
+        {date:"2026-04-19", sender:"linweian", text:"吃啦"}
+        {date:"2026-04-21", sender:"mom", text:"天气凉，多穿衣"},
+        {date:"2026-04-21", sender:"linweian", text:"知道啦妈妈"}
+    ],
+
+    uncle: [
+        {date:"2026-04-22", sender:"linweian", text:"陈叔叔，阿远回家了吗"},
+        {date:"2026-04-22", sender:"uncle", text:"没有回家，怎么了"}
+        {date:"2026-04-22", sender:"linweian", text:"我联系不上他了"},
+        {date:"2026-04-22", sender:"uncle", text:"别着急，我去问问"}
+    ],
+
+    xiaolin: [
+        {date:"2026-04-23", sender:"linweian", text:"小林，我男朋友不见了"},
+        {date:"2026-04-23", sender:"xiaolin", text:"安安别慌，慢慢说"}
+        {date:"2026-04-23", sender:"linweian", text:"昨天开始就找不到他"},
+        {date:"2026-04-23", sender:"xiaolin", text:"你试试登他微信看看"}
+        {date:"2026-04-23", sender:"linweian", text:"试过了，密码不是他生日"},
+        {date:"2026-04-23", sender:"xiaolin", text:"看看有没有其他日期也试试，还有邮箱你也尝试登录看看"}
+        {date:"2026-04-23", sender:"linweian", text:"好的，我找找看密码"},
     ],
 
     sun: [
-        {date:'2021-07-15',text:'恭喜你正式入职【星途】公司，从今天起你就是项目部成员了',type:'left'},
-        {date:'2021-07-15',text:'谢谢孙财务，我会努力的',type:'right'},
-        {date:'2021-07-15',text:'请把你的银行卡号发给我，用于工资发放登记',type:'left'},
-        {date:'2021-07-15',text:'好的，我稍后发你',type:'right'},
-
-        {date:'2026-03-15',text:'本月奖金已发放，请查收公司邮件系统',type:'left'},
-        {date:'2026-03-15',text:'收到，谢谢提醒',type:'right'},
-        {date:'2026-03-15',text:'另外系统显示你最近登录异常，如需帮助请联系IT',type:'left'},
-        {date:'2026-03-15',text:'我知道了',type:'right'}
+        {date:"2021-07-15", sender:"sun", text:"恭喜你正式入职【星途】公司，从今天起你就是项目部成员了"},
+        {date:"2021-07-15", sender:"chenyuan", text:"谢谢孙财务，我会努力的"}
+        {date:"2021-07-15", sender:"sun", text:"请把你的银行卡号发给我，用于工资发放登记"},
+        {date:"2021-07-15", sender:"chenyuan", text:"好的，我稍后发你"}
+        {date:"2026-03-15", sender:"sun", text:"本月奖金已发放，请查收公司邮件"},
+        {date:"2026-03-15", sender:"chenyuan", text:"收到，谢谢提醒"}
     ],
 
     liao: [
-        {date:'2026-04-21',text:'晚上20:00到公司一趟，有重要项目要谈',type:'left'},
-        {date:'2026-04-21',text:'好的廖总，我准时到',type:'right'},
-        {date:'2026-04-21',text:'记得带上你之前负责的“星图系统”资料',type:'left'},
-        {date:'2026-04-21',text:'明白',type:'right'},
-        {date:'2026-04-21',text:'不要迟到，这次很关键',type:'left'}
+        {date:"2026-04-21", sender:"liao", text:"晚上20:00到公司一趟，有重要项目要谈"},
+        {date:"2026-04-21", sender:"chenyuan", text:"好的廖总，我准时到"}
     ],
 
     dad: [
-        {date:'2026-04-22',text:'小远，你在哪里？',type:'left'},
-        {date:'2026-04-22',text:'看到信息回个电话',type:'left'},
-        {date:'2026-04-22',text:'我有点担心你',type:'left'}
+        {date:"2026-04-22", sender:"dad", text:"小远，你在哪里？"},
+        {date:"2026-04-22", sender:"dad", text:"看到信息回个电话"},
+        {date:"2026-04-22", sender:"dad", text:"我有点担心你"}
     ]
 };
 
-    // 打开聊天
-    function bindCyChat() {
 
-    const container = document.getElementById("wxContainerCy");
+/* ===============================
+   打开聊天
+=================================*/
+function openChat(chatId, name) {
 
-    container.querySelectorAll(".wx-chat-item").forEach(item => {
+    let right, box, title;
 
-        item.onclick = function () {
+    if (currentUser === "linweian") {
+        right = document.getElementById("wxChatRight");
+        box = document.getElementById("wxChatContent");
+        title = document.getElementById("currentChatName");
+    } else {
+        right = document.getElementById("wxChatRightCy");
+        box = document.getElementById("wxChatContentCy");
+        title = document.getElementById("currentChatNameCy");
+    }
 
-            const key = this.dataset.target;
-            const data = chatDataCy[key];
+    right.style.display = "block";
+    title.innerText = name;
 
-            if (!data) return;
+    let data = messages[chatId];
+    let html = "";
+    let lastDate = "";
 
-            const right = document.getElementById("wxChatRightCy");
-            const box = document.getElementById("wxChatContentCy");
+    data.forEach(m => {
 
-            right.style.display = "block";
+        if (m.date !== lastDate) {
+            html += `<div class="msg-date">${m.date}</div>`;
+            lastDate = m.date;
+        }
 
-            document.getElementById("currentChatNameCy").innerText =
-                this.innerText.trim();
+        let side = m.sender === currentUser ? "right" : "left";
 
-            let html = "";
-            let lastDate = "";
-
-            data.forEach(m => {
-
-                if (m.date !== lastDate) {
-                    html += `<div class="msg-date">${m.date}</div>`;
-                    lastDate = m.date;
-                }
-
-                html += `<div class="msg ${m.type === 'left' ? 'msg-left' : 'msg-right'}">${m.text}</div>`;
-            });
-
-            box.innerHTML = html;
-        };
+        html += `
+        <div class="msg ${side === "left" ? "msg-left" : "msg-right"}">
+            ${m.text}
+        </div>`;
     });
+
+    box.innerHTML = html;
 }
 
-bindCyChat();
 
-    // 返回聊天列表
-    document.getElementById('wxBack').onclick = () => {
-        document.getElementById('wxChatRight').style.display = 'none';
+/* ===============================
+   点击联系人
+=================================*/
+document.querySelectorAll(".wx-chat-item").forEach(item => {
+
+    item.onclick = () => {
+
+        const key = item.dataset.target;
+        const name = item.innerText.trim();
+
+        // 阿远 / 安安 都走情侣聊天
+        if (key === "ayuan" || key === "anan") {
+            openChat("lover", name);
+        } else {
+            openChat(key, name);
+        }
     };
-document.getElementById('openWeibo').onclick = () => {
-  window.open('weibo.html', '_blank');
+});
+
+
+/* ===============================
+   返回按钮
+=================================*/
+document.getElementById("wxBack").onclick = () => {
+    document.getElementById("wxChatRight").style.display = "none";
+};
+
+document.getElementById("wxBackCy").onclick = () => {
+    document.getElementById("wxChatRightCy").style.display = "none";
+};
+
+
+/* ===============================
+   微博
+=================================*/
+document.getElementById("openWeibo").onclick = () => {
+    window.open("weibo.html", "_blank");
 };
 </script>
-</body>
-</html>
