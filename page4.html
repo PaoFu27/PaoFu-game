@@ -540,7 +540,7 @@
             <div style="margin-top:60px; color:#0066cc; cursor:pointer;" id="mailLogout">退出登录</div>
         </div>
 
-        <div style="width:calc(100% - 200px); height:100%; float:left; padding:20px; background:white; overflow-y:auto;">
+        <div id="mailContent" style="width:calc(100% - 200px); height:100%; float:left; padding:20px; background:white; overflow-y:auto;">
             <h3 style="margin-bottom:20px;">收件箱</h3>
             <div class="mail-item" id="openMsg" style="padding:12px; border-bottom:1px solid #eee; cursor:pointer;">
                 <strong>小黄</strong> · 救命！我被困住了！
@@ -691,7 +691,12 @@ document.getElementById("mailLoginBtn").onclick = () => {
 =================================*/
 function loadMail(user) {
 
-    const box = document.querySelector(".mail-main");
+    const box = document.getElementById("mailContent");
+
+    if (!box) {
+        console.error("mailContent 没找到");
+        return;
+    }
 
     if (user === "chenyuan@xingtu-tech.com") {
 
@@ -699,19 +704,19 @@ function loadMail(user) {
             <h3>收件箱</h3>
 
             <div class="mail-item" onclick="openMail(0)">
-                <strong>孙财务（星途公司）</strong> · 奖金已到账
+                <strong>孙财务（星途）</strong> · 奖金到账
             </div>
 
             <div class="mail-item" onclick="openMail(1)">
-                <strong>未知发件人</strong> · ⚠ 停止研发
+                <strong>未知发件人</strong> · 停止研发
             </div>
 
             <div class="mail-item" onclick="openMail(2)">
-                <strong>廖哲</strong> · 星核项目奖励通知
+                <strong>廖哲</strong> · 星核项目奖励
             </div>
 
             <div class="mail-item" onclick="openMail(3)">
-                <strong>系统</strong> · 登录异常提醒
+                <strong>系统</strong> · 安全提醒
             </div>
         `;
     }
