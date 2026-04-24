@@ -229,12 +229,13 @@
     transition: background 0.2s;
     background: #fff;
 }
+/* 修复未读邮件蓝色高亮 */
 .mail-item.unread {
-    background: #f0f7ff;
-    font-weight: 500;
+    background-color: #edf4ff !important;
+    font-weight: 600 !important;
 }
-.mail-item:hover {
-    background: #f5f8ff;
+.mail-item.unread:hover {
+    background-color: #e0ecff !important;
 }
 .mail-avatar {
     width: 36px;
@@ -689,13 +690,17 @@ setTimeout(() => {
 
 
 /* ===============================
-   邮箱系统｜最终完整版
-   最新置顶 + 已读自动消未读 + 完整剧情邮件
+   邮箱最终修复版
+   1.未读蓝色高亮正常显示
+   2.收件箱 / 已发送 彻底分离
+   3.回信全部收纳进【已发送】
 =================================*/
 let currentMailUser = "";
+// 全局标记：当前选中栏目
+let mailActiveTab = "inbox";
 
-// 普通游客邮箱（小黄求救）
-const normalMailData = [
+// 普通游客邮箱（小黄 - 仅收件）
+const normalMailInbox = [
     {
         title: "救命！我被困住了！",
         sender: "小黄",
@@ -710,10 +715,12 @@ const normalMailData = [
         `
     }
 ];
+const normalMailSend = [];
 
-// 陈远邮件 - 【最新日期置顶 从新→旧排序】
-const chenyuanMailData = [
-    // 1. 最新 2026-04-23 异常登录（初始未读）
+// ========== 陈远 拆分：收件箱 / 已发送 ==========
+// 收件箱：别人发给陈远
+const chenyuanInbox = [
+    // 最新 未读
     {
         title: "【系统】账号异常登录安全提醒",
         sender: "邮箱安全系统",
@@ -729,9 +736,8 @@ const chenyuanMailData = [
             <p>—— 邮箱安全中心</p>
         `
     },
-    // 2. 2026-04-10 神秘人对话链
     {
-        title: "Re：Re｜无需知晓我的身份",
+        title: "Re：⚠ 紧急警告：终止星核一切研发",
         sender: "未知匿名发件人",
         date: "2026-04-11",
         unread: false,
@@ -745,18 +751,6 @@ const chenyuanMailData = [
         `
     },
     {
-        title: "Re：⚠ 紧急警告：终止星核一切研发",
-        sender: "陈远",
-        date: "2026-04-10",
-        unread: false,
-        desc: "询问对方身份，星核项目为公司正规项目",
-        content: `
-            <p>你好：</p>
-            <p>星核计划是公司内部正规立项研发项目，所有流程合规合法。</p>
-            <p>请问你是谁？为什么要阻止项目推进？警告的依据是什么？</p>
-        `
-    },
-    {
         title: "⚠ 紧急警告：终止星核一切研发",
         sender: "未知匿名发件人",
         date: "2026-04-10",
@@ -764,16 +758,15 @@ const chenyuanMailData = [
         desc: "立即停止星核计划相关所有工作，否则后果不堪设想",
         content: `
             <h3 style="color:#c00;">警告｜最高优先级</h3>
-            <p>立刻停止所有与「星核计划」「星图系统」相关的研发、优化、测试工作。</p>
+            <p>立刻停止所有与「星核计划」相关的研发、优化、测试工作。</p>
             <p>该项目存在不可控的未知风险，继续深入研发会触发连锁隐患，带来你无法承担的后果。</p>
             <p>不要追问、不要上报、不要继续推进。</p>
         `
     },
-    // 3. 2026-04-21 银行入账
     {
         title: "【银行通知】账户入账提醒",
         sender: "兴业银行官方",
-        date: "2026-03-15",
+        date: "2026-04-21",
         unread: false,
         desc: "入账金额：专项项目奖金，余额已更新",
         content: `
@@ -783,21 +776,6 @@ const chenyuanMailData = [
             <p>账户当前余额已实时更新，可登录手机银行查询明细。</p>
             <br>
             <p>【星途企业代发专属通知】</p>
-        `
-    },
-    // 4. 2026-04-20 孙财务 + 陈远回复
-    {
-        title: "Re：本月绩效奖金到账通知",
-        sender: "陈远",
-        date: "2026-03-15",
-        unread: false,
-        desc: "已知悉奖金发放通知，感谢财务对接",
-        content: `
-            <p>孙财务您好：</p>
-            <p>已收到绩效奖金通知，辛苦月度核算与对接工作。</p>
-            <p>后续如有薪资、报销相关通知可随时邮件联系。</p>
-            <br>
-            <p>—— 陈远</p>
         `
     },
     {
@@ -814,7 +792,6 @@ const chenyuanMailData = [
             <p>—— 星途财务部</p>
         `
     },
-    // 5. 2026-04-19 研发部
     {
         title: "城市体验计划V2.0 交付进度确认",
         sender: "研发部",
@@ -827,25 +804,10 @@ const chenyuanMailData = [
             <p>接口文档、配置文件已上传内部加密服务器，请研发负责人及时查阅。</p>
         `
     },
-    // 6. 2026-04-18 廖哲 + 陈远回复
-    {
-        title: "Re：「星核」项目专项奖励通知",
-        sender: "陈远",
-        date: "2026-02-25",
-        unread: false,
-        desc: "收到奖励通知，会继续跟进星核优化工作",
-        content: `
-            <p>廖总您好：</p>
-            <p>感谢公司认可与专项奖励，后续我会全力跟进星核系统优化，保证项目稳定推进。</p>
-            <p>机密内容我会严格保管，遵守公司保密协议。</p>
-            <br>
-            <p>—— 陈远</p>
-        `
-    },
     {
         title: "「星核」项目专项奖励通知",
         sender: "廖哲",
-        date: "2026-02-25",
+        date: "2026-02-10",
         unread: false,
         desc: "项目突破奖励下发，你已进入核心研发序列",
         content: `
@@ -859,23 +821,65 @@ const chenyuanMailData = [
     }
 ];
 
+// 已发送：陈远所有回复邮件
+const chenyuanSend = [
+    {
+        title: "Re：⚠ 紧急警告：终止星核一切研发",
+        sender: "陈远",
+        date: "2026-04-10",
+        desc: "询问对方身份，星核项目为公司正规项目",
+        content: `
+            <p>你好：</p>
+            <p>星核计划是公司内部正规立项研发项目，所有流程合规合法。</p>
+            <p>请问你是谁？为什么要阻止项目推进？警告的依据是什么？</p>
+        `
+    },
+    {
+        title: "Re：本月绩效奖金到账通知",
+        sender: "陈远",
+        date: "2026-03-15",
+        desc: "已知悉奖金发放通知，感谢财务对接",
+        content: `
+            <p>孙财务您好：</p>
+            <p>已收到绩效奖金通知，辛苦月度核算与对接工作。</p>
+            <p>后续如有薪资、报销相关通知可随时邮件联系。</p>
+            <br>
+            <p>—— 陈远</p>
+        `
+    },
+    {
+        title: "Re：「星核」项目专项奖励通知",
+        sender: "陈远",
+        date: "2026-02-10",
+        desc: "收到奖励通知，会继续跟进星核优化工作",
+        content: `
+            <p>廖总您好：</p>
+            <p>感谢公司认可与专项奖励，后续我会全力跟进星核系统优化，保证项目稳定推进。</p>
+            <p>机密内容我会严格保管，遵守公司保密协议。</p>
+            <br>
+            <p>—— 陈远</p>
+        `
+    }
+];
+
 const mailAccounts = {
     "chenyuan@xingtu-tech.com": "19990516"
 };
 
-// 开场邮件通知
+// 开场通知
 setTimeout(() => {
     document.getElementById("mailNoti").style.display = "block";
 }, 3000);
 
-// 通知点开 = 小黄邮箱
+// 通知点开 → 小黄收件箱
 document.getElementById("mailNoti").onclick = () => {
     document.getElementById("mailNoti").style.display = "none";
     document.getElementById("mailWindow").style.display = "block";
     currentMailUser = "";
+    mailActiveTab = "inbox";
     document.getElementById("mailLoginPage").style.display = "none";
     document.getElementById("mailMainPage").style.display = "block";
-    loadMailList(normalMailData);
+    renderMailBox(normalMailInbox);
 };
 
 // 桌面邮箱图标
@@ -896,9 +900,10 @@ document.getElementById("mailLoginBtn").onclick = () => {
     let p = document.getElementById("mailPwd").value.trim();
     if (mailAccounts[u] && mailAccounts[u] === p) {
         currentMailUser = u;
+        mailActiveTab = "inbox";
         document.getElementById("mailLoginPage").style.display = "none";
         document.getElementById("mailMainPage").style.display = "block";
-        loadMailList(chenyuanMailData);
+        renderMailBox(chenyuanInbox);
     } else {
         alert("账号或密码错误");
     }
@@ -907,14 +912,29 @@ document.getElementById("mailLoginBtn").onclick = () => {
 // 退出登录
 document.getElementById("mailLogout").onclick = () => {
     currentMailUser = "";
+    mailActiveTab = "inbox";
     document.getElementById("mailMainPage").style.display = "none";
     document.getElementById("mailLoginPage").style.display = "flex";
     document.getElementById("mailList").innerHTML = "";
     document.getElementById("mailDetail").style.display = "none";
 };
 
+// 侧边栏栏目切换 绑定点击事件
+document.querySelector(".mail-sidebar div:nth-child(3)").onclick = function(){
+    mailActiveTab = "inbox";
+    if(currentMailUser === "chenyuan@xingtu-tech.com"){
+        renderMailBox(chenyuanInbox);
+    }else{
+        renderMailBox(normalMailInbox);
+    }
+};
+document.querySelector(".mail-sidebar div:nth-child(5)").onclick = function(){
+    mailActiveTab = "send";
+    renderMailBox(currentMailUser ? chenyuanSend : []);
+};
+
 // 渲染邮件列表
-function loadMailList(data) {
+function renderMailBox(data){
     const list = document.getElementById("mailList");
     const detail = document.getElementById("mailDetail");
     detail.style.display = "none";
@@ -937,14 +957,13 @@ function loadMailList(data) {
     list.innerHTML = html;
 }
 
-// 打开邮件 + 自动标记已读
+// 打开邮件 + 自动标已读
 function openMail(index) {
     const data = window.nowMailData;
-    // 关键：未读 → 强制改为已读
     if(data[index].unread === true){
         data[index].unread = false;
-        // 移除高亮样式
-        document.querySelector(`.mail-item[data-idx="${index}"]`).classList.remove("unread");
+        const dom = document.querySelector(`.mail-item[data-idx="${index}"]`);
+        if(dom) dom.classList.remove("unread");
     }
 
     const item = data[index];
@@ -1234,6 +1253,13 @@ document.addEventListener("DOMContentLoaded", () => {
         name: "城市体验计划报道",
         action: () => {
             window.open("chengshitiyan.html", "_blank");
+        }
+    },
+        {
+        keyword: "星核计划",
+        name: "廖总专访-星核计划",
+        action: () => {
+            window.open("xinghejihua.html", "_blank");
         }
     }
     ];
