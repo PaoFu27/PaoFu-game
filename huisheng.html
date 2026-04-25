@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>回声论坛 - 声音留存</title>
+    <title>限时论坛 - 声音留存</title>
     <style>
         * {
             margin: 0;
@@ -104,10 +104,6 @@
             opacity: 0.7;
         }
 
-        .post.expired h2 {
-            color: #999;
-        }
-
         .delete-tag {
             color: #ff4444;
             font-weight: bold;
@@ -169,21 +165,22 @@
 <!-- 首页 -->
 <div id="homePage">
     <div class="header">
-        <h1>回声论坛</h1>
+        <h1>限时论坛</h1>
         <p>声音短暂，但愿有人听见</p>
     </div>
 
     <div class="notice">
         <h3>📢 论坛特殊规则公告</h3>
-        <p>1. 由于论坛特殊性，帖子仅能保留<strong>一个星期</strong>，超过一周将无法查看回复</p>
+        <p>1. 帖子仅能保留<strong>一个星期</strong>，超过一周将无法查看回复</p>
         <p>2. 超过<strong>一个月</strong>的帖子会彻底销毁数据</p>
+        <p>3. 首页仅展示30天内的帖子，一周内可正常查看，超时显示已删除</p>
         <p>期望有一天能有人听到我们的声音</p>
     </div>
 
     <div class="post-list" id="postList"></div>
 
     <div class="footer">
-        <p>回声论坛 · 留存短暂的声音</p>
+        <p>限时论坛 · 留存短暂的声音</p>
         <p>仅展示30天内内容 · 一周后不可查看 · 一月后销毁</p>
     </div>
 </div>
@@ -200,54 +197,89 @@
 </div>
 
 <script>
-    // 生成动态时间
-    function getDynamicTime(daysAgo) {
-        const now = new Date();
-        now.setDate(now.getDate() - daysAgo);
-        const y = now.getFullYear();
-        const m = String(now.getMonth()+1).padStart(2,0);
-        const d = String(now.getDate()).padStart(2,0);
-        const h = String(now.getHours()).padStart(2,0);
-        const min = String(now.getMinutes()).padStart(2,0);
-        return `${y}-${m}-${d} ${h}:${min}`;
-    }
-
-    // 10条帖子
+    // ==============================================
+    // 今天是 2025-04-23，时间全部给你设置好了！
+    // 7天内可点开，7-30天灰色显示
+    // ==============================================
     const posts = [
         {
             title: "星途公司恶意拖欠工资三个月，生活快撑不住了",
-            time: getDynamicTime(0),
+            time: "2025-04-23 10:00",
             content: "我在星途公司工作半年，从9月份开始就没发过工资，找领导沟通一直推脱，现在房租都交不起，家里还有老人要养，实在走投无路了。",
-            replies: [{name:"受害者1",text:"我也是被拖欠工资，一起维权吧",time:getDynamicTime(0)},{name:"路人甲",text:"太黑心了，必须曝光他们",time:getDynamicTime(0)}]
+            replies: [
+                {name:"受害者1",text:"我也是被拖欠工资，一起维权吧",time:"2025-04-23 10:15"},
+                {name:"路人甲",text:"太黑心了，必须曝光他们",time:"2025-04-23 11:20"}
+            ]
         },
         {
             title: "被星途虚假宣传欺骗，血汗钱全没了",
-            time: getDynamicTime(1),
+            time: "2025-04-22 14:00",
             content: "星途宣传的项目收益很高，我把全部积蓄投进去，现在平台直接不理人，客服拉黑，报警也没用，感觉人生都毁了。",
-            replies: [{name:"同病相怜",text:"我也被骗了，找他们完全不处理",time:getDynamicTime(1)}]
+            replies: [
+                {name:"同病相怜",text:"我也被骗了，找他们完全不处理",time:"2025-04-22 15:10"}
+            ]
         },
         {
             title: "星途职场霸凌严重，被迫离职还不给赔偿",
-            time: getDynamicTime(2),
+            time: "2025-04-21 09:30",
             content: "在星途上班每天被领导辱骂、压榨，加班到凌晨没有加班费，反抗就被辞退，劳动仲裁他们还找关系施压，太绝望了。",
-            replies: [{name:"前员工",text:"里面管理真的混乱，欺负新人是常态",time:getDynamicTime(2)}]
+            replies: [
+                {name:"前员工",text:"里面管理真的混乱，欺负新人是常态",time:"2025-04-21 10:20"}
+            ]
         },
-        { title: "星途合同全是陷阱，签完就变脸", time: getDynamicTime(3), content: "当初签约星途时说的各种福利、保障，合同里全是文字游戏，现在出问题他们拿合同说事，我们普通人根本斗不过。", replies: [] },
-        { title: "星途售后完全失联，投诉无门", time: getDynamicTime(4), content: "花钱买了星途的服务，出现问题找售后永远没人接，电话不接、消息不回，摆明了就是骗钱。", replies: [] },
-        { title: "被星途套路贷坑惨，每天被催收骚扰", time: getDynamicTime(8), content: "星途以办理业务为由诱导贷款，利息高得吓人，现在还不上就暴力催收，家人朋友都被骚扰，生活彻底乱了。", replies: [] },
-        { title: "星途无故辞退老员工，一点情面都不讲", time: getDynamicTime(10), content: "在星途干了三年，没有任何过错就被辞退，赔偿一分没有，态度极其嚣张，完全不把员工当人看。", replies: [] },
-        { title: "加盟星途被骗，开店血本无归", time: getDynamicTime(12), content: "星途招商时承诺全程扶持、保证收益，交了加盟费后不管不问，店铺倒闭他们还推卸责任，一辈子的积蓄没了。", replies: [] },
-        { title: "星途克扣工资、乱扣罚款，每月到手少得可怜", time: getDynamicTime(15), content: "在星途上班各种奇葩罚款，迟到扣半天工资，忘记发朋友圈扣钱，工资莫名其妙少一半，投诉也没用。", replies: [] },
-        { title: "被星途坑得家都快散了，真的撑不下去", time: getDynamicTime(20), content: "因为相信星途，投资失败、工作丢失，现在老婆孩子都受影响，每天活在痛苦里，希望有人能为我们做主。", replies: [] }
+        {
+            title: "星途合同全是陷阱，签完就变脸",
+            time: "2025-04-20 20:00",
+            content: "当初签约星途时说的各种福利、保障，合同里全是文字游戏，现在出问题他们拿合同说事，我们普通人根本斗不过。",
+            replies: []
+        },
+        {
+            title: "星途售后完全失联，投诉无门",
+            time: "2025-04-19 16:40",
+            content: "花钱买了星途的服务，出现问题找售后永远没人接，电话不接、消息不回，摆明了就是骗钱。",
+            replies: []
+        },
+        {
+            title: "被星途套路贷坑惨，每天被催收骚扰",
+            time: "2025-04-15 11:00",
+            content: "星途以办理业务为由诱导贷款，利息高得吓人，现在还不上就暴力催收，家人朋友都被骚扰，生活彻底乱了。",
+            replies: []
+        },
+        {
+            title: "星途无故辞退老员工，一点情面都不讲",
+            time: "2025-04-12 13:20",
+            content: "在星途干了三年，没有任何过错就被辞退，赔偿一分没有，态度极其嚣张，完全不把员工当人看。",
+            replies: []
+        },
+        {
+            title: "加盟星途被骗，开店血本无归",
+            time: "2025-04-10 18:15",
+            content: "星途招商时承诺全程扶持、保证收益，交了加盟费后不管不问，店铺倒闭他们还推卸责任，一辈子的积蓄没了。",
+            replies: []
+        },
+        {
+            title: "星途克扣工资、乱扣罚款，每月到手少得可怜",
+            time: "2025-04-05 21:00",
+            content: "在星途上班各种奇葩罚款，迟到扣半天工资，忘记发朋友圈扣钱，工资莫名其妙少一半，投诉也没用。",
+            replies: []
+        },
+        {
+            title: "被星途坑得家都快散了，真的撑不下去",
+            time: "2025-04-01 19:30",
+            content: "因为相信星途，投资失败、工作丢失，现在老婆孩子都受影响，每天活在痛苦里，希望有人能为我们做主。",
+            replies: []
+        }
     ];
 
-    // 时间差
+    // 计算时间差
     function getTimeDiff(t) {
-        const diff = new Date() - new Date(t);
-        return Math.floor(diff / 86400000);
+        const now = new Date("2025-04-23"); // 固定今天
+        const postTime = new Date(t);
+        const diff = now - postTime;
+        return Math.floor(diff / (1000 * 60 * 60 * 24));
     }
 
-    // 排序
+    // 按最新排序
     posts.sort((a,b) => new Date(b.time) - new Date(a.time));
 
     // 渲染首页
@@ -260,7 +292,7 @@
             if(days<=7){
                 list.innerHTML += `<div class="post" onclick="openPost(${i})"><h2>${p.title}</h2><div class="time">${p.time}（${days}天前）</div></div>`;
             }else{
-                list.innerHTML += `<div class="post expired"><h2>${p.title} <span class="delete-tag">已删除</span></h2><div class="time">${p.time}（${days}天前 · 超过一周无法查看）</div></div>`;
+                list.innerHTML += `<div class="post expired"><h2>${p.title} <span class="delete-tag">已删除</span></h2><div class="time">${p.time}（${days}天前）</div></div>`;
             }
         });
     }
