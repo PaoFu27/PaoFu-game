@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>限时论坛 - 声音留存</title>
+    <title>欢迎页面</title>
     <style>
         * {
             margin: 0;
@@ -12,12 +12,85 @@
             font-family: "Microsoft YaHei", sans-serif;
         }
 
+       /* ---------------- 404 伪装页面 ---------------- */
+#coverPage {
+    width: 100vw;
+    height: 100vh;
+    background: #fafafa;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: Arial, sans-serif;
+    padding: 20px;
+}
+.wrapper-404 {
+    text-align: center;
+    max-width: 500px;
+}
+.wrapper-404 h1 {
+    font-size: 80px;
+    font-weight: bold;
+    color: #444;
+    margin: 0 0 10px 0;
+}
+.wrapper-404 p {
+    font-size: 18px;
+    color: #666;
+    margin: 5px 0;
+}
+.wrapper-404 .small {
+    font-size: 13px;
+    color: #999;
+    margin-top: 20px;
+}
+
+/* ---------------- 隐藏入口：水井 + 涟漪效果 ---------------- */
+.well-container {
+    margin: 50px auto 0;
+    width: 100px;
+    height: 100px;
+    position: relative;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+/* 井口 */
+.well {
+    width: 70px;
+    height: 70px;
+    background: #1a232f;
+    border-radius: 50%;
+    position: relative;
+    z-index: 1;
+    box-shadow: inset 0 0 20px #000;
+}
+/* 涟漪 */
+.ripple {
+    position: absolute;
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    background: rgba(70, 130, 180, 0.2);
+    transform: scale(1);
+    opacity: 0;
+    pointer-events: none;
+}
+/* 涟漪动画 */
+.ripple.active {
+    animation: rippleAnim 0.6s ease-out;
+}
+@keyframes rippleAnim {
+    0% { transform: scale(1); opacity: 0.8; }
+    100% { transform: scale(1.8); opacity: 0; }
+}
+
+        /* ---------------- 论坛样式（原来的不变） ---------------- */
         body {
             background-color: #ffffff;
             color: #333;
             max-width: 1000px;
             margin: 0 auto;
-            padding: 20px;
             line-height: 1.6;
         }
 
@@ -155,13 +228,30 @@
             font-size: 14px;
         }
 
-        #detailPage {
+        #homePage, #detailPage {
             display: none;
+            padding: 20px;
         }
     </style>
 </head>
 <body>
 
+<!-- ===================== 404 伪装页面（默认显示） ===================== -->
+<div id="coverPage">
+    <div class="wrapper-404">
+        <h1>404 Not Found</h1>
+        <p>The requested URL was not found on this server.</p>
+        <p class="small">这是正常404页面，外人无法察觉隐藏入口</p>
+
+        <!-- 隐藏入口：一口井 + 点击涟漪效果 -->
+        <div class="well-container" id="secretBtn">
+            <div class="well"></div>
+            <div class="ripple"></div>
+        </div>
+    </div>
+</div>
+
+<!-- ===================== 限时论坛（原来的完整功能） ===================== -->
 <!-- 首页 -->
 <div id="homePage">
     <div class="header">
@@ -197,10 +287,24 @@
 </div>
 
 <script>
-    // ==============================================
-    // 今天是 2025-04-23，时间全部给你设置好了！
-    // 7天内可点开，7-30天灰色显示
-    // ==============================================
+   // ===================== 隐藏入口：水井涟漪 + 点3次解锁 =====================
+let clickCount = 0;
+const secretBtn = document.getElementById("secretBtn");
+const ripple = document.querySelector(".ripple");
+
+secretBtn.onclick = function () {
+    // 播放涟漪
+    ripple.classList.remove("active");
+    void ripple.offsetWidth; // 重启动画
+    ripple.classList.add("active");
+
+    clickCount++;
+    if (clickCount >= 3) {
+        document.getElementById("coverPage").style.display = "none";
+        document.getElementById("homePage").style.display = "block";
+    }
+};
+    // ===================== 论坛功能（你原来的完整代码） =====================
     const posts = [
         {
             title: "星途公司恶意拖欠工资三个月，生活快撑不住了",
@@ -271,18 +375,16 @@
         }
     ];
 
-    // 计算时间差
+    // 固定今天：2025-04-23
     function getTimeDiff(t) {
-        const now = new Date("2025-04-23"); // 固定今天
+        const now = new Date("2025-04-23");
         const postTime = new Date(t);
         const diff = now - postTime;
         return Math.floor(diff / (1000 * 60 * 60 * 24));
     }
 
-    // 按最新排序
     posts.sort((a,b) => new Date(b.time) - new Date(a.time));
 
-    // 渲染首页
     function render() {
         const list = document.getElementById("postList");
         list.innerHTML = "";
@@ -297,7 +399,6 @@
         });
     }
 
-    // 打开帖子（整页）
     function openPost(index) {
         const p = posts[index];
         document.getElementById("homePage").style.display = "none";
@@ -317,7 +418,6 @@
         document.getElementById("dReply").innerHTML = rep;
     }
 
-    // 返回首页
     function goBack() {
         document.getElementById("detailPage").style.display = "none";
         document.getElementById("homePage").style.display = "block";
