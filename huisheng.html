@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>回声论坛 - 声音留存</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Microsoft YaHei", sans-serif;
+        }
+
+        body {
+            background-color: #ffffff;
+            color: #333;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 20px;
+        }
+
+        .header h1 {
+            color: #222;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #666;
+        }
+
+        .back-btn {
+            display: inline-block;
+            margin-bottom: 20px;
+            padding: 8px 16px;
+            background: #f5f5f5;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+            color: #333;
+        }
+
+        .back-btn:hover {
+            background: #eee;
+        }
+
+        .notice {
+            background-color: #fff5f5;
+            border-left: 5px solid #ff4444;
+            padding: 15px 20px;
+            margin-bottom: 30px;
+            border-radius: 4px;
+            color: #c53030;
+        }
+
+        .notice h3 {
+            margin-bottom: 8px;
+            color: #dc2626;
+        }
+
+        .post-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .post {
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 6px;
+            border: 1px solid #eee;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .post:hover {
+            background: #f1f1f1;
+            border-color: #ddd;
+        }
+
+        .post h2 {
+            font-size: 18px;
+            margin-bottom: 8px;
+        }
+
+        .post .time {
+            color: #888;
+            font-size: 13px;
+        }
+
+        .post.expired {
+            background: #f5f5f5;
+            color: #999;
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        .post.expired h2 {
+            color: #999;
+        }
+
+        .delete-tag {
+            color: #ff4444;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+
+        .detail-title {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .detail-time {
+            color: #888;
+            margin-bottom: 20px;
+        }
+
+        .detail-content {
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 6px;
+            margin-bottom: 30px;
+            line-height: 1.8;
+        }
+
+        .reply-item {
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 10px;
+        }
+
+        .reply-name {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .reply-time {
+            font-size: 12px;
+            color: #999;
+            margin-top: 5px;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 50px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            color: #999;
+            font-size: 14px;
+        }
+
+        #detailPage {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+<!-- 首页 -->
+<div id="homePage">
+    <div class="header">
+        <h1>回声论坛</h1>
+        <p>声音短暂，但愿有人听见</p>
+    </div>
+
+    <div class="notice">
+        <h3>📢 论坛特殊规则公告</h3>
+        <p>1. 由于论坛特殊性，帖子仅能保留<strong>一个星期</strong>，超过一周将无法查看回复</p>
+        <p>2. 超过<strong>一个月</strong>的帖子会彻底销毁数据</p>
+        <p>期望有一天能有人听到我们的声音</p>
+    </div>
+
+    <div class="post-list" id="postList"></div>
+
+    <div class="footer">
+        <p>回声论坛 · 留存短暂的声音</p>
+        <p>仅展示30天内内容 · 一周后不可查看 · 一月后销毁</p>
+    </div>
+</div>
+
+<!-- 帖子详情页 -->
+<div id="detailPage">
+    <a class="back-btn" onclick="goBack()">← 返回首页</a>
+    <div class="detail-title" id="dTitle"></div>
+    <div class="detail-time" id="dTime"></div>
+    <div class="detail-content" id="dContent"></div>
+
+    <h3>回复区</h3>
+    <div id="dReply"></div>
+</div>
+
+<script>
+    // 生成动态时间
+    function getDynamicTime(daysAgo) {
+        const now = new Date();
+        now.setDate(now.getDate() - daysAgo);
+        const y = now.getFullYear();
+        const m = String(now.getMonth()+1).padStart(2,0);
+        const d = String(now.getDate()).padStart(2,0);
+        const h = String(now.getHours()).padStart(2,0);
+        const min = String(now.getMinutes()).padStart(2,0);
+        return `${y}-${m}-${d} ${h}:${min}`;
+    }
+
+    // 10条帖子
+    const posts = [
+        {
+            title: "星途公司恶意拖欠工资三个月，生活快撑不住了",
+            time: getDynamicTime(0),
+            content: "我在星途公司工作半年，从9月份开始就没发过工资，找领导沟通一直推脱，现在房租都交不起，家里还有老人要养，实在走投无路了。",
+            replies: [{name:"受害者1",text:"我也是被拖欠工资，一起维权吧",time:getDynamicTime(0)},{name:"路人甲",text:"太黑心了，必须曝光他们",time:getDynamicTime(0)}]
+        },
+        {
+            title: "被星途虚假宣传欺骗，血汗钱全没了",
+            time: getDynamicTime(1),
+            content: "星途宣传的项目收益很高，我把全部积蓄投进去，现在平台直接不理人，客服拉黑，报警也没用，感觉人生都毁了。",
+            replies: [{name:"同病相怜",text:"我也被骗了，找他们完全不处理",time:getDynamicTime(1)}]
+        },
+        {
+            title: "星途职场霸凌严重，被迫离职还不给赔偿",
+            time: getDynamicTime(2),
+            content: "在星途上班每天被领导辱骂、压榨，加班到凌晨没有加班费，反抗就被辞退，劳动仲裁他们还找关系施压，太绝望了。",
+            replies: [{name:"前员工",text:"里面管理真的混乱，欺负新人是常态",time:getDynamicTime(2)}]
+        },
+        { title: "星途合同全是陷阱，签完就变脸", time: getDynamicTime(3), content: "当初签约星途时说的各种福利、保障，合同里全是文字游戏，现在出问题他们拿合同说事，我们普通人根本斗不过。", replies: [] },
+        { title: "星途售后完全失联，投诉无门", time: getDynamicTime(4), content: "花钱买了星途的服务，出现问题找售后永远没人接，电话不接、消息不回，摆明了就是骗钱。", replies: [] },
+        { title: "被星途套路贷坑惨，每天被催收骚扰", time: getDynamicTime(8), content: "星途以办理业务为由诱导贷款，利息高得吓人，现在还不上就暴力催收，家人朋友都被骚扰，生活彻底乱了。", replies: [] },
+        { title: "星途无故辞退老员工，一点情面都不讲", time: getDynamicTime(10), content: "在星途干了三年，没有任何过错就被辞退，赔偿一分没有，态度极其嚣张，完全不把员工当人看。", replies: [] },
+        { title: "加盟星途被骗，开店血本无归", time: getDynamicTime(12), content: "星途招商时承诺全程扶持、保证收益，交了加盟费后不管不问，店铺倒闭他们还推卸责任，一辈子的积蓄没了。", replies: [] },
+        { title: "星途克扣工资、乱扣罚款，每月到手少得可怜", time: getDynamicTime(15), content: "在星途上班各种奇葩罚款，迟到扣半天工资，忘记发朋友圈扣钱，工资莫名其妙少一半，投诉也没用。", replies: [] },
+        { title: "被星途坑得家都快散了，真的撑不下去", time: getDynamicTime(20), content: "因为相信星途，投资失败、工作丢失，现在老婆孩子都受影响，每天活在痛苦里，希望有人能为我们做主。", replies: [] }
+    ];
+
+    // 时间差
+    function getTimeDiff(t) {
+        const diff = new Date() - new Date(t);
+        return Math.floor(diff / 86400000);
+    }
+
+    // 排序
+    posts.sort((a,b) => new Date(b.time) - new Date(a.time));
+
+    // 渲染首页
+    function render() {
+        const list = document.getElementById("postList");
+        list.innerHTML = "";
+        posts.forEach((p,i) => {
+            const days = getTimeDiff(p.time);
+            if(days>30) return;
+            if(days<=7){
+                list.innerHTML += `<div class="post" onclick="openPost(${i})"><h2>${p.title}</h2><div class="time">${p.time}（${days}天前）</div></div>`;
+            }else{
+                list.innerHTML += `<div class="post expired"><h2>${p.title} <span class="delete-tag">已删除</span></h2><div class="time">${p.time}（${days}天前 · 超过一周无法查看）</div></div>`;
+            }
+        });
+    }
+
+    // 打开帖子（整页）
+    function openPost(index) {
+        const p = posts[index];
+        document.getElementById("homePage").style.display = "none";
+        document.getElementById("detailPage").style.display = "block";
+        document.getElementById("dTitle").innerText = p.title;
+        document.getElementById("dTime").innerText = "发布时间："+p.time;
+        document.getElementById("dContent").innerText = p.content;
+        
+        let rep = "";
+        if(p.replies.length===0){
+            rep = '<div style="color:#999;padding:10px;">暂无回复</div>';
+        }else{
+            p.replies.forEach(r=>{
+                rep += `<div class="reply-item"><div class="reply-name">${r.name}</div><div>${r.text}</div><div class="reply-time">${r.time}</div></div>`;
+            });
+        }
+        document.getElementById("dReply").innerHTML = rep;
+    }
+
+    // 返回首页
+    function goBack() {
+        document.getElementById("detailPage").style.display = "none";
+        document.getElementById("homePage").style.display = "block";
+    }
+
+    render();
+</script>
+</body>
+</html>
