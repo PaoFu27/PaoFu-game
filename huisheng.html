@@ -297,7 +297,7 @@ document.addEventListener('DOMContentLoaded',()=>{
 });
 
 function home(){
-let html=`<div class='card'><h1>回声论坛</h1><div class='meta'>系统时间：2026-04-23</div><div class='notice'><b>首页公告</b><br>星途计划相关信息记录<br>7天可读 / 30天清除机制已启用</div></div><div class='card'><h2>帖子列表（最新 → 旧）</h2>`;
+let html=`<div class='card'><h1>回声论坛</h1><div class='meta'>系统时间：2026-04-23</div><div class='notice'><b>首页公告</b><br>由于论坛特殊性<br>帖子7天可读 / 30天清除机制已启用</div></div><div class='card'><h2>帖子列表（最新 → 旧）</h2>`;
 
 posts.sort((a,b)=>new Date(b.date)-new Date(a.date));
 
@@ -398,9 +398,9 @@ if(urlId) detail(urlId); else home();
     </div>
 
     <div class="win-text">
-      你已成功破解终端码。<br><br>
+      你已成功发送终端码。<br><br>
       陈远被成功救出，<br>
-      星途计划已曝光。
+      星途计划真实目的被曝光。
     </div>
 
     <button class="next-btn" onclick="nextChapter()">
