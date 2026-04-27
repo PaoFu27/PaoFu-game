@@ -17,12 +17,85 @@ body{margin:0;font-family:Arial,sans-serif;background:#f3f4f6;color:#111}
 .notice{background:#eff6ff;border:1px solid #bfdbfe;border-radius:12px;padding:14px;line-height:1.8}
 .back{color:#2563eb;text-decoration:none}
 .badge{display:inline-block;background:#111;color:#fff;padding:2px 8px;border-radius:999px;font-size:12px;margin-left:6px}
+
+/* 加密聊天窗口 */
+.chat-modal{
+  display:none;
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background:rgba(0,0,0,0.6);
+  z-index:9999;
+  align-items:center;
+  justify-content:center;
+}
+.chat-box{
+  width:90%;
+  max-width:450px;
+  background:#111;
+  color:#0f0;
+  border-radius:12px;
+  padding:20px;
+  font-family:monospace;
+  border:2px solid #0f0;
+}
+.chat-header{
+  display:flex;
+  justify-content:space-between;
+  border-bottom:1px solid #0f0;
+  padding-bottom:8px;
+  margin-bottom:12px;
+}
+.chat-close{
+  color:#fff;
+  cursor:pointer;
+  background:red;
+  padding:2px 8px;
+  border-radius:4px;
+}
+.chat-messages{
+  height:240px;
+  overflow-y:auto;
+  margin-bottom:12px;
+  line-height:1.6;
+}
+.chat-input{
+  width:100%;
+  padding:10px;
+  background:#222;
+  color:#0f0;
+  border:1px solid #0f0;
+  outline:none;
+  font-family:monospace;
+}
+.encrypt-tag{
+  color:#0f0;
+  font-size:12px;
+  margin-bottom:8px;
+}
 </style>
 </head>
 <body>
 <div class='wrap' id='app'></div>
-<script>
 
+<!-- 加密聊天窗口 -->
+<div class="chat-modal" id="chatModal">
+  <div class="chat-box">
+    <div class="encrypt-tag">>>> 信道加密连接中 ▌▌▌▌▌▌▌▌ 100%</div>
+    <div class="chat-header">
+      <span>管理员 - 加密对话</span>
+      <span class="chat-close" onclick="closeChat()">关闭</span>
+    </div>
+    <div class="chat-messages" id="chatMessages">
+      系统：安全连接已建立，消息全程加密
+    </div>
+    <input type="text" id="chatInput" class="chat-input" placeholder="输入消息发送..." autocomplete="off">
+  </div>
+</div>
+
+<script>
 const posts=[
 {
 id:8,
@@ -30,7 +103,14 @@ title:'我成功拿到了那些数据，事情比想象更严重',
 author:'K8Q1L',
 date:'2026-04-22 19:08',
 days:1,
-content:'18:42 我成功拿到了星核计划的内部秘密数据，正在下载到U盘中，一旦这个U盘里的数据曝光，以后就不会有更多的受害人了。\n19:03 我估计被发现了，廖总让给我八点去公司。\n19:40 不行，在八点前我下载不完，我再拖延一会儿。\n19:50 没下载完，有人敲门，好像是公司来人抓我了！\n19:55 我跑不掉了，不过我在公司有绕开监管备份数据到一个不被监管的终端，终端码在云盘，密码是工号。',
+content:'我成功拿到了星核计划的内部秘密数据，事情比想象更严重。',
+timeline:[
+  '18:42 我成功拿到了星核计划的内部秘密数据，正在下载到U盘中，一旦这个U盘里的数据曝光，以后就不会有更多的受害人了。',
+  '19:03 我估计被发现了，廖总让给我八点去公司。',
+  '19:40 不行，在八点前我下载不完，我再拖延一会儿。',
+  '19:50 没下载完，有人敲门，好像是公司来人抓我了！',
+  '19:55 我跑不掉了，不过我在公司有绕开监管备份数据到一个不被监管的终端，终端码在云盘，密码是工号。'
+],
 replies:[
 '18:45 ？？？？真的吗！！！！！！',
 '18:46 我靠……终于有人动手了？？？',
@@ -143,6 +223,39 @@ replies:[]
 const app=document.getElementById('app');
 const status=p=>p.days<=7?'active':p.days<=30?'deleted':'purged';
 
+// 聊天窗口控制
+function openChat(){
+  document.getElementById('chatModal').style.display='flex';
+  document.getElementById('chatInput').focus();
+}
+function closeChat(){
+  document.getElementById('chatModal').style.display='none';
+}
+
+// 发送消息 & 通关判断
+document.addEventListener('DOMContentLoaded',()=>{
+  const input=document.getElementById('chatInput');
+  const messages=document.getElementById('chatMessages');
+  
+  input.addEventListener('keydown',(e)=>{
+    if(e.key==='Enter'){
+      const text=input.value.trim();
+      if(!text)return;
+      
+      messages.innerHTML+=`<div>你：${text}</div>`;
+      messages.scrollTop=messages.scrollHeight;
+      
+      if(text.includes('JK6S25BT8N')){
+        setTimeout(()=>{
+          alert('恭喜你已成功通关，解救出陈远并曝光了星途！');
+          closeChat();
+        },500);
+      }
+      input.value='';
+    }
+  });
+});
+
 function home(){
 let html=`<div class='card'><h1>回声论坛</h1><div class='meta'>系统时间：2026-04-23</div><div class='notice'><b>首页公告</b><br>星途计划相关信息记录<br>7天可读 / 30天清除机制已启用</div></div><div class='card'><h2>帖子列表（最新 → 旧）</h2>`;
 
@@ -164,23 +277,34 @@ function detail(id){
 const p=posts.find(x=>x.id==id);
 if(!p||status(p)!=='active'){home();return;}
 
-let html=`<div class='card'><a class='back' href='?'>← 返回首页</a><div class='meta'>回声论坛 / 帖子详情</div><h1>${p.title}</h1><div class='meta'>${p.author} · ${p.date} <span class='badge'>浏览 ${1500+p.id*110}</span></div><p style='line-height:2;margin-top:16px;white-space:pre-line'>${p.content}</p><div class='notice'>提示：该帖仍处于7天有效期</div><hr><h3>讨论区回复（${p.replies.length}）</h3>`;
+let html=`<div class='card'><a class='back' href='javascript:home()'>← 返回首页</a><div class='meta'>回声论坛 / 帖子详情</div><h1>${p.title}</h1><div class='meta'>${p.author} · ${p.date} <span class='badge'>浏览 ${1500+p.id*110}</span></div><p style='line-height:2;margin-top:16px;white-space:pre-line'>${p.content}</p><div class='notice'>提示：该帖仍处于7天有效期</div><hr><h3>讨论区回复（${p.replies.length}）</h3>`;
 
+// 正常显示所有回复
 p.replies.forEach((r,i)=>{
 html+=`<div class='reply'><div class='meta'>${i+1}楼 · ${Math.random().toString(36).slice(2,6).toUpperCase()}</div><div style='margin-top:6px;line-height:1.8'>${r}</div><div style='margin-top:10px;font-size:13px;color:#6b7280'>👍 ${15+i*4} 👎 ${i%3} 回复 引用</div></div>`;
 });
 
+// 把楼主的时间线消息 按顺序插入到回复最后
+if(p.id==8 && p.timeline){
+  p.timeline.forEach(item=>{
+    html+=`<div class='reply' style="background:#e6f7ff; border-left:3px solid #2563eb">
+      <div class='meta'>${p.author} (楼主)</div>
+      <div style='margin-top:6px'>${item}</div>
+    </div>`;
+  });
+}
+
+// 可点击的管理员消息
 if(p.id===8){
-html+=`<div class='reply'><div class='meta'><b>管理员</b> · SYSTEM</div><div style='margin-top:6px;line-height:1.8'><b>通话加密已完成。异常流量已标记。</b><br><b>找到终端码立即发送，我可尝试终端破解。</b><br><b>24小时后论坛可能被扫描清理。</b></div></div>`;
+html+=`<div class='reply'><div class='meta'><b style='color:#2563eb;cursor:pointer' onclick='openChat()'>管理员</b> · SYSTEM</div><div style='margin-top:6px;line-height:1.8'><b>通话加密已完成。异常流量已标记。</b><br><b>找到终端码立即发送，我可尝试终端破解。</b><br><b>24小时后论坛可能被扫描清理。</b></div></div>`;
 }
 
 html+=`</div>`;
 app.innerHTML=html;
 }
 
-const id=new URLSearchParams(location.search).get('post');
-if(id) detail(id); else home();
-
+const urlId=new URLSearchParams(location.search).get('post');
+if(urlId) detail(urlId); else home();
 </script>
 </body>
 </html>
