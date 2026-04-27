@@ -269,20 +269,62 @@ if(!p||status(p)!=='active'){home();return;}
 
 let html=`<div class='card'><a class='back' href='javascript:home()'>← 返回首页</a><div class='meta'>回声论坛 / 帖子详情</div><h1>${p.title}</h1><div class='meta'>${p.author} · ${p.date} <span class='badge'>浏览 ${1500+p.id*110}</span></div><p style='line-height:2;margin-top:16px;white-space:pre-line'>${p.content}</p><div class='notice'>提示：该帖仍处于7天有效期</div><hr><h3>讨论区回复（${p.replies.length}）</h3>`;
 
-// 正常显示所有回复
+let allReplies=[];
+
+// 普通回复
 p.replies.forEach((r,i)=>{
-html+=`<div class='reply'><div class='meta'>${i+1}楼 · ${Math.random().toString(36).slice(2,6).toUpperCase()}</div><div style='margin-top:6px;line-height:1.8'>${r}</div><div style='margin-top:10px;font-size:13px;color:#6b7280'>👍 ${15+i*4} 👎 ${i%3} 回复 引用</div></div>`;
+  const timeMatch=r.match(/^(\d{2}:\d{2})/);
+  const time=timeMatch?timeMatch[1]:'00:00';
+
+  allReplies.push({
+    type:'user',
+    time,
+    text:r,
+    floor:i+1
+  });
 });
 
-// 把楼主的时间线消息 按顺序插入到回复最后
+// 陈远回复
 if(p.id==8 && p.timeline){
   p.timeline.forEach(item=>{
-    html+=`<div class='reply' style="background:#e6f7ff; border-left:3px solid #2563eb">
-      <div class='meta'>${p.author} (楼主)</div>
-      <div style='margin-top:6px'>${item}</div>
-    </div>`;
+    const timeMatch=item.match(/^(\d{2}:\d{2})/);
+    const time=timeMatch?timeMatch[1]:'00:00';
+
+    allReplies.push({
+      type:'op',
+      time,
+      text:item
+    });
   });
 }
+
+// 时间排序
+allReplies.sort((a,b)=>a.time.localeCompare(b.time));
+
+// 输出
+allReplies.forEach((item,index)=>{
+
+  if(item.type==='user'){
+
+    html+=`
+    <div class='reply'>
+      <div class='meta'>${item.floor}楼 · ${Math.random().toString(36).slice(2,6).toUpperCase()}</div>
+      <div style='margin-top:6px;line-height:1.8'>${item.text}</div>
+      <div style='margin-top:10px;font-size:13px;color:#6b7280'>
+        👍 ${15+index*3} 👎 ${index%3} 回复 引用
+      </div>
+    </div>`;
+
+  }else{
+
+    html+=`
+    <div class='reply' style="background:#e6f7ff;border-left:3px solid #2563eb">
+      <div class='meta'>${p.author}（楼主）</div>
+      <div style='margin-top:6px'>${item.text}</div>
+    </div>`;
+  }
+
+});
 
 // 可点击的管理员消息
 if(p.id===8){
