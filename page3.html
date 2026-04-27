@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <title>Google 搜索</title>
     <style>
-        /* 全局重置 - 复刻Chrome默认样式 */
         * {
             margin: 0;
             padding: 0;
@@ -19,7 +18,6 @@
             flex-direction: column;
         }
 
-        /* Chrome地址栏/标签栏 - 完全复刻截图样式 */
         .chrome-top-bar {
             height: 60px;
             padding: 0 16px;
@@ -47,7 +45,6 @@
             background: #ffffff;
         }
 
-        /* Chrome新标签页核心内容 - 调整后样式 */
         .google-main {
             flex: 1;
             display: flex;
@@ -57,7 +54,6 @@
             padding: 20px;
         }
 
-        /* 替换Google Logo为「搜索」大字 */
         .search-title {
             font-size: 80px;
             font-weight: 700;
@@ -66,7 +62,6 @@
             letter-spacing: -5px;
         }
 
-        /* Google搜索框 - 移除话筒，仅保留搜索图标 + 坐标提示 */
         .search-container {
             width: 100%;
             max-width: 584px;
@@ -104,7 +99,6 @@
             color: #9aa0a6;
         }
 
-        /* 快捷方式栏 - 复刻截图样式 */
         .shortcuts-bar {
             display: flex;
             flex-wrap: wrap;
@@ -153,7 +147,6 @@
             text-align: center;
         }
 
-        /* 共同的回忆标签页 - 独立页面，点击快捷方式打开 */
         .memories-page {
             display: none;
             position: fixed;
@@ -191,7 +184,6 @@
             font-weight: 500;
         }
 
-        /* 迷你便利贴区 - 拖拽源 */
         .sticky-notes-source {
             display: flex;
             flex-wrap: wrap;
@@ -202,7 +194,6 @@
             border-radius: 8px;
         }
 
-        /* 迷你便利贴样式 */
         .sticky-note {
             width: 70px;
             height: 80px;
@@ -229,7 +220,6 @@
             font-size: 16px;
         }
 
-        /* 照片墙（带图钉+网格线） */
         .photo-wall {
             background: #f0f8fb;
             border-radius: 8px;
@@ -256,7 +246,6 @@
             color: #e53e3e;
         }
 
-        /* 照片墙排序槽 */
         .photo-wall-slots {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -283,7 +272,6 @@
             color: #9aa0a6;
         }
 
-        /* 排序完成纸条提示 */
         .paper-note {
             display: none;
             position: absolute;
@@ -306,9 +294,8 @@
             color: #d69e2e;
         }
 
-        /* 历史记录/收藏页 - 点击快捷方式打开 */
         .history-page, .collection-page {
-            display: none; /* 默认隐藏，解决数独页默认显示问题 */
+            display: none; 
             position: fixed;
             top: 0;
             left: 0;
@@ -320,15 +307,12 @@
             overflow-y: auto;
         }
 
-        /* 纯静态数独样式 - 无任何交互/提示 */
         .collection-page {
-            /* 移除默认flex，改为点击后再设置flex */
             display: none;
             align-items: center;
             justify-content: center;
         }
 
-        /* 纯静态9x9数独网格 - 所有边框统一加粗 */
         .sudoku-container {
             display: flex;
             justify-content: center;
@@ -357,7 +341,6 @@
             font-weight: 500;
         }
 
-        /* 空单元格样式 - 仅占位，无任何提示 */
         .sudoku-cell.empty {
             background: #f8f9fa;
             font-weight: bold;
@@ -645,18 +628,15 @@
     </div>
 
     <script>
-        // 加密函数 - 坐标加密存储（改为无规律坐标：714.859.362）
         function encryptData(str) {
-            // 简单异或加密 + Base64编码，防止直接查看源码获取坐标
             let encrypted = '';
-            const key = 17; // 加密密钥
+            const key = 17; 
             for (let i = 0; i < str.length; i++) {
                 encrypted += String.fromCharCode(str.charCodeAt(i) ^ key);
             }
             return btoa(encrypted);
         }
 
-        // 解密函数
         function decryptData(encryptedStr) {
             const key = 17;
             let decrypted = atob(encryptedStr);
@@ -667,13 +647,11 @@
             return result;
         }
 
-        // 加密存储三组无规律坐标（彻底打乱，无连续数字）
-        const encryptedFirstCoord = encryptData('714');    // 第一组：714（无连续）
-        const encryptedSecondCoord = encryptData('859');  // 第二组：859（无连续）
-        const encryptedThirdCoord = encryptData('362');   // 第三组：362（无连续）
-        const encryptedFullCoord = encryptData('714.859.362'); // 完整加密坐标
+        const encryptedFirstCoord = encryptData('714'); 
+        const encryptedSecondCoord = encryptData('859');
+        const encryptedThirdCoord = encryptData('362');
+        const encryptedFullCoord = encryptData('714.859.362');
 
-        // 1. 快捷方式点击逻辑（仅打开/关闭页面，数独无任何填充）
         document.getElementById('shortcutMemories').addEventListener('click', () => {
             document.getElementById('memoriesPage').style.display = 'block';
         });
@@ -691,7 +669,6 @@
         });
 
         document.getElementById('shortcutCollection').addEventListener('click', () => {
-            // 点击后才设置flex显示数独，默认隐藏
             document.getElementById('collectionPage').style.display = 'flex';
         });
 
@@ -699,25 +676,21 @@
             document.getElementById('collectionPage').style.display = 'none';
         });
 
-        // 2. // 便利贴拖拽逻辑
 const stickyNotes = document.querySelectorAll('.sticky-note');
 const slots = document.querySelectorAll('.slot');
 const correctOrder = [8,2,1,9,5,6,3,4,7]; 
 let placedNotes = {};
 let draggedNote = null; 
-let errorCount = 0; // 错误次数统计
-let lastErrorTime = 0; // 最后一次错误时间
+let errorCount = 0; 
+let lastErrorTime = 0; 
 
-// 错误提示函数（带时间间隔限制）
 function showErrorTip() {
     const now = Date.now();
-    // 防止短时间内重复提示（间隔1秒）
     if (now - lastErrorTime < 1000) return;
     
     lastErrorTime = now;
     errorCount++;
     
-    // 不同错误次数显示不同提示
     let tipText = '';
     if (errorCount === 1) {
         tipText = '轨迹不对哦，再回忆一下她的经历顺序～';
@@ -727,7 +700,6 @@ function showErrorTip() {
         tipText = '提示：正确顺序是游戏→全季酒店→滑雪→美甲→旅游→搬家→海边→拼图→学画画';
     }
     
-    // 创建提示框
     const tip = document.createElement('div');
     tip.style.position = 'fixed';
     tip.style.top = '50%';
@@ -742,52 +714,41 @@ function showErrorTip() {
     tip.textContent = tipText;
     document.body.appendChild(tip);
     
-    // 2秒后移除提示框
     setTimeout(() => {
         document.body.removeChild(tip);
     }, 2000);
 }
 
-// 标记错误slot的特效函数
 function markErrorSlots() {
-    // 遍历所有slot，对比正确顺序，错误的标红
     for (let i = 1; i <= 9; i++) {
-        if (placedNotes[i]) { // 只检查已放置的slot
+        if (placedNotes[i]) { 
             const slot = document.querySelector(`.slot[data-slot="${i}"]`);
             if (placedNotes[i] !== correctOrder[i-1]) {
-                // 错误slot变红，添加闪烁特效
                 slot.style.border = '2px solid #e53e3e';
                 slot.style.boxShadow = '0 0 8px rgba(229, 62, 62, 0.6)';
-                // 3秒后恢复边框样式（保留内容，仅清除特效）
                 setTimeout(() => {
                     slot.style.border = '1px solid #4caf50';
                     slot.style.boxShadow = 'none';
                 }, 3000);
             }
-            // 正确的slot保持原有样式，不做修改
         }
     }
 }
 
-// 初始化slot的拖拽接收逻辑（支持照片墙内移动、移回原位）
 slots.forEach(slot => {
     slot.addEventListener('click', (e) => {
-        // 如果slot里有便利贴，点击后移回原位
         const noteInSlot = slot.querySelector('.sticky-note');
         if (noteInSlot) {
             const noteName = noteInSlot.querySelector('span:last-child').textContent;
-            // 找到源区域对应的便利贴并恢复显示
             const sourceNote = Array.from(stickyNotes).find(note => 
                 note.dataset.name === noteName
             );
             if (sourceNote) {
                 sourceNote.classList.remove('dragged');
             }
-            // 清空当前slot，恢复默认样式
             slot.innerHTML = `<span class="slot-number">${slot.dataset.slot}</span>`;
             slot.style.border = '1px dashed #5f6368';
             slot.style.boxShadow = 'none';
-            // 删除已放置记录
             delete placedNotes[parseInt(slot.dataset.slot)];
         }
     });
@@ -826,7 +787,6 @@ stickyNotes.forEach(note => {
                 const slotRect = slot.getBoundingClientRect();
                 if (e.clientX >= slotRect.left && e.clientX <= slotRect.right &&
                     e.clientY >= slotRect.top && e.clientY <= slotRect.bottom) {
-                    // 先清空目标slot已有内容（支持照片墙内移动）
                     const existingNote = slot.querySelector('.sticky-note');
                     if (existingNote) {
                         const existingName = existingNote.querySelector('span:last-child').textContent;
@@ -839,7 +799,6 @@ stickyNotes.forEach(note => {
                         delete placedNotes[parseInt(slot.dataset.slot)];
                     }
                     
-                    // 放入新便利贴
                     slot.innerHTML = `<span class="slot-number">${slot.dataset.slot}</span>`;
                     const newNote = document.createElement('div');
                     newNote.className = 'sticky-note';
@@ -849,7 +808,7 @@ stickyNotes.forEach(note => {
                     `;
                     slot.appendChild(newNote);
                     slot.style.border = '1px solid #4caf50';
-                    slot.style.boxShadow = 'none'; // 清除之前的错误特效
+                    slot.style.boxShadow = 'none'; 
 
                     const noteId = parseInt(draggedNote.dataset.id);
                     const slotNum = parseInt(slot.dataset.slot);
@@ -860,7 +819,6 @@ stickyNotes.forEach(note => {
                 }
             });
 
-            // 如果没放到slot里，恢复便利贴显示（拖拽到空白处取消）
             if (!isPlaced) {
                 draggedNote.classList.remove('dragged');
             }
@@ -874,7 +832,6 @@ stickyNotes.forEach(note => {
     });
 });
 
-// 检查便利贴排序是否正确（修改：错误只标红不重置）
 function checkOrder() {
     let isCorrect = true;
     let allPlaced = true;
@@ -894,32 +851,26 @@ function checkOrder() {
             }
         }
 
-        if (isCorrect) {
-            // 正确时重置错误统计
+
             errorCount = 0;
             const firstCoord = decryptData(encryptedFirstCoord);
             document.getElementById('paperNote').innerHTML = `
                 <div class="paper-note-title">📜 她的纸条</div>
                 <div>找到第一组坐标：<b>${firstCoord}</b></div>
-                <div>继续搜索「黑洞」找下一组</div>
             `;
             document.getElementById('paperNote').style.display = 'block';
         } else {
-            // 错误时提示+标红错误slot（不再自动清空）
             showErrorTip();
             markErrorSlots();
         }
     } else {
-        // 未放满时不检查，也不提示
         isCorrect = false;
     }
 }
 
-        // 4. Google搜索框逻辑（验证新的无规律坐标714.859.362）
         const googleSearchInput = document.getElementById('googleSearchInput');
         const addressBar = document.querySelector('.address-bar');
 
-        // 统一搜索逻辑
         function handleSearch(inputValue) {
             inputValue = inputValue.trim();
             if (inputValue === '黑洞') {
@@ -929,7 +880,6 @@ function checkOrder() {
             }
         }
 
-        // 搜索框提交
         googleSearchInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
                 handleSearch(googleSearchInput.value);
@@ -937,7 +887,6 @@ function checkOrder() {
             }
         });
 
-        // 地址栏提交
         addressBar.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
                 handleSearch(addressBar.value);
