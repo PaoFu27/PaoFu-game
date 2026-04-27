@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>专属男友抽奖机 💖</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "微软雅黑", sans-serif;
+        }
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #ffe6f2, #fff0f8);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .box {
+            background: #fff;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 8px 25px #ffc8e080;
+            text-align: center;
+            max-width: 400px;
+            width: 100%;
+        }
+        h2 {
+            color: #ff6b9c;
+            margin-bottom: 20px;
+        }
+        .wheel-box {
+            width: 280px;
+            height: 280px;
+            margin: 0 auto 25px;
+            position: relative;
+        }
+        #wheel {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 8px solid #ff99bb;
+            transition: all 4s cubic-bezier(0.2,0.8,0.2,1);
+        }
+        .btn {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            background: #ff6b9c;
+            color: #fff;
+            font-size: 16px;
+            font-weight: bold;
+            border: none;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%,-50%);
+            cursor: pointer;
+            box-shadow: 0 4px 12px #ff6b9c70;
+        }
+        .btn:active {
+            scale: 0.95;
+        }
+        .result {
+            font-size: 18px;
+            color: #d6336c;
+            min-height: 28px;
+            font-weight: bold;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <h2>送给专属男朋友的惊喜抽奖 💝</h2>
+        <div class="wheel-box">
+            <canvas id="wheel"></canvas>
+            <button class="btn" id="startBtn">开始<br>抽奖</button>
+        </div>
+        <div class="result" id="result"></div>
+    </div>
+
+    <script>
+        // 情侣专属奖品
+        const prizeList = [
+            "超级抱抱一个",
+            "免费奶茶一杯",
+            "免吵架特权一天",
+            "甜蜜亲亲×3",
+            "专属约会一日游",
+            "游戏陪玩一整天",
+            "随便点餐特权",
+            "夸夸服务全套"
+        ];
+        const colorList = ["#ffd6e7","#ffeaf4","#ffcfe0","#ffe3f0","#ffd2e5","#ffe8f2","#ffcce2","#ffd9eb"];
+
+        const canvas = document.getElementById('wheel');
+        const ctx = canvas.getContext('2d');
+        const startBtn = document.getElementById('startBtn');
+        const resultText = document.getElementById('result');
+
+        canvas.width = 280;
+        canvas.height = 280;
+        let rotateAngle = 0;
+        const len = prizeList.length;
+
+        // 绘制转盘
+        function drawWheel() {
+            const r = 140;
+            const avgAngle = Math.PI * 2 / len;
+            ctx.clearRect(0,0,280,280);
+            for(let i = 0; i < len; i++){
+                ctx.beginPath();
+                ctx.moveTo(r,r);
+                ctx.arc(r,r,r,avgAngle*i,avgAngle*(i+1));
+                ctx.closePath();
+                ctx.fillStyle = colorList[i];
+                ctx.fill();
+                ctx.strokeStyle = "#fff";
+                ctx.stroke();
+
+                // 文字
+                ctx.save();
+                ctx.translate(r,r);
+                ctx.rotate(avgAngle*i + avgAngle/2);
+                ctx.font = "13px sans-serif";
+                ctx.fillStyle = "#c72c5e";
+                ctx.textAlign = "center";
+                ctx.fillText(prizeList[i], 90, 10);
+                ctx.restore();
+            }
+        }
+        drawWheel();
+
+        // 抽奖
+        startBtn.onclick = function(){
+            startBtn.disabled = true;
+            resultText.innerText = "抽奖中～";
+            // 随机圈数+角度
+            let randomRotate =  360 * (5 + Math.random() * 3) + Math.random() * 360;
+            rotateAngle += randomRotate;
+            canvas.style.transform = `rotate(${rotateAngle}deg)`;
+
+            setTimeout(()=>{
+                // 计算中奖
+                let nowAngle = rotateAngle % 360;
+                let index = Math.floor((360 - nowAngle) / (360 / len)) % len;
+                resultText.innerText = `🎉恭喜中奖：${prizeList[index]}`;
+                startBtn.disabled = false;
+            },4000)
+        }
+    </script>
+</body>
+</html>
