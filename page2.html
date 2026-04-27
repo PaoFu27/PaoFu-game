@@ -289,7 +289,15 @@ function closeWin(id) { document.getElementById(id).style.display = 'none'; }
 
 const files = ["01001000","01001100","01010000","01000101"];
 function openFile(i) { openWin('docWin'); document.getElementById('docText').innerText = files[i]; }
-function showText(t) { openWin('docWin'); document.getElementById('docText').innerText = t==='order' ? "4-2-1-3" : "二进制转ASCII"; }
+function showText(t) { openWin('docWin'); document.getElementById('docText').innerText = t==='order' ? "4-2-1-3" 
+  : `以下是一些常见的解谜方法：
+<p>字母和数字的利用：通过将数字转换为字母或进行移位来解决问题，例如将数字转换为对应的字母。</p>
+<p>编码和解码：使用编码（如Base64）和解码方法来处理谜题中的信息。</p>
+<p>游戏设计中的谜题：分析游戏中的谜题设计，了解谜题的目标和逻辑。</p>
+<p>解谜工具和方法：使用各种解谜工具和方法来辅助解决谜题。</p>
+<p>逻辑推理：通过逻辑推理和逻辑游戏来提高解谜能力。</p>
+<p>这些方法可以帮助你更有效地解决各种谜题</p>`; 
+}
 
 const inputs = document.querySelectorAll('.pass');
 
