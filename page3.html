@@ -324,7 +324,7 @@
             display: grid;
             grid-template-columns: repeat(9, 40px);
             grid-template-rows: repeat(9, 40px);
-            gap: 2px; /* 统一边框宽度 */
+            gap: 2px;
             background: #000;
             padding: 2px;
         }
@@ -349,23 +349,18 @@
     </style>
 </head>
 <body>
-    <!-- Chrome顶部地址栏 -->
     <div class="chrome-top-bar">
         <input type="text" class="address-bar" placeholder="搜索或输入网页地址">
     </div>
 
-    <!-- Google新标签页核心内容（默认显示） -->
     <div class="google-main">
-        <!-- 替换Google Logo为「搜索」大字 -->
         <div class="search-title">搜索</div>
         
-        <!-- Google搜索框 - 移除话筒，仅保留搜索图标 + 坐标提示 -->
         <div class="search-container">
             <span class="search-icon">🔍</span>
             <input type="text" class="google-search-input" id="googleSearchInput" placeholder="请输入坐标xxx.xxx.xxx">
         </div>
 
-        <!-- 快捷方式栏（复刻截图样式） -->
         <div class="shortcuts-bar">
             <div class="shortcut-item" id="shortcutMemories">
                 <div class="shortcut-icon">💖</div>
@@ -394,14 +389,12 @@
         </div>
     </div>
 
-    <!-- 共同的回忆页面（便利贴+照片墙） -->
     <div class="memories-page" id="memoriesPage">
         <div class="memories-header">
             <button class="close-btn" id="closeMemories">← 返回</button>
             <div class="memories-title">💖 共同的回忆（按时间拖拽便利贴到照片墙排序）</div>
         </div>
 
-        <!-- 迷你便利贴源区域 -->
         <div class="sticky-notes-source" id="stickyNotesSource">
             <div class="sticky-note" data-id="1" data-name="滑雪" data-icon="🎿">
                 <span class="note-icon">🎿</span>
@@ -441,7 +434,6 @@
             </div>
         </div>
 
-        <!-- 照片墙 -->
         <div class="photo-wall">
             <div class="photo-wall-title">
                 <span class="pin-icon">📌</span>
@@ -459,7 +451,6 @@
                 <div class="slot" data-slot="9"><span class="slot-number">9</span></div>
             </div>
 
-            <!-- 排序完成纸条提示 -->
             <div class="paper-note" id="paperNote">
                 <div class="paper-note-title">📜 她的纸条</div>
                 <div>找到第一组坐标：<b>714</b></div>
@@ -467,7 +458,6 @@
         </div>
     </div>
 
-    <!-- 历史记录页面 -->
     <div class="history-page" id="historyPage">
         <div class="memories-header">
             <button class="close-btn" id="closeHistory">← 返回</button>
@@ -520,112 +510,102 @@
         </div>
     </div>
 
-    <!-- 收藏页（纯静态数独 - 空白位置：第一行第5、第四行第1、第八行第8） -->
-<div class="collection-page" id="collectionPage">
-    <button class="close-btn" id="closeCollection" style="position: absolute; top: 20px; left: 20px;">← 返回</button>
-    <div class="sudoku-container">
-        <div class="sudoku-grid">
-            <!-- 第一行 - 空白1：第一行第5列（解出3） -->
-            <div class="sudoku-cell">8</div>
-            <div class="sudoku-cell">1</div>
-            <div class="sudoku-cell">7</div>
-            <div class="sudoku-cell">9</div>
-            <div class="sudoku-cell empty">?</div>
-            <div class="sudoku-cell">2</div>
-            <div class="sudoku-cell">6</div>
-            <div class="sudoku-cell">5</div>
-            <div class="sudoku-cell">4</div>
+    <div class="collection-page" id="collectionPage">
+        <button class="close-btn" id="closeCollection" style="position: absolute; top: 20px; left: 20px;">← 返回</button>
+        <div class="sudoku-container">
+            <div class="sudoku-grid">
+                <div class="sudoku-cell">8</div>
+                <div class="sudoku-cell">1</div>
+                <div class="sudoku-cell">7</div>
+                <div class="sudoku-cell">9</div>
+                <div class="sudoku-cell empty">?</div>
+                <div class="sudoku-cell">2</div>
+                <div class="sudoku-cell">6</div>
+                <div class="sudoku-cell">5</div>
+                <div class="sudoku-cell">4</div>
 
-            <!-- 第二行 -->
-            <div class="sudoku-cell">9</div>
-            <div class="sudoku-cell">4</div>
-            <div class="sudoku-cell">5</div>
-            <div class="sudoku-cell">8</div>
-            <div class="sudoku-cell">6</div>
-            <div class="sudoku-cell">1</div>
-            <div class="sudoku-cell">7</div>
-            <div class="sudoku-cell">2</div>
-            <div class="sudoku-cell">8</div>
+                <div class="sudoku-cell">9</div>
+                <div class="sudoku-cell">4</div>
+                <div class="sudoku-cell">5</div>
+                <div class="sudoku-cell">8</div>
+                <div class="sudoku-cell">6</div>
+                <div class="sudoku-cell">1</div>
+                <div class="sudoku-cell">7</div>
+                <div class="sudoku-cell">2</div>
+                <div class="sudoku-cell">8</div>
 
-            <!-- 第三行 -->
-            <div class="sudoku-cell">6</div>
-            <div class="sudoku-cell">2</div>
-            <div class="sudoku-cell">3</div>
-            <div class="sudoku-cell">5</div>
-            <div class="sudoku-cell">7</div>
-            <div class="sudoku-cell">4</div>
-            <div class="sudoku-cell">1</div>
-            <div class="sudoku-cell">9</div>
-            <div class="sudoku-cell">5</div>
+                <div class="sudoku-cell">6</div>
+                <div class="sudoku-cell">2</div>
+                <div class="sudoku-cell">3</div>
+                <div class="sudoku-cell">5</div>
+                <div class="sudoku-cell">7</div>
+                <div class="sudoku-cell">4</div>
+                <div class="sudoku-cell">1</div>
+                <div class="sudoku-cell">9</div>
+                <div class="sudoku-cell">5</div>
 
-            <!-- 第四行 - 空白2：第四行第1列（解出6） -->
-            <div class="sudoku-cell empty">?</div>
-            <div class="sudoku-cell">8</div>
-            <div class="sudoku-cell">4</div>
-            <div class="sudoku-cell">2</div>
-            <div class="sudoku-cell">5</div>
-            <div class="sudoku-cell">9</div>
-            <div class="sudoku-cell">3</div>
-            <div class="sudoku-cell">7</div>
-            <div class="sudoku-cell">1</div>
+                <div class="sudoku-cell empty">?</div>
+                <div class="sudoku-cell">8</div>
+                <div class="sudoku-cell">4</div>
+                <div class="sudoku-cell">2</div>
+                <div class="sudoku-cell">5</div>
+                <div class="sudoku-cell">9</div>
+                <div class="sudoku-cell">3</div>
+                <div class="sudoku-cell">7</div>
+                <div class="sudoku-cell">1</div>
 
-            <!-- 第五行 -->
-            <div class="sudoku-cell">5</div>
-            <div class="sudoku-cell">7</div>
-            <div class="sudoku-cell">9</div>
-            <div class="sudoku-cell">4</div>
-            <div class="sudoku-cell">8</div>
-            <div class="sudoku-cell">3</div>
-            <div class="sudoku-cell">2</div>
-            <div class="sudoku-cell">1</div>
-            <div class="sudoku-cell">6</div>
+                <div class="sudoku-cell">5</div>
+                <div class="sudoku-cell">7</div>
+                <div class="sudoku-cell">9</div>
+                <div class="sudoku-cell">4</div>
+                <div class="sudoku-cell">8</div>
+                <div class="sudoku-cell">3</div>
+                <div class="sudoku-cell">2</div>
+                <div class="sudoku-cell">1</div>
+                <div class="sudoku-cell">6</div>
 
-            <!-- 第六行 -->
-            <div class="sudoku-cell">1</div>
-            <div class="sudoku-cell">5</div>
-            <div class="sudoku-cell">2</div>
-            <div class="sudoku-cell">7</div>
-            <div class="sudoku-cell">9</div>
-            <div class="sudoku-cell">8</div>
-            <div class="sudoku-cell">4</div>
-            <div class="sudoku-cell">3</div>
-            <div class="sudoku-cell">7</div>
+                <div class="sudoku-cell">1</div>
+                <div class="sudoku-cell">5</div>
+                <div class="sudoku-cell">2</div>
+                <div class="sudoku-cell">7</div>
+                <div class="sudoku-cell">9</div>
+                <div class="sudoku-cell">8</div>
+                <div class="sudoku-cell">4</div>
+                <div class="sudoku-cell">3</div>
+                <div class="sudoku-cell">7</div>
 
-            <!-- 第七行 -->
-            <div class="sudoku-cell">2</div>
-            <div class="sudoku-cell">9</div>
-            <div class="sudoku-cell">8</div>
-            <div class="sudoku-cell">1</div>
-            <div class="sudoku-cell">4</div>
-            <div class="sudoku-cell">6</div>
-            <div class="sudoku-cell">5</div>
-            <div class="sudoku-cell">4</div>
-            <div class="sudoku-cell">3</div>
+                <div class="sudoku-cell">2</div>
+                <div class="sudoku-cell">9</div>
+                <div class="sudoku-cell">8</div>
+                <div class="sudoku-cell">1</div>
+                <div class="sudoku-cell">4</div>
+                <div class="sudoku-cell">6</div>
+                <div class="sudoku-cell">5</div>
+                <div class="sudoku-cell">4</div>
+                <div class="sudoku-cell">3</div>
 
-            <!-- 第八行 - 空白3：第八行第8列（解出2） -->
-            <div class="sudoku-cell">7</div>
-            <div class="sudoku-cell">6</div>
-            <div class="sudoku-cell">1</div>
-            <div class="sudoku-cell">3</div>
-            <div class="sudoku-cell">5</div>
-            <div class="sudoku-cell">9</div>
-            <div class="sudoku-cell">8</div>
-            <div class="sudoku-cell empty">?</div>
-            <div class="sudoku-cell">4</div>
+                <div class="sudoku-cell">7</div>
+                <div class="sudoku-cell">6</div>
+                <div class="sudoku-cell">1</div>
+                <div class="sudoku-cell">3</div>
+                <div class="sudoku-cell">5</div>
+                <div class="sudoku-cell">9</div>
+                <div class="sudoku-cell">8</div>
+                <div class="sudoku-cell empty">?</div>
+                <div class="sudoku-cell">4</div>
 
-            <!-- 第九行 -->
-            <div class="sudoku-cell">4</div>
-            <div class="sudoku-cell">3</div>
-            <div class="sudoku-cell">5</div>
-            <div class="sudoku-cell">6</div>
-            <div class="sudoku-cell">1</div>
-            <div class="sudoku-cell">7</div>
-            <div class="sudoku-cell">9</div>
-            <div class="sudoku-cell">8</div>
-            <div class="sudoku-cell">5</div>
+                <div class="sudoku-cell">4</div>
+                <div class="sudoku-cell">3</div>
+                <div class="sudoku-cell">5</div>
+                <div class="sudoku-cell">6</div>
+                <div class="sudoku-cell">1</div>
+                <div class="sudoku-cell">7</div>
+                <div class="sudoku-cell">9</div>
+                <div class="sudoku-cell">8</div>
+                <div class="sudoku-cell">5</div>
+            </div>
         </div>
     </div>
-</div>
 
     <script>
         function encryptData(str) {
@@ -652,10 +632,10 @@
         const encryptedThirdCoord = encryptData('362');
         const encryptedFullCoord = encryptData('714.859.362');
 
+        // 三个快捷方式点击（已修复）
         document.getElementById('shortcutMemories').addEventListener('click', () => {
             document.getElementById('memoriesPage').style.display = 'block';
         });
-
         document.getElementById('closeMemories').addEventListener('click', () => {
             document.getElementById('memoriesPage').style.display = 'none';
         });
@@ -663,7 +643,6 @@
         document.getElementById('shortcutHistory').addEventListener('click', () => {
             document.getElementById('historyPage').style.display = 'block';
         });
-
         document.getElementById('closeHistory').addEventListener('click', () => {
             document.getElementById('historyPage').style.display = 'none';
         });
@@ -671,203 +650,202 @@
         document.getElementById('shortcutCollection').addEventListener('click', () => {
             document.getElementById('collectionPage').style.display = 'flex';
         });
-
         document.getElementById('closeCollection').addEventListener('click', () => {
             document.getElementById('collectionPage').style.display = 'none';
         });
 
-const stickyNotes = document.querySelectorAll('.sticky-note');
-const slots = document.querySelectorAll('.slot');
-const correctOrder = [8,2,1,9,5,6,3,4,7]; 
-let placedNotes = {};
-let draggedNote = null; 
-let errorCount = 0; 
-let lastErrorTime = 0; 
+        // 拖拽便利贴逻辑（修复语法错误）
+        const stickyNotes = document.querySelectorAll('.sticky-note');
+        const slots = document.querySelectorAll('.slot');
+        const correctOrder = [8,2,1,9,5,6,3,4,7]; 
+        let placedNotes = {};
+        let draggedNote = null; 
+        let errorCount = 0; 
+        let lastErrorTime = 0; 
 
-function showErrorTip() {
-    const now = Date.now();
-    if (now - lastErrorTime < 1000) return;
-    
-    lastErrorTime = now;
-    errorCount++;
-    
-    let tipText = '';
-    if (errorCount === 1) {
-        tipText = '轨迹不对哦，再回忆一下她的经历顺序～';
-    } else if (errorCount === 2) {
-        tipText = '还是不对呢，试试从「游戏」开始排？';
-    } else if (errorCount >= 3) {
-        tipText = '提示：正确顺序是游戏→全季酒店→滑雪→美甲→旅游→搬家→海边→拼图→学画画';
-    }
-    
-    const tip = document.createElement('div');
-    tip.style.position = 'fixed';
-    tip.style.top = '50%';
-    tip.style.left = '50%';
-    tip.style.transform = 'translate(-50%, -50%)';
-    tip.style.background = 'rgba(229, 62, 62, 0.9)';
-    tip.style.color = 'white';
-    tip.style.padding = '12px 20px';
-    tip.style.borderRadius = '8px';
-    tip.style.zIndex = '9999';
-    tip.style.fontSize = '16px';
-    tip.textContent = tipText;
-    document.body.appendChild(tip);
-    
-    setTimeout(() => {
-        document.body.removeChild(tip);
-    }, 2000);
-}
-
-function markErrorSlots() {
-    for (let i = 1; i <= 9; i++) {
-        if (placedNotes[i]) { 
-            const slot = document.querySelector(`.slot[data-slot="${i}"]`);
-            if (placedNotes[i] !== correctOrder[i-1]) {
-                slot.style.border = '2px solid #e53e3e';
-                slot.style.boxShadow = '0 0 8px rgba(229, 62, 62, 0.6)';
-                setTimeout(() => {
-                    slot.style.border = '1px solid #4caf50';
-                    slot.style.boxShadow = 'none';
-                }, 3000);
+        function showErrorTip() {
+            const now = Date.now();
+            if (now - lastErrorTime < 1000) return;
+            
+            lastErrorTime = now;
+            errorCount++;
+            
+            let tipText = '';
+            if (errorCount === 1) {
+                tipText = '轨迹不对哦，再回忆一下她的经历顺序～';
+            } else if (errorCount === 2) {
+                tipText = '还是不对呢，试试从「游戏」开始排？';
+            } else if (errorCount >= 3) {
+                tipText = '提示：正确顺序是游戏→全季酒店→滑雪→美甲→旅游→搬家→海边→拼图→学画画';
             }
+            
+            const tip = document.createElement('div');
+            tip.style.position = 'fixed';
+            tip.style.top = '50%';
+            tip.style.left = '50%';
+            tip.style.transform = 'translate(-50%, -50%)';
+            tip.style.background = 'rgba(229, 62, 62, 0.9)';
+            tip.style.color = 'white';
+            tip.style.padding = '12px 20px';
+            tip.style.borderRadius = '8px';
+            tip.style.zIndex = '9999';
+            tip.style.fontSize = '16px';
+            tip.textContent = tipText;
+            document.body.appendChild(tip);
+            
+            setTimeout(() => {
+                document.body.removeChild(tip);
+            }, 2000);
         }
-    }
-}
 
-slots.forEach(slot => {
-    slot.addEventListener('click', (e) => {
-        const noteInSlot = slot.querySelector('.sticky-note');
-        if (noteInSlot) {
-            const noteName = noteInSlot.querySelector('span:last-child').textContent;
-            const sourceNote = Array.from(stickyNotes).find(note => 
-                note.dataset.name === noteName
-            );
-            if (sourceNote) {
-                sourceNote.classList.remove('dragged');
-            }
-            slot.innerHTML = `<span class="slot-number">${slot.dataset.slot}</span>`;
-            slot.style.border = '1px dashed #5f6368';
-            slot.style.boxShadow = 'none';
-            delete placedNotes[parseInt(slot.dataset.slot)];
-        }
-    });
-});
-
-stickyNotes.forEach(note => {
-    note.addEventListener('mousedown', (e) => {
-        e.preventDefault();
-        draggedNote = note;
-        
-        const clone = document.createElement('div');
-        clone.id = 'dragging-clone';
-        clone.className = 'sticky-note';
-        clone.style.position = 'absolute';
-        clone.style.zIndex = '9999';
-        clone.style.left = `${e.clientX - 35}px`;
-        clone.style.top = `${e.clientY - 40}px`;
-        clone.innerHTML = `
-            <span class="note-icon">${note.dataset.icon}</span>
-            <span>${note.dataset.name}</span>
-        `;
-        document.body.appendChild(clone);
-
-        const onMouseMove = (e) => {
-            clone.style.left = `${e.clientX - 35}px`;
-            clone.style.top = `${e.clientY - 40}px`;
-        };
-
-        const onMouseUp = (e) => {
-            document.body.removeChild(clone);
-            document.removeEventListener('mousemove', onMouseMove);
-            document.removeEventListener('mouseup', onMouseUp);
-
-            let isPlaced = false;
-            slots.forEach(slot => {
-                const slotRect = slot.getBoundingClientRect();
-                if (e.clientX >= slotRect.left && e.clientX <= slotRect.right &&
-                    e.clientY >= slotRect.top && e.clientY <= slotRect.bottom) {
-                    const existingNote = slot.querySelector('.sticky-note');
-                    if (existingNote) {
-                        const existingName = existingNote.querySelector('span:last-child').textContent;
-                        const sourceNote = Array.from(stickyNotes).find(n => 
-                            n.dataset.name === existingName
-                        );
-                        if (sourceNote) {
-                            sourceNote.classList.remove('dragged');
-                        }
-                        delete placedNotes[parseInt(slot.dataset.slot)];
+        function markErrorSlots() {
+            for (let i = 1; i <= 9; i++) {
+                if (placedNotes[i]) { 
+                    const slot = document.querySelector(`.slot[data-slot="${i}"]`);
+                    if (placedNotes[i] !== correctOrder[i-1]) {
+                        slot.style.border = '2px solid #e53e3e';
+                        slot.style.boxShadow = '0 0 8px rgba(229, 62, 62, 0.6)';
+                        setTimeout(() => {
+                            slot.style.border = '1px dashed #5f6368';
+                            slot.style.boxShadow = 'none';
+                        }, 3000);
                     }
-                    
+                }
+            }
+        }
+
+        slots.forEach(slot => {
+            slot.addEventListener('click', (e) => {
+                const noteInSlot = slot.querySelector('.sticky-note');
+                if (noteInSlot) {
+                    const noteName = noteInSlot.querySelector('span:last-child').textContent;
+                    const sourceNote = Array.from(stickyNotes).find(note => 
+                        note.dataset.name === noteName
+                    );
+                    if (sourceNote) {
+                        sourceNote.classList.remove('dragged');
+                    }
                     slot.innerHTML = `<span class="slot-number">${slot.dataset.slot}</span>`;
-                    const newNote = document.createElement('div');
-                    newNote.className = 'sticky-note';
-                    newNote.innerHTML = `
-                        <span class="note-icon">${draggedNote.dataset.icon}</span>
-                        <span>${draggedNote.dataset.name}</span>
-                    `;
-                    slot.appendChild(newNote);
-                    slot.style.border = '1px solid #4caf50';
-                    slot.style.boxShadow = 'none'; 
-
-                    const noteId = parseInt(draggedNote.dataset.id);
-                    const slotNum = parseInt(slot.dataset.slot);
-                    placedNotes[slotNum] = noteId;
-
-                    draggedNote.classList.add('dragged');
-                    isPlaced = true;
+                    slot.style.border = '1px dashed #5f6368';
+                    slot.style.boxShadow = 'none';
+                    delete placedNotes[parseInt(slot.dataset.slot)];
                 }
             });
+        });
 
-            if (!isPlaced) {
-                draggedNote.classList.remove('dragged');
+        stickyNotes.forEach(note => {
+            note.addEventListener('mousedown', (e) => {
+                e.preventDefault();
+                draggedNote = note;
+                
+                const clone = document.createElement('div');
+                clone.id = 'dragging-clone';
+                clone.className = 'sticky-note';
+                clone.style.position = 'absolute';
+                clone.style.zIndex = '9999';
+                clone.style.left = `${e.clientX - 35}px`;
+                clone.style.top = `${e.clientY - 40}px`;
+                clone.innerHTML = `
+                    <span class="note-icon">${note.dataset.icon}</span>
+                    <span>${note.dataset.name}</span>
+                `;
+                document.body.appendChild(clone);
+
+                const onMouseMove = (e) => {
+                    clone.style.left = `${e.clientX - 35}px`;
+                    clone.style.top = `${e.clientY - 40}px`;
+                };
+
+                const onMouseUp = (e) => {
+                    document.body.removeChild(clone);
+                    document.removeEventListener('mousemove', onMouseMove);
+                    document.removeEventListener('mouseup', onMouseUp);
+
+                    let isPlaced = false;
+                    slots.forEach(slot => {
+                        const slotRect = slot.getBoundingClientRect();
+                        if (e.clientX >= slotRect.left && e.clientX <= slotRect.right &&
+                            e.clientY >= slotRect.top && e.clientY <= slotRect.bottom) {
+                            const existingNote = slot.querySelector('.sticky-note');
+                            if (existingNote) {
+                                const existingName = existingNote.querySelector('span:last-child').textContent;
+                                const sourceNote = Array.from(stickyNotes).find(n => 
+                                    n.dataset.name === existingName
+                                );
+                                if (sourceNote) {
+                                    sourceNote.classList.remove('dragged');
+                                }
+                                delete placedNotes[parseInt(slot.dataset.slot)];
+                            }
+                            
+                            slot.innerHTML = `<span class="slot-number">${slot.dataset.slot}</span>`;
+                            const newNote = document.createElement('div');
+                            newNote.className = 'sticky-note';
+                            newNote.innerHTML = `
+                                <span class="note-icon">${draggedNote.dataset.icon}</span>
+                                <span>${draggedNote.dataset.name}</span>
+                            `;
+                            slot.appendChild(newNote);
+                            slot.style.border = '1px solid #4caf50';
+                            slot.style.boxShadow = 'none'; 
+
+                            const noteId = parseInt(draggedNote.dataset.id);
+                            const slotNum = parseInt(slot.dataset.slot);
+                            placedNotes[slotNum] = noteId;
+
+                            draggedNote.classList.add('dragged');
+                            isPlaced = true;
+                        }
+                    });
+
+                    if (!isPlaced) {
+                        draggedNote.classList.remove('dragged');
+                    }
+
+                    checkOrder();
+                    draggedNote = null;
+                };
+
+                document.addEventListener('mousemove', onMouseMove);
+                document.addEventListener('mouseup', onMouseUp);
+            });
+        });
+
+        function checkOrder() {
+            let isCorrect = true;
+            let allPlaced = true;
+
+            for (let i = 1; i <= 9; i++) {
+                if (!placedNotes[i]) {
+                    allPlaced = false;
+                    break;
+                }
             }
 
-            checkOrder();
-            draggedNote = null;
-        };
+            if (allPlaced) {
+                for (let i = 1; i <= 9; i++) {
+                    if (placedNotes[i] !== correctOrder[i-1]) {
+                        isCorrect = false;
+                        break;
+                    }
+                }
 
-        document.addEventListener('mousemove', onMouseMove);
-        document.addEventListener('mouseup', onMouseUp);
-    });
-});
-
-function checkOrder() {
-    let isCorrect = true;
-    let allPlaced = true;
-
-    for (let i = 1; i <= 9; i++) {
-        if (!placedNotes[i]) {
-            allPlaced = false;
-            break;
-        }
-    }
-
-    if (allPlaced) {
-        for (let i = 1; i <= 9; i++) {
-            if (placedNotes[i] !== correctOrder[i-1]) {
-                isCorrect = false;
-                break;
+                if (isCorrect) {
+                    errorCount = 0;
+                    const firstCoord = decryptData(encryptedFirstCoord);
+                    document.getElementById('paperNote').innerHTML = `
+                        <div class="paper-note-title">📜 她的纸条</div>
+                        <div>找到第一组坐标：<b>${firstCoord}</b></div>
+                    `;
+                    document.getElementById('paperNote').style.display = 'block';
+                } else {
+                    showErrorTip();
+                    markErrorSlots();
+                }
             }
         }
 
-
-            errorCount = 0;
-            const firstCoord = decryptData(encryptedFirstCoord);
-            document.getElementById('paperNote').innerHTML = `
-                <div class="paper-note-title">📜 她的纸条</div>
-                <div>找到第一组坐标：<b>${firstCoord}</b></div>
-            `;
-            document.getElementById('paperNote').style.display = 'block';
-        } else {
-            showErrorTip();
-            markErrorSlots();
-        }
-    } else {
-        isCorrect = false;
-    }
-}
-
+        // 搜索功能
         const googleSearchInput = document.getElementById('googleSearchInput');
         const addressBar = document.querySelector('.address-bar');
 
