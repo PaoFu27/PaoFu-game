@@ -293,7 +293,7 @@ if(p.id==8 && p.timeline){
     allReplies.push({
       type:'op',
       time,
-      text:item
+      text:item.replace(/^(\d{2}:\d{2})\s*/,''),
     });
   });
 }
@@ -308,7 +308,9 @@ allReplies.forEach((item,index)=>{
 
     html+=`
     <div class='reply'>
-      <div class='meta'>${item.floor}楼 · ${Math.random().toString(36).slice(2,6).toUpperCase()}</div>
+      <div class='meta'>
+${item.floor}楼 · ${Math.random().toString(36).slice(2,6).toUpperCase()} · ${item.time}
+</div>
       <div style='margin-top:6px;line-height:1.8'>${item.text}</div>
       <div style='margin-top:10px;font-size:13px;color:#6b7280'>
         👍 ${15+index*3} 👎 ${index%3} 回复 引用
@@ -319,7 +321,7 @@ allReplies.forEach((item,index)=>{
 
     html+=`
     <div class='reply' style="background:#e6f7ff;border-left:3px solid #2563eb">
-      <div class='meta'>${p.author}（楼主）</div>
+      <div class='meta'>${p.author}（楼主） · ${item.time}</div>
       <div style='margin-top:6px'>${item.text}</div>
     </div>`;
   }
