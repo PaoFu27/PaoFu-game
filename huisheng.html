@@ -279,7 +279,7 @@ p.replies.forEach((r,i)=>{
   allReplies.push({
     type:'user',
     time,
-    text:r,
+    text:r.replace(/^(\d{2}:\d{2})\s*/,''),
     floor:i+1
   });
 });
