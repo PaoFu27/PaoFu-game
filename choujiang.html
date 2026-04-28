@@ -391,22 +391,29 @@ startBtn.onclick = function () {
     startBtn.disabled = true;
     resultText.innerText = "抽奖中～";
     count--;
-
     countTip.innerText = `剩余抽奖次数：${count} 次`;
 
-    // ===== ① 直接随机“中奖索引” =====
     let idx = Math.floor(Math.random() * prizeList.length);
     let winText = prizeList[idx];
 
-    // ===== ② 每个格子角度 =====
     const itemAngle = 360 / prizeList.length;
 
-    // ===== ③ 让指针对准该格子中心 =====
-    // +3圈保证动画感
+    // 目标角度
     let rotateTo = 360 * 5 + (360 - idx * itemAngle - itemAngle / 2);
 
+    // ⭐关键：先清掉 transition
+    wheelCanvas.style.transition = "none";
+
+    // ⭐关键：强制浏览器刷新（打断上一次动画缓存）
+    wheelCanvas.style.transform = `rotate(${wheelCanvas._lastRotate || 0}deg)`;
+    wheelCanvas.offsetHeight; // 👈 强制 reflow（关键）
+
+    // ⭐再开启动画
     wheelCanvas.style.transition = "transform 4s cubic-bezier(0.2, 0.8, 0.2, 1)";
     wheelCanvas.style.transform = `rotate(${rotateTo}deg)`;
+
+    // 保存状态
+    wheelCanvas._lastRotate = rotateTo;
 
     setTimeout(() => {
         resultText.innerText = `🎉恭喜中奖：${winText}`;
