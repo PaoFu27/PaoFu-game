@@ -235,33 +235,47 @@
 
         let count = 2;
 
-        startBtn.onclick = function(){
-            if(count <= 0){
-                resultText.innerText = "❌ 次数用完啦，完成挑战加次数！";
-                return;
-            }
-            startBtn.disabled = true;
-            resultText.innerText = "抽奖中～";
-            count--;
-            countTip.innerText = `剩余抽奖次数：${count} 次`;
+        startBtn.onclick = function () {
+    if (count <= 0) {
+        resultText.innerText = "❌ 次数用完啦，完成挑战加次数！";
+        return;
+    }
 
-            // 随机角度
-            let randomAngle = Math.floor(Math.random() * len) * 45;
-            let totalRotate = 1800 + randomAngle;
-            rotateAngle += totalRotate;
-            canvas.style.transform = `rotate(${rotateAngle}deg)`;
+    startBtn.disabled = true;
+    resultText.innerText = "抽奖中～";
 
-            setTimeout(()=>{
-                // 精准计算中奖
-                let realAngle = rotateAngle % 360;
-                let index = Math.floor(realAngle / 45);
-                let win = prizeList[len - 1 - index];
-                
-                resultText.innerText = `🎉恭喜中奖：${win}`;
-                addRecord(win);
-                startBtn.disabled = false;
-            },4000)
-        }
+    count--;
+    countTip.innerText = `剩余抽奖次数：${count} 次`;
+
+    const perDeg = 360 / len; // 每格45度
+
+    // 随机中奖编号
+    let prizeIndex = Math.floor(Math.random() * len);
+
+    // 当前奖品中心角度（重点）
+    let targetDeg = prizeIndex * perDeg + perDeg / 2;
+
+    // 再加一点随机偏移（不超过10度）
+    let offset = Math.random() * 20 - 10;
+
+    // 转5圈以上再停
+    let totalRotate = 360 * 5 + targetDeg + offset;
+
+    rotateAngle += totalRotate;
+
+    canvas.style.transform = `rotate(${rotateAngle}deg)`;
+
+    setTimeout(() => {
+
+        let win = prizeList[len - 1 - prizeIndex];
+
+        resultText.innerText = `🎉恭喜中奖：${win}`;
+        addRecord(win);
+
+        startBtn.disabled = false;
+
+    }, 4000);
+}
 
         function addCount(){
             count++;
