@@ -16,33 +16,29 @@
     margin: 0;
     padding: 30px;
     background: linear-gradient(135deg, #ffe6f2, #fff0f8);
-
-    position: relative;
-    overflow: hidden; /* ⭐特效全屏关键 */
+    overflow: hidden;
 }
 
-/* ⭐外层布局容器（关键修复点） */
-body::before {
-    content: "";
-    position: absolute;
-    inset: 0;
+/* ⭐真正控制布局的容器 */
+.layout {
     display: flex;
     justify-content: center;
     align-items: flex-start;
     gap: 50px;
-    padding-top: 60px;
-}
-.box {
-    position: relative;
-    width: 420px;
 
+    width: 100%;
+}
+
+/* 左边抽奖 */
+.box {
+    width: 420px;
     background: rgba(255, 255, 255, 0.88);
     border-radius: 22px;
     padding: 30px 25px;
     box-shadow: 0 10px 30px rgba(255, 105, 160, 0.15);
-
-    z-index: 2;
 }
+
+/* 右边记录 */
 .right-box {
     width: 320px;
     min-height: 600px;
@@ -51,8 +47,6 @@ body::before {
     border-radius: 22px;
     padding: 20px;
     box-shadow: 0 10px 30px rgba(255, 105, 160, 0.15);
-
-    z-index: 2;
 }
 
         h2 {
@@ -311,6 +305,7 @@ body::before {
     </style>
 </head>
 <body>
+    <div class="layout">
     <div class="box">
         <h2>送给专属男朋友的惊喜抽奖 💝</h2>
         <div class="count" id="countTip">剩余抽奖次数：2 次</div>
