@@ -17,38 +17,44 @@
     padding: 30px;
     background: linear-gradient(135deg, #ffe6f2, #fff0f8);
 
+    position: relative;
+    overflow: hidden; /* ⭐特效全屏关键 */
+}
+
+/* ⭐外层布局容器（关键修复点） */
+body::before {
+    content: "";
+    position: absolute;
+    inset: 0;
     display: flex;
     justify-content: center;
-    align-items: flex-start;   /* ⭐关键：不要垂直居中 */
+    align-items: flex-start;
     gap: 50px;
-
-    flex-wrap: nowrap;         /* ⭐不允许挤下去 */
-    overflow-x: auto;          /* ⭐空间不够就横向滚动 */
+    padding-top: 60px;
 }
 .box {
     position: relative;
-    width: 420px;              /* ⭐变宽 */
-    
+    width: 420px;
+
     background: rgba(255, 255, 255, 0.88);
     border-radius: 22px;
     padding: 30px 25px;
     box-shadow: 0 10px 30px rgba(255, 105, 160, 0.15);
-}
 
+    z-index: 2;
+}
 .right-box {
     width: 320px;
-    min-height: 600px;         /* ⭐不要固定高度，用最小高度 */
+    min-height: 600px;
 
     background: rgba(255, 255, 255, 0.88);
     border-radius: 22px;
     padding: 20px;
     box-shadow: 0 10px 30px rgba(255, 105, 160, 0.15);
 
-    backdrop-filter: blur(10px);
+    z-index: 2;
 }
-       .box, .right-box {
-    backdrop-filter: blur(10px);
-}
+
         h2 {
             color: #ff6b9c;
             margin-bottom: 20px;
