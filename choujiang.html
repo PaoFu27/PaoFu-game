@@ -148,6 +148,161 @@
             font-size: 14px;
             color: #c72c5e;
         }
+        /* ================= 弹窗 ================= */
+
+.popup-mask{
+    position: fixed;
+    inset: 0;
+    background: rgba(255,192,220,.45);
+    backdrop-filter: blur(5px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.popup-box{
+    width: 360px;
+    max-width: 92%;
+    background: linear-gradient(180deg,#fff0f7,#ffffff);
+    border-radius: 26px;
+    padding: 38px 25px;
+    text-align: center;
+    box-shadow: 0 15px 35px rgba(255,120,170,.28);
+    position: relative;
+    overflow: hidden;
+    animation: popIn .5s ease;
+}
+
+/* 像素风动画字体 */
+.popup-box h2,
+.popup-box p{
+    font-family:
+        "Press Start 2P",
+        "ZCOOL KuaiLe",
+        "Microsoft YaHei",
+        sans-serif;
+    letter-spacing: 1px;
+}
+
+.popup-box h2{
+    color:#ff5f9a;
+    font-size:24px;
+    line-height:1.6;
+    margin-bottom:18px;
+    position:relative;
+    z-index:2;
+
+    text-shadow:
+        2px 0 #ffd3e6,
+        -2px 0 #ffd3e6,
+        0 2px #ffd3e6,
+        0 -2px #ffd3e6,
+        3px 3px #ff9fc4;
+
+    animation:
+        pixelGlow 1.2s infinite alternate,
+        floatText 2s ease-in-out infinite;
+}
+
+.popup-box p{
+    color:#ff6fa8;
+    font-size:14px;
+    line-height:2;
+    margin-bottom:25px;
+    position:relative;
+    z-index:2;
+
+    text-shadow:
+        1px 1px #ffd8ea,
+        2px 2px #ffc3dd;
+
+    animation: pixelGlowSoft 1.4s infinite alternate;
+}
+
+.popup-box button{
+    border:none;
+    background: linear-gradient(135deg,#ff7eb3,#ff5f9a);
+    color:#fff;
+    padding:12px 26px;
+    border-radius:999px;
+    font-size:16px;
+    cursor:pointer;
+    box-shadow:0 8px 18px rgba(255,105,160,.35);
+    position:relative;
+    z-index:2;
+}
+
+.popup-box button:hover{
+    transform:scale(1.05);
+}
+
+/* 泡泡 */
+.bubble-area span{
+    position:absolute;
+    bottom:-30px;
+    background:rgba(255,170,210,.45);
+    border-radius:50%;
+    animation: floatUp linear infinite;
+}
+
+/* 爱心 */
+.bubble-area i{
+    position:absolute;
+    bottom:-30px;
+    color:#ff8fbf;
+    font-style:normal;
+    animation: floatUp linear infinite;
+}
+
+/* 动画 */
+
+@keyframes floatUp{
+    0%{
+        transform:translateY(0) scale(.5);
+        opacity:0;
+    }
+    20%{
+        opacity:1;
+    }
+    100%{
+        transform:translateY(-430px) scale(1.2);
+        opacity:0;
+    }
+}
+
+@keyframes popIn{
+    from{
+        transform:scale(.6);
+        opacity:0;
+    }
+    to{
+        transform:scale(1);
+        opacity:1;
+    }
+}
+
+@keyframes pixelGlow{
+    from{
+        transform:translateY(0);
+        filter:brightness(1);
+    }
+    to{
+        transform:translateY(-3px);
+        filter:brightness(1.18);
+    }
+}
+
+@keyframes pixelGlowSoft{
+    from{opacity:.85;}
+    to{opacity:1;}
+}
+
+@keyframes floatText{
+    0%{transform:translateY(0);}
+    50%{transform:translateY(-4px);}
+    100%{transform:translateY(0);}
+}
     </style>
 </head>
 <body>
@@ -289,6 +444,36 @@
             item.innerText = win;
             recordList.prepend(item);
         }
+        function closePopup(){
+    document.getElementById("welcomePopup").style.display = "none";
+}
+
+/* 自动生成泡泡 + 爱心 */
+const area = document.querySelector(".bubble-area");
+
+for(let i=0;i<20;i++){
+
+    let item;
+
+    if(Math.random() > 0.45){
+        item = document.createElement("span");
+
+        let size = Math.random()*18+10;
+        item.style.width = size+"px";
+        item.style.height = size+"px";
+
+    }else{
+        item = document.createElement("i");
+        item.innerText = "❤";
+        item.style.fontSize = (Math.random()*16+14)+"px";
+    }
+
+    item.style.left = Math.random()*100+"%";
+    item.style.animationDuration = (Math.random()*3+3)+"s";
+    item.style.animationDelay = Math.random()*3+"s";
+
+    area.appendChild(item);
+}
     </script>
     <!-- 欢迎弹窗 -->
 <div id="welcomePopup" class="popup-mask">
