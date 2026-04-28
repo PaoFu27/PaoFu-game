@@ -379,55 +379,50 @@
         }
         drawWheel();
         let count = 2;
-        startBtn.onclick = function () {
+        // 每个板块角度
+const itemAngle = 45;
+
+startBtn.onclick = function () {
     if (count <= 0) {
         resultText.innerText = "❌ 次数用完啦，完成挑战加次数！";
         return;
     }
+
     startBtn.disabled = true;
     resultText.innerText = "抽奖中～";
     count--;
     countTip.innerText = `剩余抽奖次数：${count} 次`;
 
-    const itemAngle = 360 / len;
-    // 随机落点 + 固定圈数，每次力度一致，不会减速
-    let randomAngle = Math.random() * 360;
-    // 固定 7 圈 + 随机角度，每一次转速、力度完全一样
-    let total = 360 * 7 + randomAngle;
-
-    // 强制重置动画，杜绝越转越慢
+    // 每次强制重置转盘状态，解决越转越慢
     wheelCanvas.style.transition = "none";
-    wheelCanvas.style.transform = `rotate(0deg)`;
-    
-    // 短暂延迟再开启旋转，完美重置力度
+    wheelCanvas.style.transform = "rotate(0deg)";
+
     setTimeout(() => {
         wheelCanvas.style.transition = "all 4s cubic-bezier(0.2, 0.8, 0.2, 1)";
+        // 随机角度 + 固定圈数
+        let randomNum = Math.random() * 360;
+        let total = 360 * 6 + randomNum;
         wheelCanvas.style.transform = `rotate(${total}deg)`;
-    }, 30);
 
-    setTimeout(() => {
-    // 取转盘最终旋转角度
-    let finalDeg = allRotate % 360;
-    // 每一块角度 45°
-    const blockAngle = 45;
+        // 延迟结束后计算
+        setTimeout(() => {
+            // 取余数 0~360
+            let rotateVal = total % 360;
+            // 关键矫正：完美匹配你canvas绘制的板块顺序
+            let realAngle = (360 - rotateVal + itemAngle / 2) % 360;
+            // 算出当前指针在第几块
+            let idx = Math.floor(realAngle / itemAngle);
+            
+            // 板块 = 数组文字 百分百绑定
+            let winText = prizeList[idx];
 
-    // ========== 关键：和你 canvas 绘制方向精准绑定 ==========
-    // 矫正方向：指针朝上、转盘顺时针转
-    let calcDeg = (360 - finalDeg + 22.5) % 360;
+            // 弹出奖励 + 写入记录
+            resultText.innerText = `🎉恭喜中奖：${winText}`;
+            addRecord(winText);
 
-    // 算出当前指针指向 第几号板块
-    let blockIndex = Math.floor(calcDeg / blockAngle);
-
-    // ✅ 重点：板块下标 直接 = 奖品数组下标
-    // 第0块 → prizeList[0]
-    // 第1块 → prizeList[1]
-    // 完全一一绑定
-    let getPrize = prizeList[blockIndex];
-
-    resultText.innerText = `🎉恭喜中奖：${getPrize}`;
-    addRecord(getPrize);
-    startBtn.disabled = false;
-}, 4000);
+            startBtn.disabled = false;
+        }, 4000);
+    }, 50);
 };
         function addCount(){
             count++;
