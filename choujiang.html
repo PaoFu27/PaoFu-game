@@ -303,6 +303,14 @@
     50%{transform:translateY(-4px);}
     100%{transform:translateY(0);}
 }
+        #fireworks{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    z-index:1;
+    pointer-events:none;
+}
     </style>
 </head>
 <body>
@@ -444,39 +452,129 @@
             item.innerText = win;
             recordList.prepend(item);
         }
-        function closePopup(){
-    document.getElementById("welcomePopup").style.display = "none";
-}
+        const canvas = document.getElementById("fireworks");
+const ctx = canvas.getContext("2d");
 
-/* 自动生成泡泡 + 爱心 */
-const area = document.querySelector(".bubble-area");
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
 
-for(let i=0;i<20;i++){
+let particles = [];
 
-    let item;
+// ❤️ 爱心粒子
+class HeartParticle {
+    constructor(x, y, color) {
+        this.x = x;
+        this.y = y;
 
-    if(Math.random() > 0.45){
-        item = document.createElement("span");
+        this.size = Math.random() * 12 + 8;
 
-        let size = Math.random()*18+10;
-        item.style.width = size+"px";
-        item.style.height = size+"px";
+        this.color = color;
 
-    }else{
-        item = document.createElement("i");
-        item.innerText = "❤";
-        item.style.fontSize = (Math.random()*16+14)+"px";
+        // 随机方向爆炸
+        this.speedX = (Math.random() - 0.5) * 10;
+        this.speedY = (Math.random() - 0.5) * 10;
+
+        this.gravity = 0.05;
+        this.alpha = 1;
+
+        this.rotation = Math.random() * 360;
+        this.rotateSpeed = (Math.random() - 0.5) * 10;
     }
 
-    item.style.left = Math.random()*100+"%";
-    item.style.animationDuration = (Math.random()*3+3)+"s";
-    item.style.animationDelay = Math.random()*3+"s";
+    update() {
+        this.speedY += this.gravity;
 
-    area.appendChild(item);
+        this.x += this.speedX;
+        this.y += this.speedY;
+
+        this.alpha -= 0.008;
+        this.rotation += this.rotateSpeed;
+    }
+
+    draw() {
+        ctx.save();
+        ctx.translate(this.x, this.y);
+        ctx.rotate(this.rotation * Math.PI / 180);
+        ctx.globalAlpha = this.alpha;
+
+        ctx.fillStyle = this.color;
+
+        drawHeart(ctx, 0, 0, this.size);
+
+        ctx.restore();
+    }
+}
+
+// ❤️ 画爱心函数
+function drawHeart(ctx, x, y, size) {
+    ctx.beginPath();
+    ctx.moveTo(x, y);
+
+    ctx.bezierCurveTo(
+        x - size / 2, y - size / 2,
+        x - size, y + size / 3,
+        x, y + size
+    );
+
+    ctx.bezierCurveTo(
+        x + size, y + size / 3,
+        x + size / 2, y - size / 2,
+        x, y
+    );
+
+    ctx.fill();
+}
+
+// 🎆 爆炸生成
+function explode() {
+    const colors = [
+        "#ff4d88",
+        "#ff6fa8",
+        "#ff9ecb",
+        "#ffd1e8",
+        "#ff85c1"
+    ];
+
+    let x = Math.random() * window.innerWidth;
+    let y = Math.random() * window.innerHeight * 0.4;
+
+    for (let i = 0; i < 40; i++) {
+        let color = colors[Math.floor(Math.random() * colors.length)];
+        particles.push(new HeartParticle(x, y, color));
+    }
+}
+
+// 🎬 动画循环
+function animate() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    for (let i = 0; i < particles.length; i++) {
+        particles[i].update();
+        particles[i].draw();
+
+        if (particles[i].alpha <= 0) {
+            particles.splice(i, 1);
+            i--;
+        }
+    }
+
+    requestAnimationFrame(animate);
+}
+
+animate();
+
+// 💥 连续烟花（弹窗出现自动播放）
+let fireInterval = setInterval(explode, 500);
+
+// ❌ 关闭弹窗停止
+function closePopup() {
+    document.getElementById("welcomePopup").style.display = "none";
+    clearInterval(fireInterval);
 }
     </script>
     <!-- 欢迎弹窗 -->
 <div id="welcomePopup" class="popup-mask">
+    <canvas id="fireworks"></canvas>
     <div class="popup-box">
         <div class="bubble-area"></div>
 
