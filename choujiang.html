@@ -368,7 +368,7 @@
         // 绘制转盘
         function drawWheel() {
             const r = 140;
-            ctx.clearRect(0,0,280,280);
+            fctx.clearRect(0,0,280,280);
             for(let i = 0; i < len; i++){
                 let startAngle = (i * 45 - 90) * Math.PI / 180;
                 let endAngle = ((i + 1) * 45 - 90) * Math.PI / 180;
@@ -549,7 +549,7 @@ function explode() {
 
 // 🎬 动画循环
 function animate() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    fctx.clearRect(0, 0, canvas.width, canvas.height);
 
     for (let i = 0; i < particles.length; i++) {
         particles[i].update();
