@@ -1261,7 +1261,6 @@ document.querySelectorAll(".wx-chat-item").forEach(item => {
         const key = item.dataset.target;
         const name = item.innerText.trim();
 
-        // 阿远 / 安安 都走情侣聊天
         if (key === "ayuan" || key === "anan") {
             openChat("lover", name);
         } else {
