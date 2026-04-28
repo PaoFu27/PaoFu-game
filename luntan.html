@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>404 Not Found</title>
+
+<style>
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+}
+
+body{
+font-family:Arial,sans-serif;
+background:#f8f9fa;
+color:#222;
+height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+}
+
+.wrap{
+text-align:center;
+padding:30px;
+max-width:500px;
+width:90%;
+}
+
+.title{
+font-size:26px;
+font-weight:600;
+color:#222;
+}
+
+.click404{
+cursor:pointer;
+display:inline-block;
+user-select:none;
+}
+
+.click404:hover{
+opacity:.75;
+}
+
+.sub{
+margin-top:12px;
+font-size:15px;
+color:#666;
+line-height:1.8;
+}
+
+.tip{
+margin-top:18px;
+font-size:13px;
+color:#999;
+height:20px;
+}
+
+.flash{
+opacity:.6;
+}
+
+.fadeout{
+animation:fadeout .8s forwards;
+}
+
+@keyframes fadeout{
+to{
+opacity:0;
+transform:translateY(-8px);
+}
+}
+</style>
+</head>
+<body>
+
+<div class="wrap" id="box">
+
+<div class="title">
+<span id="error404" class="click404">404</span> Not Found
+</div>
+
+<div class="sub">
+抱歉，您访问的页面不存在。<br>
+请检查链接地址是否正确。
+</div>
+
+<div class="tip" id="tip"></div>
+
+</div>
+
+<script>
+let count=0;
+
+const error=document.getElementById("error404");
+const tip=document.getElementById("tip");
+const box=document.getElementById("box");
+
+error.onclick=()=>{
+
+count++;
+
+error.classList.add("flash");
+setTimeout(()=>{
+error.classList.remove("flash");
+},180);
+
+if(count===1){
+tip.innerHTML="请求失败";
+}
+
+if(count===2){
+tip.innerHTML="重新连接中...";
+}
+
+if(count===3){
+tip.innerHTML="已恢复连接";
+box.classList.add("fadeout");
+
+setTimeout(()=>{
+location.href="huisheng.html";
+},900);
+}
+
+};
+</script>
+
+</body>
+</html>
