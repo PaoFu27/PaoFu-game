@@ -25,15 +25,17 @@
     gap: 50px;
 
     width: 100%;
-    padding: 0 20px;
+    max-width: 1200px;
+    margin: 0 auto;
 
-    flex-wrap: nowrap;   /* ⭐关键：禁止换行 */
-    overflow-x: auto;    /* ⭐空间不够就横滑，不准掉下去 */
+    flex-wrap: nowrap;
+
+    /* ⭐关键修复 */
+    overflow: hidden;
 
     position: relative;
     z-index: 2;
 }
-
 /* 左框 */
 .box {
     width: 420px;
@@ -54,8 +56,8 @@
     padding: 20px;
     box-shadow: 0 10px 30px rgba(255, 105, 160, 0.15);
 }
-        .box, .right-box {
-    flex-shrink: 0;   /* ⭐不允许被压缩 */
+    .box, .right-box {
+    flex: 0 0 auto;
 }
         h2 {
             color: #ff6b9c;
