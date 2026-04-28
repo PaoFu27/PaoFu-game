@@ -307,13 +307,27 @@
         </div>
         <div class="result" id="result"></div>
         <div class="task-box">
-            <h4>✅ 完成小挑战 +1 次抽奖机会</h4>
-            <div class="task" onclick="addCount()">亲我一口😚</div>
-            <div class="task" onclick="addCount()">抱我10秒🥰</div>
-            <div class="task" onclick="addCount()">说我爱你❤️</div>
-            <div class="task" onclick="addCount()">给我拍张照📸</div>
-        </div>
+    <h4>✅ 完成小挑战 +1 次抽奖机会</h4>
+
+    <!-- 1.邀请码区域 -->
+    <div style="margin:10px 0;">
+        <div style="font-size:13px;color:#c72c5e;margin-bottom:6px;">输入专属邀请码领取次数</div>
+        <input type="text" id="codeInput" placeholder="请输入邀请码" 
+        style="width:160px;padding:6px;border:1px solid #ffc2e0;border-radius:6px;outline:none;">
+        <button onclick="checkInviteCode()" style="padding:6px 10px;border:none;background:#ff6b9c;color:#fff;border-radius:6px;margin-left:5px;">兑换</button>
+        <div id="codeTip" style="font-size:12px;margin-top:4px;"></div>
     </div>
+
+    <!-- 2.10秒点击挑战 -->
+    <div style="margin:15px 0 5px;">
+        <button id="clickBtn" onclick="startClickGame()" 
+        style="padding:8px 12px;border:none;background:#ff8fbf;color:#fff;border-radius:6px;">
+            开始10秒极速点击
+        </button>
+        <span id="timeTip" style="margin-left:10px;color:#d6336c;font-weight:bold;"></span>
+        <div id="clickTip" style="font-size:12px;margin-top:4px;"></div>
+    </div>
+</div>
     <div class="right-box">
         <h3 class="record-title">🎁 已抽到的礼物</h3>
         <div class="record-list" id="recordList"></div>
@@ -563,6 +577,80 @@ startBtn.onclick = function () {
                 area.appendChild(e);
             }
         }
+        // 全局限制：邀请码只能领一次
+let codeCanGet = true;
+// 全局限制：点击挑战只能完成一次
+let clickCanGet = true;
+
+// ========== 1.邀请码验证 ==========
+function checkInviteCode(){
+    if(!codeCanGet){
+        document.getElementById("codeTip").innerText = "❌ 已兑换过，无法重复领取";
+        document.getElementById("codeTip").style.color = "#f00";
+        return;
+    }
+    let inputVal = document.getElementById("codeInput").value.trim();
+    const rightCode = "JK6S25BT8N";
+    if(inputVal === rightCode){
+        addCount();
+        codeCanGet = false;
+        document.getElementById("codeTip").innerText = "✅ 邀请码正确，次数+1";
+        document.getElementById("codeTip").style.color = "#27ae60";
+    }else{
+        document.getElementById("codeTip").innerText = "❌ 邀请码错误";
+        document.getElementById("codeTip").style.color = "#f00";
+    }
+}
+
+// ========== 2.10秒点击挑战 ==========
+let clickCount = 0;
+let clickTimer = null;
+let timeLeft = 10;
+
+function startClickGame(){
+    if(!clickCanGet){
+        document.getElementById("clickTip").innerText = "❌ 该挑战已完成，无法重复参与";
+        document.getElementById("clickTip").style.color = "#f00";
+        return;
+    }
+    // 重置数据
+    clickCount = 0;
+    timeLeft = 10;
+    const btn = document.getElementById("clickBtn");
+    const timeTip = document.getElementById("timeTip");
+    const clickTip = document.getElementById("clickTip");
+
+    clickTip.innerText = "";
+    btn.innerText = "疯狂点我！";
+
+    // 倒计时
+    timeTip.innerText = `剩余：${timeLeft}s`;
+    clickTimer = setInterval(()=>{
+        timeLeft--;
+        timeTip.innerText = `剩余：${timeLeft}s`;
+        if(timeLeft <= 0){
+            clearInterval(clickTimer);
+            // 判断是否大于30次
+            if(clickCount >= 30){
+                addCount();
+                clickCanGet = false;
+                clickTip.innerText = `✅ 挑战成功！点击${clickCount}次，次数+1`;
+                clickTip.style.color = "#27ae60";
+            }else{
+                clickTip.innerText = `❌ 挑战失败，仅点击${clickCount}次（需≥30）`;
+                clickTip.style.color = "#f00";
+            }
+            btn.innerText = "开始10秒极速点击";
+        }
+    },1000);
+
+    // 按钮点击计数
+    btn.onclick = function(){
+        if(timeLeft > 0){
+            clickCount++;
+        }
+    }
+}
     </script>
 </body>
 </html>
