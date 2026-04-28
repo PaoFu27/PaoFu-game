@@ -149,7 +149,6 @@
             color: #c72c5e;
         }
         /* ================= 弹窗 ================= */
-
 .popup-mask{
     position: fixed;
     inset: 0;
@@ -160,7 +159,6 @@
     align-items: center;
     z-index: 9999;
 }
-
 .popup-box{
     width: 360px;
     max-width: 92%;
@@ -173,7 +171,6 @@
     overflow: hidden;
     animation: popIn .5s ease;
 }
-
 /* 像素风动画字体 */
 .popup-box h2,
 .popup-box p{
@@ -184,7 +181,6 @@
         sans-serif;
     letter-spacing: 1px;
 }
-
 .popup-box h2{
     color:#ff5f9a;
     font-size:24px;
@@ -192,19 +188,16 @@
     margin-bottom:18px;
     position:relative;
     z-index:2;
-
     text-shadow:
         2px 0 #ffd3e6,
         -2px 0 #ffd3e6,
         0 2px #ffd3e6,
         0 -2px #ffd3e6,
         3px 3px #ff9fc4;
-
     animation:
         pixelGlow 1.2s infinite alternate,
         floatText 2s ease-in-out infinite;
 }
-
 .popup-box p{
     color:#ff6fa8;
     font-size:14px;
@@ -212,14 +205,11 @@
     margin-bottom:25px;
     position:relative;
     z-index:2;
-
     text-shadow:
         1px 1px #ffd8ea,
         2px 2px #ffc3dd;
-
     animation: pixelGlowSoft 1.4s infinite alternate;
 }
-
 .popup-box button{
     border:none;
     background: linear-gradient(135deg,#ff7eb3,#ff5f9a);
@@ -232,31 +222,28 @@
     position:relative;
     z-index:2;
 }
-
 .popup-box button:hover{
     transform:scale(1.05);
 }
-
-/* 泡泡 */
+/* 泡泡 + 像素线条爱心 */
 .bubble-area span{
     position:absolute;
     bottom:-30px;
-    background:rgba(255,170,210,.45);
+    background:rgba(255,170,210,.35);
     border-radius:50%;
     animation: floatUp linear infinite;
 }
-
-/* 爱心 */
 .bubble-area i{
     position:absolute;
     bottom:-30px;
     color:#ff8fbf;
     font-style:normal;
     animation: floatUp linear infinite;
+    /* 像素线条爱心 */
+    font-family: monospace;
+    text-shadow: none;
 }
-
 /* 动画 */
-
 @keyframes floatUp{
     0%{
         transform:translateY(0) scale(.5);
@@ -270,7 +257,6 @@
         opacity:0;
     }
 }
-
 @keyframes popIn{
     from{
         transform:scale(.6);
@@ -281,7 +267,6 @@
         opacity:1;
     }
 }
-
 @keyframes pixelGlow{
     from{
         transform:translateY(0);
@@ -292,18 +277,16 @@
         filter:brightness(1.18);
     }
 }
-
 @keyframes pixelGlowSoft{
     from{opacity:.85;}
     to{opacity:1;}
 }
-
 @keyframes floatText{
     0%{transform:translateY(0);}
     50%{transform:translateY(-4px);}
     100%{transform:translateY(0);}
 }
-        #fireworks{
+#fireworks{
     position:absolute;
     inset:0;
     width:100%;
@@ -317,15 +300,12 @@
     <div class="box">
         <h2>送给专属男朋友的惊喜抽奖 💝</h2>
         <div class="count" id="countTip">剩余抽奖次数：2 次</div>
-
         <div class="wheel-box">
             <div class="pointer"></div>
             <canvas id="wheel"></canvas>
             <button class="btn" id="startBtn">开始<br>抽奖</button>
         </div>
-
         <div class="result" id="result"></div>
-
         <div class="task-box">
             <h4>✅ 完成小挑战 +1 次抽奖机会</h4>
             <div class="task" onclick="addCount()">亲我一口😚</div>
@@ -334,29 +314,23 @@
             <div class="task" onclick="addCount()">给我拍张照📸</div>
         </div>
     </div>
-
     <div class="right-box">
         <h3 class="record-title">🎁 已抽到的礼物</h3>
         <div class="record-list" id="recordList"></div>
     </div>
-
     <!-- 欢迎弹窗 -->
 <div id="welcomePopup" class="popup-mask">
     <canvas id="fireworks"></canvas>
     <div class="popup-box">
         <div class="bubble-area"></div>
-
         <h2>💖 泡芙太棒啦！</h2>
-
         <p>
             成功救出了小黄，<br>
             接下来是奖励时间~
         </p>
-
         <button onclick="closePopup()">开始抽奖 ✨</button>
     </div>
 </div>
-
     <script>
         const prizeList = [
             "超级抱抱一个",
@@ -369,27 +343,22 @@
             "夸夸服务全套"
         ];
         const colorList = ["#ffd6e7","#ffeaf4","#ffcfe0","#ffe3f0","#ffd2e5","#ffe8f2","#ffcce2","#ffd9eb"];
-
         const wheelCanvas = document.getElementById('wheel');
         const ctx = wheelCanvas.getContext('2d');
         const startBtn = document.getElementById('startBtn');
         const resultText = document.getElementById('result');
         const countTip = document.getElementById('countTip');
         const recordList = document.getElementById('recordList');
-
-        canvas.width = 280;
-        canvas.height = 280;
+        wheelCanvas.width = 280;
+        wheelCanvas.height = 280;
         let rotateAngle = 0;
         const len = prizeList.length;
-
-        // 绘制转盘
         function drawWheel() {
             const r = 140;
-            fctx.clearRect(0,0,280,280);
+            ctx.clearRect(0,0,280,280);
             for(let i = 0; i < len; i++){
                 let startAngle = (i * 45 - 90) * Math.PI / 180;
                 let endAngle = ((i + 1) * 45 - 90) * Math.PI / 180;
-                
                 ctx.beginPath();
                 ctx.moveTo(r, r);
                 ctx.arc(r, r, r, startAngle, endAngle);
@@ -398,8 +367,6 @@
                 ctx.fill();
                 ctx.strokeStyle = "#fff";
                 ctx.stroke();
-
-                // 文字
                 ctx.save();
                 ctx.translate(r, r);
                 let textAngle = startAngle + (endAngle - startAngle) / 2;
@@ -412,186 +379,174 @@
             }
         }
         drawWheel();
-
         let count = 2;
-
         startBtn.onclick = function () {
-    if (count <= 0) {
-        resultText.innerText = "❌ 次数用完啦，完成挑战加次数！";
-        return;
-    }
-
-    startBtn.disabled = true;
-    resultText.innerText = "抽奖中～";
-
-    count--;
-    countTip.innerText = `剩余抽奖次数：${count} 次`;
-
-    const perDeg = 360 / len; // 每格45度
-
-    // 随机中奖编号
-    let prizeIndex = Math.floor(Math.random() * len);
-
-    // 当前奖品中心角度（重点）
-    let targetDeg = prizeIndex * perDeg + perDeg / 2;
-
-    // 再加一点随机偏移（不超过10度）
-    let offset = Math.random() * 20 - 10;
-
-    // 转5圈以上再停
-    let totalRotate = 360 * 5 + targetDeg + offset;
-
-    rotateAngle += totalRotate;
-
-    canvas.style.transform = `rotate(${rotateAngle}deg)`;
-
-    setTimeout(() => {
-
-        let win = prizeList[len - 1 - prizeIndex];
-
-        resultText.innerText = `🎉恭喜中奖：${win}`;
-        addRecord(win);
-
-        startBtn.disabled = false;
-
-    }, 4000);
-}
-
+            if (count <= 0) {
+                resultText.innerText = "❌ 次数用完啦，完成挑战加次数！";
+                return;
+            }
+            startBtn.disabled = true;
+            resultText.innerText = "抽奖中～";
+            count--;
+            countTip.innerText = `剩余抽奖次数：${count} 次`;
+            const perDeg = 360 / len;
+            let prizeIndex = Math.floor(Math.random() * len);
+            let targetDeg = prizeIndex * perDeg + perDeg / 2;
+            let offset = Math.random() * 20 - 10;
+            let totalRotate = 360 * 5 + targetDeg + offset;
+            rotateAngle += totalRotate;
+            wheelCanvas.style.transform = `rotate(${rotateAngle}deg)`;
+            setTimeout(() => {
+                let win = prizeList[len - 1 - prizeIndex];
+                resultText.innerText = `🎉恭喜中奖：${win}`;
+                addRecord(win);
+                startBtn.disabled = false;
+            }, 4000);
+        }
         function addCount(){
             count++;
             countTip.innerText = `剩余抽奖次数：${count} 次`;
             resultText.innerText = "✅ 次数+1！可以继续抽奖啦～";
         }
-
         function addRecord(win){
             let item = document.createElement('div');
             item.className = "record-item";
             item.innerText = win;
             recordList.prepend(item);
         }
+        // ================== 烟花：像素线条爱心 + 彩带 ==================
         const fireCanvas = document.getElementById("fireworks");
-const fctx = fireCanvas.getContext("2d");
-
-fireCanvas.width = window.innerWidth;
-fireCanvas.height = window.innerHeight;
-
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
-
-let particles = [];
-
-// ❤️ 爱心粒子
-class HeartParticle {
-    constructor(x, y, color) {
-        this.x = x;
-        this.y = y;
-
-        this.size = Math.random() * 12 + 8;
-
-        this.color = color;
-
-        // 随机方向爆炸
-        this.speedX = (Math.random() - 0.5) * 10;
-        this.speedY = (Math.random() - 0.5) * 10;
-
-        this.gravity = 0.05;
-        this.alpha = 1;
-
-        this.rotation = Math.random() * 360;
-        this.rotateSpeed = (Math.random() - 0.5) * 10;
-    }
-
-    update() {
-        this.speedY += this.gravity;
-
-        this.x += this.speedX;
-        this.y += this.speedY;
-
-        this.alpha -= 0.008;
-        this.rotation += this.rotateSpeed;
-    }
-
-    draw() {
-        ctx.save();
-        ctx.translate(this.x, this.y);
-        ctx.rotate(this.rotation * Math.PI / 180);
-        ctx.globalAlpha = this.alpha;
-
-        ctx.fillStyle = this.color;
-
-        drawHeart(ctx, 0, 0, this.size);
-
-        ctx.restore();
-    }
-}
-
-// ❤️ 画爱心函数
-function drawHeart(ctx, x, y, size) {
-    ctx.beginPath();
-    ctx.moveTo(x, y);
-
-    ctx.bezierCurveTo(
-        x - size / 2, y - size / 2,
-        x - size, y + size / 3,
-        x, y + size
-    );
-
-    ctx.bezierCurveTo(
-        x + size, y + size / 3,
-        x + size / 2, y - size / 2,
-        x, y
-    );
-
-    ctx.fill();
-}
-
-// 🎆 爆炸生成
-function explode() {
-    const colors = [
-        "#ff4d88",
-        "#ff6fa8",
-        "#ff9ecb",
-        "#ffd1e8",
-        "#ff85c1"
-    ];
-
-    let x = Math.random() * window.innerWidth;
-    let y = Math.random() * window.innerHeight * 0.4;
-
-    for (let i = 0; i < 40; i++) {
-        let color = colors[Math.floor(Math.random() * colors.length)];
-        particles.push(new HeartParticle(x, y, color));
-    }
-}
-
-// 🎬 动画循环
-function animate() {
-    fctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    for (let i = 0; i < particles.length; i++) {
-        particles[i].update();
-        particles[i].draw();
-
-        if (particles[i].alpha <= 0) {
-            particles.splice(i, 1);
-            i--;
+        const fctx = fireCanvas.getContext("2d");
+        fireCanvas.width = window.innerWidth;
+        fireCanvas.height = window.innerHeight;
+        let particles = [];
+        // 像素线条爱心
+        class PixelHeart {
+            constructor(x,y,color){
+                this.x=x;this.y=y;
+                this.size=Math.random()*8+6;
+                this.color=color;
+                this.speedX=(Math.random()-0.5)*6;
+                this.speedY=(Math.random()-0.5)*6;
+                this.gravity=0.04;
+                this.alpha=1;
+                this.rotation=Math.random()*360;
+            }
+            update(){
+                this.speedY+=this.gravity;
+                this.x+=this.speedX;
+                this.y+=this.speedY;
+                this.alpha-=0.007;
+                this.rotation+=0.5;
+            }
+            draw(){
+                fctx.save();
+                fctx.translate(this.x,this.y);
+                fctx.rotate(this.rotation*Math.PI/180);
+                fctx.globalAlpha=this.alpha;
+                fctx.strokeStyle=this.color;
+                fctx.lineWidth=1.5;
+                fctx.beginPath();
+                let s=this.size;
+                fctx.moveTo(0,0);
+                fctx.bezierCurveTo(-s/2,-s/2,-s,s/3,0,s);
+                fctx.bezierCurveTo(s,s/3,s/2,-s/2,0,0);
+                fctx.stroke();
+                fctx.restore();
+            }
         }
-    }
-
-    requestAnimationFrame(animate);
-}
-
-animate();
-
-// 💥 连续烟花（弹窗出现自动播放）
-let fireInterval = setInterval(explode, 500);
-
-// ❌ 关闭弹窗停止
-function closePopup() {
-    document.getElementById("welcomePopup").style.display = "none";
-    clearInterval(fireInterval);
-}
+        // 彩带
+        class Ribbon {
+            constructor(x,y,color){
+                this.x=x;this.y=y;
+                this.w=Math.random()*4+2;
+                this.h=Math.random()*25+10;
+                this.color=color;
+                this.speedX=(Math.random()-0.5)*8;
+                this.speedY=(Math.random()-0.5)*8;
+                this.gravity=0.06;
+                this.alpha=1;
+                this.rotate=Math.random()*360;
+            }
+            update(){
+                this.speedY+=this.gravity;
+                this.x+=this.speedX;
+                this.y+=this.speedY;
+                this.alpha-=0.008;
+                this.rotate+=2;
+            }
+            draw(){
+                fctx.save();
+                fctx.translate(this.x,this.y);
+                fctx.rotate(this.rotate*Math.PI/180);
+                fctx.globalAlpha=this.alpha;
+                fctx.fillStyle=this.color;
+                fctx.fillRect(-this.w/2,-this.h/2,this.w,this.h);
+                fctx.restore();
+            }
+        }
+        function explode(){
+            const colors=["#ff85c1","#ff6fa8","#ff9ecb","#ffd1e8","#73d9ff"];
+            let x=Math.random()*window.innerWidth;
+            let y=Math.random()*window.innerHeight*0.4;
+            // 线条爱心（少）
+            for(let i=0;i<10;i++){
+                let c=colors[Math.floor(Math.random()*colors.length)];
+                particles.push(new PixelHeart(x,y,c));
+            }
+            // 彩带（多）
+            for(let i=0;i<20;i++){
+                let c=colors[Math.floor(Math.random()*colors.length)];
+                particles.push(new Ribbon(x,y,c));
+            }
+        }
+        function animate(){
+            fctx.clearRect(0,0,fireCanvas.width,fireCanvas.height);
+            for(let i=0;i<particles.length;i++){
+                particles[i].update();
+                particles[i].draw();
+                if(particles[i].alpha<=0){
+                    particles.splice(i,1);i--;
+                }
+            }
+            requestAnimationFrame(animate);
+        }
+        animate();
+        let fireInterval=setInterval(explode,700);
+        function closePopup(){
+            document.getElementById("welcomePopup").style.display="none";
+            clearInterval(fireInterval);
+        }
+        // 弹窗漂浮：像素线条爱心
+        window.onload=function(){
+            createBubbles();
+        }
+        function createBubbles(){
+            const area=document.querySelector('.bubble-area');
+            if(!area)return;
+            // 泡泡
+            for(let i=0;i<8;i++){
+                let s=document.createElement('span');
+                let size=Math.random()*20+8;
+                s.style.width=size+'px';
+                s.style.height=size+'px';
+                s.style.left=Math.random()*100+'%';
+                s.style.animationDuration=(Math.random()*3+4)+'s';
+                area.appendChild(s);
+            }
+            // 像素线条爱心
+            let pixelHearts=[
+                '♡','♥','❥','✦','♡','♥'
+            ];
+            for(let i=0;i<8;i++){
+                let e=document.createElement('i');
+                e.innerText=pixelHearts[i%pixelHearts.length];
+                e.style.left=Math.random()*100+'%';
+                e.style.fontSize=Math.random()*14+12+'px';
+                e.style.animationDuration=(Math.random()*3+4)+'s';
+                area.appendChild(e);
+            }
+        }
     </script>
-    
 </body>
 </html>
