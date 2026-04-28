@@ -452,8 +452,11 @@
             item.innerText = win;
             recordList.prepend(item);
         }
-        const canvas = document.getElementById("fireworks");
-const ctx = canvas.getContext("2d");
+        const fireCanvas = document.getElementById("fireworks");
+const fctx = fireCanvas.getContext("2d");
+
+fireCanvas.width = window.innerWidth;
+fireCanvas.height = window.innerHeight;
 
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
