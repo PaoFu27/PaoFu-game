@@ -391,38 +391,28 @@ startBtn.onclick = function () {
     startBtn.disabled = true;
     resultText.innerText = "抽奖中～";
     count--;
+
     countTip.innerText = `剩余抽奖次数：${count} 次`;
 
-    // 每次强制重置转盘状态，解决越转越慢
-    wheelCanvas.style.transition = "none";
-    wheelCanvas.style.transform = "rotate(0deg)";
+    // ===== ① 直接随机“中奖索引” =====
+    let idx = Math.floor(Math.random() * prizeList.length);
+    let winText = prizeList[idx];
+
+    // ===== ② 每个格子角度 =====
+    const itemAngle = 360 / prizeList.length;
+
+    // ===== ③ 让指针对准该格子中心 =====
+    // +3圈保证动画感
+    let rotateTo = 360 * 5 + (360 - idx * itemAngle - itemAngle / 2);
+
+    wheelCanvas.style.transition = "transform 4s cubic-bezier(0.2, 0.8, 0.2, 1)";
+    wheelCanvas.style.transform = `rotate(${rotateTo}deg)`;
 
     setTimeout(() => {
-        wheelCanvas.style.transition = "all 4s cubic-bezier(0.2, 0.8, 0.2, 1)";
-        // 随机角度 + 固定圈数
-        let randomNum = Math.random() * 360;
-        let total = 360 * 6 + randomNum;
-        wheelCanvas.style.transform = `rotate(${total}deg)`;
-
-        // 延迟结束后计算
-        setTimeout(() => {
-            // 取余数 0~360
-            let rotateVal = total % 360;
-            // 关键矫正：完美匹配你canvas绘制的板块顺序
-            let realAngle = (360 - rotateVal + itemAngle / 2) % 360;
-            // 算出当前指针在第几块
-            let idx = Math.floor(realAngle / itemAngle);
-            
-            // 板块 = 数组文字 百分百绑定
-            let winText = prizeList[idx];
-
-            // 弹出奖励 + 写入记录
-            resultText.innerText = `🎉恭喜中奖：${winText}`;
-            addRecord(winText);
-
-            startBtn.disabled = false;
-        }, 4000);
-    }, 50);
+        resultText.innerText = `🎉恭喜中奖：${winText}`;
+        addRecord(winText);
+        startBtn.disabled = false;
+    }, 4000);
 };
         function addCount(){
             count++;
