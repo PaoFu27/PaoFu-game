@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>专属泡芙抽奖机 💖</title>
+    <title>三合一抽奖页面</title>
     <style>
         * {
             margin: 0;
@@ -11,54 +11,62 @@
             box-sizing: border-box;
             font-family: "微软雅黑", sans-serif;
         }
+
+        /* 核心布局：左-中-右 横向并排 宽屏无限制 */
         body {
-    margin: 0;
-    padding: 30px;
-    background: linear-gradient(135deg, #ffe6f2, #fff0f8);
-}
-
-/* ⭐最稳定布局：只负责横排 */
-.page {
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    gap: 50px;
-
-    max-width: 1100px;
-    margin: 0 auto;
-
-    position: relative;
-    z-index: 2;
-}
-
-/* 左框 */
-.box {
-    width: 420px;
-    flex: 0 0 auto;
-
-    background: rgba(255,255,255,0.88);
-    border-radius: 22px;
-    padding: 30px 25px;
-    box-shadow: 0 10px 30px rgba(255,105,160,0.15);
-}
-
-/* 右框 */
-.right-box {
-    width: 320px;
-    flex: 0 0 auto;
-
-    background: rgba(255,255,255,0.88);
-    border-radius: 22px;
-    padding: 20px;
-    box-shadow: 0 10px 30px rgba(255,105,160,0.15);
-}
-    .box, .right-box {
-    flex: 0 0 auto;
-}
-        h2 {
-            color: #ff6b9c;
-            margin-bottom: 20px;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #ffe6f2, #fff0f8);
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            gap: 35px;
+            flex-wrap: nowrap;
+            padding: 30px 0;
+            width: 100%;
+            max-width: 100%;
         }
+
+        /* 左侧 挑战盒子 */
+        .left-box {
+            width: 300px;
+            background: #fff;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 8px 25px #ffc8e080;
+            flex-shrink: 0;
+        }
+
+        /* 中间 抽奖主盒子 */
+        .center-box {
+            width: 400px;
+            background: #fff;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 8px 25px #ffc8e080;
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        /* 右侧 记录盒子 */
+        .right-box {
+            width: 300px;
+            height: 550px;
+            background: #fff;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 8px 25px #ffc8e080;
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        h4 {
+            color: #ff6b9c;
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+
+        /* 转盘样式 */
         .wheel-box {
             width: 280px;
             height: 280px;
@@ -83,7 +91,6 @@
             border-right: 16px solid transparent;
             border-top: 28px solid #ff4477;
             z-index: 99;
-            filter: drop-shadow(0 2px 3px #0002);
         }
         .btn {
             width: 90px;
@@ -94,12 +101,10 @@
             font-size: 16px;
             font-weight: bold;
             border: none;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%,-50%);
             cursor: pointer;
             box-shadow: 0 4px 12px #ff6b9c70;
+            margin-top: -185px;
+            position: relative;
         }
         .btn:active {
             scale: 0.95;
@@ -107,566 +112,421 @@
         .btn:disabled {
             background: #ccc;
             cursor: not-allowed;
+            scale: 1;
         }
-        .count {
+        .count-text,.res-text {
             font-size: 17px;
             color: #d6336c;
-            margin-bottom: 10px;
+            margin: 12px 0;
             font-weight: bold;
         }
-        .result {
-            font-size: 18px;
-            color: #d6336c;
-            min-height: 28px;
-            font-weight: bold;
-            margin-top: 15px;
+
+        /* 挑战区样式 */
+        .code-wrap {
+            margin: 10px 0 20px;
         }
-        .task-box {
-            margin-top: 20px;
-            text-align: left;
-            background: #fff7fa;
-            padding: 15px;
-            border-radius: 12px;
+        .code-wrap input {
+            width: 160px;
+            padding: 6px;
+            border: 1px solid #ffc2e0;
+            border-radius: 6px;
+            outline: none;
         }
-        .task-box h4 {
-            color: #ff6b9c;
-            margin-bottom: 10px;
-        }
-        .task {
-            padding: 8px 10px;
-            background: #ffd6e7;
-            border-radius: 8px;
-            margin: 6px 0;
+        .code-wrap button,.game-btn {
+            padding: 6px 10px;
+            border: none;
+            background: #ff6b9c;
+            color: #fff;
+            border-radius: 6px;
+            margin-left: 5px;
             cursor: pointer;
-            font-size: 14px;
         }
-        .task:hover {
-            background: #ffc2e0;
+        .game-btn {
+            background: #ff8fbf;
+            margin: 8px 0;
         }
-        .record-title {
-            color: #ff6b9c;
-            margin-bottom: 15px;
-            font-size: 18px;
-            text-align: center;
+        .tip-text {
+            font-size: 12px;
+            margin-top: 4px;
         }
+
+        /* 记录列表 */
         .record-list {
             flex: 1;
             overflow-y: auto;
-            padding-right: 5px;
-        }
-        .record-item {
-            background: #ffebf3;
-            padding: 10px;
-            border-radius: 8px;
-            margin-bottom: 8px;
             font-size: 14px;
             color: #c72c5e;
         }
-        /* ================= 弹窗 ================= */
-.popup-mask{
-    position: fixed;
-    inset: 0;
-    background: rgba(255,192,220,.45);
-    backdrop-filter: blur(5px);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 9999;
-}
-.popup-box{
-    width: 360px;
-    max-width: 92%;
-    background: linear-gradient(180deg,#fff0f7,#ffffff);
-    border-radius: 26px;
-    padding: 38px 25px;
-    text-align: center;
-    box-shadow: 0 15px 35px rgba(255,120,170,.28);
-    position: relative;
-    overflow: hidden;
-    animation: popIn .5s ease;
-}
-/* 像素风动画字体 */
-.popup-box h2,
-.popup-box p{
-    font-family:
-        "Press Start 2P",
-        "ZCOOL KuaiLe",
-        "Microsoft YaHei",
-        sans-serif;
-    letter-spacing: 1px;
-}
-.popup-box h2{
-    color:#ff5f9a;
-    font-size:24px;
-    line-height:1.6;
-    margin-bottom:18px;
-    position:relative;
-    z-index:2;
-    text-shadow:
-        2px 0 #ffd3e6,
-        -2px 0 #ffd3e6,
-        0 2px #ffd3e6,
-        0 -2px #ffd3e6,
-        3px 3px #ff9fc4;
-    animation:
-        pixelGlow 1.2s infinite alternate,
-        floatText 2s ease-in-out infinite;
-}
-.popup-box p{
-    color:#ff6fa8;
-    font-size:14px;
-    line-height:2;
-    margin-bottom:25px;
-    position:relative;
-    z-index:2;
-    text-shadow:
-        1px 1px #ffd8ea,
-        2px 2px #ffc3dd;
-    animation: pixelGlowSoft 1.4s infinite alternate;
-}
-.popup-box button{
-    border:none;
-    background: linear-gradient(135deg,#ff7eb3,#ff5f9a);
-    color:#fff;
-    padding:12px 26px;
-    border-radius:999px;
-    font-size:16px;
-    cursor:pointer;
-    box-shadow:0 8px 18px rgba(255,105,160,.35);
-    position:relative;
-    z-index:2;
-}
-.popup-box button:hover{
-    transform:scale(1.05);
-}
-/* 泡泡 + 像素线条爱心 */
-.bubble-area span{
-    position:absolute;
-    bottom:-30px;
-    background:rgba(255,170,210,.35);
-    border-radius:50%;
-    animation: floatUp linear infinite;
-}
-.bubble-area i{
-    position:absolute;
-    bottom:-30px;
-    color:#ff8fbf;
-    font-style:normal;
-    animation: floatUp linear infinite;
-    /* 像素线条爱心 */
-    font-family: monospace;
-    text-shadow: none;
-}
-/* 动画 */
-@keyframes floatUp{
-    0%{
-        transform:translateY(0) scale(.5);
-        opacity:0;
-    }
-    20%{
-        opacity:1;
-    }
-    100%{
-        transform:translateY(-430px) scale(1.2);
-        opacity:0;
-    }
-}
-@keyframes popIn{
-    from{
-        transform:scale(.6);
-        opacity:0;
-    }
-    to{
-        transform:scale(1);
-        opacity:1;
-    }
-}
-@keyframes pixelGlow{
-    from{
-        transform:translateY(0);
-        filter:brightness(1);
-    }
-    to{
-        transform:translateY(-3px);
-        filter:brightness(1.18);
-    }
-}
-@keyframes pixelGlowSoft{
-    from{opacity:.85;}
-    to{opacity:1;}
-}
-@keyframes floatText{
-    0%{transform:translateY(0);}
-    50%{transform:translateY(-4px);}
-    100%{transform:translateY(0);}
-}
-#fireworks{
-    position:absolute;
-    inset:0;
-    width:100%;
-    height:100%;
-    z-index:1;
-    pointer-events:none;
-}
+        .record-item {
+            padding: 6px 0;
+            border-bottom: 1px solid #ffe6f2;
+        }
+
+        /* 弹窗彩带爱心画布 */
+        #fireworks {
+            position: fixed;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+        }
+        .popup-mask{
+            position: fixed;
+            inset: 0;
+            background: rgba(255,192,220,.45);
+            backdrop-filter: blur(5px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 999;
+        }
+        .popup-box{
+            width: 360px;
+            background: linear-gradient(180deg,#fff0f7,#fff);
+            border-radius: 26px;
+            padding: 38px 25px;
+            text-align: center;
+            box-shadow: 0 15px 35px rgba(255,120,170,.28);
+            animation: popIn .5s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        @keyframes popIn{
+            from{transform: scale(.6);opacity:0;}
+            to{transform: scale(1);opacity:1;}
+        }
+        .float-heart{
+            position: absolute;
+            bottom: -30px;
+            color: #ff8fbf;
+            animation: floatUp 6s linear infinite;
+        }
+        @keyframes floatUp{
+            0%{transform: translateY(0) scale(.5);opacity:0;}
+            20%{opacity:1;}
+            100%{transform: translateY(-430px) scale(1.2);opacity:0;}
+        }
     </style>
 </head>
 <body>
-    <canvas id="fireworks"></canvas>
-    <div class="page">
-    <div class="box">
-        <h2>送给专属男朋友的惊喜抽奖 💝</h2>
-        <div class="count" id="countTip">剩余抽奖次数：2 次</div>
+
+    <!-- 左侧：挑战区域 -->
+    <div class="left-box">
+        <h4>✅ 完成小挑战 +1 抽奖次数</h4>
+        <div class="code-wrap">
+            <div style="font-size:13px;color:#c72c5e;margin-bottom:6px;">输入专属邀请码领取次数</div>
+            <input type="text" id="codeInput" placeholder="请输入邀请码">
+            <button onclick="checkInviteCode()">兑换</button>
+            <div id="codeTip" class="tip-text"></div>
+        </div>
+
+        <div>
+            <button id="clickGameBtn" class="game-btn" onclick="startClickGame()">开始10秒极速点击</button>
+            <span id="timeTip" style="margin-left:10px;color:#d6336c;font-weight:bold;"></span>
+            <div id="clickTip" class="tip-text"></div>
+        </div>
+    </div>
+
+    <!-- 中间：转盘抽奖 -->
+    <div class="center-box">
+        <h2>专属幸运抽奖</h2>
+        <div class="count-text">剩余次数：<span id="countTip">2</span> 次</div>
+
         <div class="wheel-box">
             <div class="pointer"></div>
             <canvas id="wheel"></canvas>
-            <button class="btn" id="startBtn">开始<br>抽奖</button>
         </div>
-        <div class="result" id="result"></div>
-        <div class="task-box">
-    <h4>✅ 完成小挑战 +1 次抽奖机会</h4>
+        <button class="btn" id="startBtn">开始<br>抽奖</button>
 
-    <!-- 1.邀请码区域 -->
-    <div style="margin:10px 0;">
-        <div style="font-size:13px;color:#c72c5e;margin-bottom:6px;">输入专属邀请码领取次数</div>
-        <input type="text" id="codeInput" placeholder="请输入邀请码" 
-        style="width:160px;padding:6px;border:1px solid #ffc2e0;border-radius:6px;outline:none;">
-        <button onclick="checkInviteCode()" style="padding:6px 10px;border:none;background:#ff6b9c;color:#fff;border-radius:6px;margin-left:5px;">兑换</button>
-        <div id="codeTip" style="font-size:12px;margin-top:4px;"></div>
+        <div class="res-text" id="resText"></div>
     </div>
 
-    <!-- 2.10秒点击挑战 -->
-    <div style="margin:15px 0 5px;">
-        <button id="clickBtn" onclick="startClickGame()" 
-        style="padding:8px 12px;border:none;background:#ff8fbf;color:#fff;border-radius:6px;">
-            开始10秒极速点击
-        </button>
-        <span id="timeTip" style="margin-left:10px;color:#d6336c;font-weight:bold;"></span>
-        <div id="clickTip" style="font-size:12px;margin-top:4px;"></div>
-    </div>
-</div>
+    <!-- 右侧：中奖记录 -->
     <div class="right-box">
-        <h3 class="record-title">🎁 已抽到的礼物</h3>
+        <h4>🎁 已抽到的礼物</h4>
         <div class="record-list" id="recordList"></div>
     </div>
-    <!-- 欢迎弹窗 -->
-<div id="welcomePopup" class="popup-mask">
-    <canvas id="fireworks"></canvas>
-    <div class="popup-box">
-        <div class="bubble-area"></div>
-        <h2>💖 泡芙太棒啦！</h2>
-        <p>
-            成功救出了小黄，<br>
-            接下来是奖励时间~
-        </p>
-        <button onclick="closePopup()">开始抽奖 ✨</button>
+
+    <!-- 开局弹窗+特效画布 -->
+    <div class="popup-mask" id="popupMask">
+        <canvas id="fireworks"></canvas>
+        <div class="popup-box">
+            <div class="bubble-area" id="bubbleArea"></div>
+            <h2 style="color:#ff5f9a;margin-bottom:18px;">💖 欢迎来到幸运抽奖</h2>
+            <p style="color:#ff6fa8;font-size:14px;line-height:1.8;margin-bottom:25px;">
+                完成左侧小挑战<br>获取更多抽奖机会
+            </p>
+            <button onclick="closePopup()" style="border:none;background:linear-gradient(135deg,#ff7eb3,#ff5f9a);color:#fff;padding:12px 26px;border-radius:99px;cursor:pointer;font-size:15px;">
+                开始抽奖 ✨
+            </button>
+        </div>
     </div>
-</div>
-    <script>
-        const prizeList = [
-            "超级抱抱一个",
-            "免费奶茶一杯",
-            "免吵架特权一天",
-            "甜蜜亲亲×3",
-            "专属约会一日游",
-            "游戏陪玩一整天",
-            "随便点餐特权",
-            "夸夸服务全套"
-        ];
-        const colorList = ["#ffd6e7","#ffeaf4","#ffcfe0","#ffe3f0","#ffd2e5","#ffe8f2","#ffcce2","#ffd9eb"];
-        const wheelCanvas = document.getElementById('wheel');
-        const ctx = wheelCanvas.getContext('2d');
-        const startBtn = document.getElementById('startBtn');
-        const resultText = document.getElementById('result');
-        const countTip = document.getElementById('countTip');
-        const recordList = document.getElementById('recordList');
-        wheelCanvas.width = 280;
-        wheelCanvas.height = 280;
-        const len = prizeList.length;
-        function drawWheel() {
-            const r = 140;
-            ctx.clearRect(0,0,280,280);
-            for(let i = 0; i < len; i++){
-                let startAngle = (i * 45 - 90) * Math.PI / 180;
-                let endAngle = ((i + 1) * 45 - 90) * Math.PI / 180;
-                ctx.beginPath();
-                ctx.moveTo(r, r);
-                ctx.arc(r, r, r, startAngle, endAngle);
-                ctx.closePath();
-                ctx.fillStyle = colorList[i];
-                ctx.fill();
-                ctx.strokeStyle = "#fff";
-                ctx.stroke();
-                ctx.save();
-                ctx.translate(r, r);
-                let textAngle = startAngle + (endAngle - startAngle) / 2;
-                ctx.rotate(textAngle);
-                ctx.font = "13px sans-serif";
-                ctx.fillStyle = "#c72c5e";
-                ctx.textAlign = "center";
-                ctx.fillText(prizeList[i], 90, 5);
-                ctx.restore();
-            }
-        }
-        drawWheel();
-        let count = 2;
-        // 每个板块角度
-const itemAngle = 45;
 
-startBtn.onclick = function () {
-    if (count <= 0) {
-        resultText.innerText = "❌ 次数用完啦，完成挑战加次数！";
-        return;
+<script>
+    // 奖品数组
+    const prizeList = [
+        "超级抱抱一个",
+        "免费奶茶一杯",
+        "免生气特权一天",
+        "甜蜜亲亲×3",
+        "专属约会一日游",
+        "全程陪伴服务",
+        "随心点餐特权",
+        "专属夸夸套餐"
+    ];
+    const colorList = ["#ffd6e7","#ffeaf4","#ffcfe0","#ffe3f0","#ffd2e5","#ffe8f2","#ffcce2","#ffd9eb"];
+
+    // 全局变量
+    let count = 2;
+    const len = prizeList.length;
+    const wheelCanvas = document.getElementById("wheel");
+    const ctx = wheelCanvas.getContext("2d");
+    // 强制设置为正方形，保证转盘是正圆！
+wheelCanvas.width = 280;
+wheelCanvas.height = 280;
+    const startBtn = document.getElementById("startBtn");
+    const resText = document.getElementById("resText");
+    const countTip = document.getElementById("countTip");
+    const recordList = document.getElementById("recordList");
+
+    // 绘制转盘
+function drawWheel(){
+    const r = 140;
+    ctx.clearRect(0,0,280,280);
+    for(let i = 0; i < len; i++){
+        let start = (i * 45 - 90) * Math.PI / 180;
+        let end = ((i+1) * 45 - 90) * Math.PI / 180;
+        ctx.beginPath();
+        ctx.moveTo(r,r);
+        ctx.arc(r,r,r,start,end);
+        ctx.closePath();
+        ctx.fillStyle = colorList[i];
+        ctx.fill();
+        ctx.strokeStyle = "#fff";
+        ctx.lineWidth = 2;
+        ctx.stroke();
+
+        // 绘制文字
+        ctx.save();
+        ctx.translate(r,r);
+        let angle = start + (end - start)/2;
+        ctx.rotate(angle);
+        ctx.fillStyle = "#c72c5e";
+        ctx.font = "13px 微软雅黑";
+        ctx.textAlign = "center";
+        ctx.fillText(prizeList[i],90,6);
+        ctx.restore();
+    }
+}
+    drawWheel();
+
+    // 抽奖核心（精准识别板块、不减速、不重复错位）
+    startBtn.onclick = function(){
+        if(count <= 0){
+            resText.innerText = "❌ 次数不足，完成挑战获取次数";
+            return;
+        }
+        startBtn.disabled = true;
+        resText.innerText = "抽奖中～";
+        count--;
+        countTip.innerText = count;
+
+        const itemAngle = 360 / len;
+        // 重置动画
+        wheelCanvas.style.transition = "none";
+        wheelCanvas.style.transform = "rotate(0deg)";
+
+        setTimeout(()=>{
+            wheelCanvas.style.transition = "all 4s cubic-bezier(0.2, 0.8, 0.2, 1)";
+            let ran = Math.random() * 360;
+            let total = 360 * 6 + ran;
+            wheelCanvas.style.transform = `rotate(${total}deg)`;
+
+            setTimeout(()=>{
+                let finalDeg = total % 360;
+                let calcDeg = (360 - finalDeg + 22.5) % 360;
+                let idx = Math.floor(calcDeg / itemAngle);
+                let win = prizeList[idx];
+
+                resText.innerText = `🎉恭喜中奖：${win}`;
+                // 添加记录
+                recordList.innerHTML = `<div class="record-item">${win}</div>` + recordList.innerHTML;
+                startBtn.disabled = false;
+            },4000);
+        },30);
     }
 
-    startBtn.disabled = true;
-    resultText.innerText = "抽奖中～";
-
-    count--;
-    countTip.innerText = `剩余抽奖次数：${count} 次`;
-
-    let idx = Math.floor(Math.random() * prizeList.length);
-    let winText = prizeList[idx];
-
-    const itemAngle = 360 / prizeList.length;
-
-    // 👉 每次都从0开始算（核心）
-    let rotateTo = 360 * 6 + (360 - idx * itemAngle - itemAngle / 2);
-
-    // ⭐关键：彻底清状态
-    wheelCanvas.style.transition = "none";
-    wheelCanvas.style.transform = "rotate(0deg)";
-
-    // ⭐强制重绘
-    wheelCanvas.offsetHeight;
-
-    // ⭐重新开启动画
-    wheelCanvas.style.transition = "transform 4s cubic-bezier(0.2, 0.8, 0.2, 1)";
-    wheelCanvas.style.transform = `rotate(${rotateTo}deg)`;
-
-    setTimeout(() => {
-        resultText.innerText = `🎉恭喜中奖：${winText}`;
-        addRecord(winText);
-        startBtn.disabled = false;
-    }, 4000);
-};
-        function addCount(){
-            count++;
-            countTip.innerText = `剩余抽奖次数：${count} 次`;
-            resultText.innerText = "✅ 次数+1！可以继续抽奖啦～";
-        }
-        function addRecord(win){
-            let item = document.createElement('div');
-            item.className = "record-item";
-            item.innerText = win;
-            recordList.prepend(item);
-        }
-        // ================== 烟花：像素线条爱心 + 彩带 ==================
-        const fireCanvas = document.getElementById("fireworks");
-        const fctx = fireCanvas.getContext("2d");
-        fireCanvas.width = window.innerWidth;
-        fireCanvas.height = window.innerHeight;
-        let particles = [];
-        // 像素线条爱心
-        class PixelHeart {
-            constructor(x,y,color){
-                this.x=x;this.y=y;
-                this.size=Math.random()*8+6;
-                this.color=color;
-                this.speedX=(Math.random()-0.5)*6;
-                this.speedY=(Math.random()-0.5)*6;
-                this.gravity=0.04;
-                this.alpha=1;
-                this.rotation=Math.random()*360;
-            }
-            update(){
-                this.speedY+=this.gravity;
-                this.x+=this.speedX;
-                this.y+=this.speedY;
-                this.alpha-=0.007;
-                this.rotation+=0.5;
-            }
-            draw(){
-                fctx.save();
-                fctx.translate(this.x,this.y);
-                fctx.rotate(this.rotation*Math.PI/180);
-                fctx.globalAlpha=this.alpha;
-                fctx.strokeStyle=this.color;
-                fctx.lineWidth=1.5;
-                fctx.beginPath();
-                let s=this.size;
-                fctx.moveTo(0,0);
-                fctx.bezierCurveTo(-s/2,-s/2,-s,s/3,0,s);
-                fctx.bezierCurveTo(s,s/3,s/2,-s/2,0,0);
-                fctx.stroke();
-                fctx.restore();
-            }
-        }
-        // 彩带
-        class Ribbon {
-            constructor(x,y,color){
-                this.x=x;this.y=y;
-                this.w=Math.random()*4+2;
-                this.h=Math.random()*25+10;
-                this.color=color;
-                this.speedX=(Math.random()-0.5)*8;
-                this.speedY=(Math.random()-0.5)*8;
-                this.gravity=0.06;
-                this.alpha=1;
-                this.rotate=Math.random()*360;
-            }
-            update(){
-                this.speedY+=this.gravity;
-                this.x+=this.speedX;
-                this.y+=this.speedY;
-                this.alpha-=0.008;
-                this.rotate+=2;
-            }
-            draw(){
-                fctx.save();
-                fctx.translate(this.x,this.y);
-                fctx.rotate(this.rotate*Math.PI/180);
-                fctx.globalAlpha=this.alpha;
-                fctx.fillStyle=this.color;
-                fctx.fillRect(-this.w/2,-this.h/2,this.w,this.h);
-                fctx.restore();
-            }
-        }
-        function explode(){
-            const colors=["#ff85c1","#ff6fa8","#ff9ecb","#ffd1e8","#73d9ff"];
-            let x=Math.random()*window.innerWidth;
-            let y=Math.random()*window.innerHeight*0.4;
-            // 线条爱心（少）
-            for(let i=0;i<10;i++){
-                let c=colors[Math.floor(Math.random()*colors.length)];
-                particles.push(new PixelHeart(x,y,c));
-            }
-            // 彩带（多）
-            for(let i=0;i<20;i++){
-                let c=colors[Math.floor(Math.random()*colors.length)];
-                particles.push(new Ribbon(x,y,c));
-            }
-        }
-        function animate(){
-            fctx.clearRect(0,0,fireCanvas.width,fireCanvas.height);
-            for(let i=0;i<particles.length;i++){
-                particles[i].update();
-                particles[i].draw();
-                if(particles[i].alpha<=0){
-                    particles.splice(i,1);i--;
-                }
-            }
-            requestAnimationFrame(animate);
-        }
-        animate();
-        let fireInterval=setInterval(explode,700);
-        function closePopup(){
-            document.getElementById("welcomePopup").style.display="none";
-            clearInterval(fireInterval);
-        }
-        // 弹窗漂浮：像素线条爱心
-        window.onload=function(){
-            createBubbles();
-        }
-        function createBubbles(){
-            const area=document.querySelector('.bubble-area');
-            if(!area)return;
-            // 泡泡
-            for(let i=0;i<8;i++){
-                let s=document.createElement('span');
-                let size=Math.random()*20+8;
-                s.style.width=size+'px';
-                s.style.height=size+'px';
-                s.style.left=Math.random()*100+'%';
-                s.style.animationDuration=(Math.random()*3+4)+'s';
-                area.appendChild(s);
-            }
-            // 像素线条爱心
-            let pixelHearts=[
-                '♡','♥','❥','✦','♡','♥'
-            ];
-            for(let i=0;i<8;i++){
-                let e=document.createElement('i');
-                e.innerText=pixelHearts[i%pixelHearts.length];
-                e.style.left=Math.random()*100+'%';
-                e.style.fontSize=Math.random()*14+12+'px';
-                e.style.animationDuration=(Math.random()*3+4)+'s';
-                area.appendChild(e);
-            }
-        }
-        // 全局限制：邀请码只能领一次
-let codeCanGet = true;
-// 全局限制：点击挑战只能完成一次
-let clickCanGet = true;
-
-// ========== 1.邀请码验证 ==========
-function checkInviteCode(){
-    if(!codeCanGet){
-        document.getElementById("codeTip").innerText = "❌ 已兑换过，无法重复领取";
-        document.getElementById("codeTip").style.color = "#f00";
-        return;
+    // 增加次数公共方法
+    function addCount(){
+        count++;
+        countTip.innerText = count;
     }
-    let inputVal = document.getElementById("codeInput").value.trim();
+
+    // ========== 左侧挑战功能 ==========
+    let codeCanGet = true;
+    let clickCanGet = true;
     const rightCode = "JK6S25BT8N";
-    if(inputVal === rightCode){
-        addCount();
-        codeCanGet = false;
-        document.getElementById("codeTip").innerText = "✅ 邀请码正确，次数+1";
-        document.getElementById("codeTip").style.color = "#27ae60";
-    }else{
-        document.getElementById("codeTip").innerText = "❌ 邀请码错误";
-        document.getElementById("codeTip").style.color = "#f00";
+
+    // 邀请码
+    function checkInviteCode(){
+        const tip = document.getElementById("codeTip");
+        if(!codeCanGet){
+            tip.innerText = "❌ 已兑换，不可重复领取";
+            tip.style.color = "#f00";
+            return;
+        }
+        let val = document.getElementById("codeInput").value.trim();
+        if(val === rightCode){
+            addCount();
+            codeCanGet = false;
+            tip.innerText = "✅ 邀请码正确，次数+1";
+            tip.style.color = "#27ae60";
+        }else{
+            tip.innerText = "❌ 邀请码错误";
+            tip.style.color = "#f00";
+        }
     }
-}
 
-// ========== 2.10秒点击挑战 ==========
-let clickCount = 0;
-let clickTimer = null;
-let timeLeft = 10;
+    // 10秒点击挑战
+    let clickCount = 0;
+    let clickTimer = null;
+    let timeLeft = 10;
 
-function startClickGame(){
-    if(!clickCanGet){
-        document.getElementById("clickTip").innerText = "❌ 该挑战已完成，无法重复参与";
-        document.getElementById("clickTip").style.color = "#f00";
-        return;
-    }
-    // 重置数据
-    clickCount = 0;
-    timeLeft = 10;
-    const btn = document.getElementById("clickBtn");
-    const timeTip = document.getElementById("timeTip");
-    const clickTip = document.getElementById("clickTip");
+    function startClickGame(){
+        const btn = document.getElementById("clickGameBtn");
+        const timeTipDom = document.getElementById("timeTip");
+        const clickTipDom = document.getElementById("clickTip");
 
-    clickTip.innerText = "";
-    btn.innerText = "疯狂点我！";
+        if(!clickCanGet){
+            clickTipDom.innerText = "❌ 挑战已完成";
+            clickTipDom.style.color = "#f00";
+            return;
+        }
 
-    // 倒计时
-    timeTip.innerText = `剩余：${timeLeft}s`;
-    clickTimer = setInterval(()=>{
-        timeLeft--;
-        timeTip.innerText = `剩余：${timeLeft}s`;
-        if(timeLeft <= 0){
-            clearInterval(clickTimer);
-            // 判断是否大于30次
-            if(clickCount >= 30){
-                addCount();
-                clickCanGet = false;
-                clickTip.innerText = `✅ 挑战成功！点击${clickCount}次，次数+1`;
-                clickTip.style.color = "#27ae60";
-            }else{
-                clickTip.innerText = `❌ 挑战失败，仅点击${clickCount}次（需≥30）`;
-                clickTip.style.color = "#f00";
+        clickCount = 0;
+        timeLeft = 10;
+        btn.innerText = "疯狂点击我";
+        clickTipDom.innerText = "";
+        timeTipDom.innerText = `剩余：${timeLeft}s`;
+
+        clickTimer = setInterval(()=>{
+            timeLeft--;
+            timeTipDom.innerText = `剩余：${timeLeft}s`;
+            if(timeLeft <= 0){
+                clearInterval(clickTimer);
+                if(clickCount >= 30){
+                    addCount();
+                    clickCanGet = false;
+                    clickTipDom.innerText = `✅ 成功！点击${clickCount}次`;
+                    clickTipDom.style.color = "#27ae60";
+                }else{
+                    clickTipDom.innerText = `❌ 失败，仅${clickCount}次(需≥30)`;
+                    clickTipDom.style.color = "#f00";
+                }
+                btn.innerText = "开始10秒极速点击";
             }
-            btn.innerText = "开始10秒极速点击";
-        }
-    },1000);
+        },1000);
 
-    // 按钮点击计数
-    btn.onclick = function(){
-        if(timeLeft > 0){
-            clickCount++;
+        btn.onclick = function(){
+            if(timeLeft > 0) clickCount++;
         }
     }
-}
-    </script>
+
+    // 关闭开局弹窗
+    function closePopup(){
+        document.getElementById("popupMask").style.display = "none";
+    }
+
+    // 彩带+像素线条爱心特效（保留你要的样式）
+    const fireCanvas = document.getElementById("fireworks");
+    const fctx = fireCanvas.getContext("2d");
+    fireCanvas.width = window.innerWidth;
+    fireCanvas.height = window.innerHeight;
+    let particles = [];
+
+    // 像素线条爱心
+    class PixelHeart{
+        constructor(x,y,c){
+            this.x=x;this.y=y;this.size=Math.random()*8+6;
+            this.color=c;this.speedX=(Math.random()-0.5)*6;
+            this.speedY=(Math.random()-0.5)*6;this.alpha=1;
+            this.rot=0;
+        }
+        update(){
+            this.x+=this.speedX;this.y+=this.speedY;
+            this.alpha-=0.007;this.rot+=0.5;
+        }
+        draw(){
+            fctx.save();
+            fctx.translate(this.x,this.y);
+            fctx.rotate(this.rot*Math.PI/180);
+            fctx.globalAlpha=this.alpha;
+            fctx.strokeStyle=this.color;
+            fctx.lineWidth=1.5;
+            fctx.beginPath();
+            let s=this.size;
+            fctx.moveTo(0,0);
+            fctx.bezierCurveTo(-s/2,-s/2,-s,s/3,0,s);
+            fctx.bezierCurveTo(s,s/3,s/2,-s/2,0,0);
+            fctx.stroke();
+            fctx.restore();
+        }
+    }
+    // 彩带
+    class Ribbon{
+        constructor(x,y,c){
+            this.x=x;this.y=y;this.w=Math.random()*4+2;
+            this.h=Math.random()*25+10;this.color=c;
+            this.speedX=(Math.random()-0.5)*8;this.speedY=(Math.random()-0.5)*8;
+            this.alpha=1;this.rot=0;
+        }
+        update(){
+            this.x+=this.speedX;this.y+=this.speedY;
+            this.alpha-=0.008;this.rot+=2;
+        }
+        draw(){
+            fctx.save();
+            fctx.translate(this.x,this.y);
+            fctx.rotate(this.rot*Math.PI/180);
+            fctx.globalAlpha=this.alpha;
+            fctx.fillStyle=this.color;
+            fctx.fillRect(-this.w/2,-this.h/2,this.w,this.h);
+            fctx.restore();
+        }
+    }
+    function boom(){
+        const colors=["#ff85c1","#ff6fa8","#ff9ecb","#ffd1e8","#73d9ff"];
+        let x=Math.random()*fireCanvas.width;
+        let y=Math.random()*fireCanvas.height*0.4;
+        for(let i=0;i<10;i++) particles.push(new PixelHeart(x,y,colors[Math.floor(Math.random()*colors.length)]));
+        for(let i=0;i<20;i++) particles.push(new Ribbon(x,y,colors[Math.floor(Math.random()*colors.length)]));
+    }
+    setInterval(boom,700);
+    function animate(){
+        fctx.clearRect(0,0,fireCanvas.width,fireCanvas.height);
+        for(let i=particles.length-1;i>=0;i--){
+            particles[i].update();
+            particles[i].draw();
+            if(particles[i].alpha<=0) particles.splice(i,1);
+        }
+        requestAnimationFrame(animate);
+    }
+    animate();
+
+    // 弹窗漂浮像素爱心
+    window.onload = function(){
+        const area = document.getElementById("bubbleArea");
+        const heartArr = ['♡','❥','✦','♡'];
+        for(let i=0;i<8;i++){
+            let d = document.createElement("div");
+            d.className = "float-heart";
+            d.innerText = heartArr[i%heartArr.length];
+            d.style.left = Math.random()*90+"%";
+            d.style.animationDelay = Math.random()*3+"s";
+            area.appendChild(d);
+        }
+    }
+</script>
 </body>
 </html>
