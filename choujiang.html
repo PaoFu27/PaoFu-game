@@ -351,7 +351,6 @@
         const recordList = document.getElementById('recordList');
         wheelCanvas.width = 280;
         wheelCanvas.height = 280;
-        let rotateAngle = 0;
         const len = prizeList.length;
         function drawWheel() {
             const r = 140;
@@ -390,31 +389,33 @@
     count--;
     countTip.innerText = `剩余抽奖次数：${count} 次`;
 
-    const perDeg = 360 / len;
-    // 随机停止基准角度 + 多圈旋转
-    let randomStop = Math.floor(Math.random() * 360);
-    // 每次固定6圈 + 随机落点，不会叠加卡死
-    let totalRotate = 360 * 6 + randomStop;
+    const itemAngle = 360 / len;
+    // 随机落点 + 固定圈数，每次力度一致，不会减速
+    let randomAngle = Math.random() * 360;
+    // 固定 7 圈 + 随机角度，每一次转速、力度完全一样
+    let total = 360 * 7 + randomAngle;
 
-    // 直接赋值，不累加，转盘永远顺滑
-    wheelCanvas.style.transform = `rotate(${totalRotate}deg)`;
+    // 强制重置动画，杜绝越转越慢
+    wheelCanvas.style.transition = "none";
+    wheelCanvas.style.transform = `rotate(0deg)`;
+    
+    // 短暂延迟再开启旋转，完美重置力度
+    setTimeout(() => {
+        wheelCanvas.style.transition = "all 4s cubic-bezier(0.2, 0.8, 0.2, 1)";
+        wheelCanvas.style.transform = `rotate(${total}deg)`;
+    }, 30);
 
     setTimeout(() => {
-        // 1. 获取转盘最终旋转角度
-        let style = getComputedStyle(wheelCanvas);
-        let matrix = new DOMMatrix(style.transform);
-        let rotate = Math.atan2(matrix.b, matrix.a) * (180 / Math.PI);
-        if (rotate < 0) rotate += 360;
+        // 精准计算指针指向区块【完全修复坐标系反向问题】
+        let finalRotate = total % 360;
+        // 指针在正上方，反向矫正，100%精准对应每一块
+        let checkAngle = (360 - finalRotate + itemAngle / 2) % 360;
+        let idx = Math.floor(checkAngle / itemAngle);
 
-        // 2. 计算指针落在第几块区域
-        // 指针在正上方(270°位置)，反向换算区块
-        let now = (360 - rotate + 270) % 360;
-        let index = Math.floor(now / perDeg);
-
-        // 3. 匹配对应奖品
-        let win = prizeList[index];
-        resultText.innerText = `🎉恭喜中奖：${win}`;
-        addRecord(win);
+        // 拿到对应奖品
+        let winPrize = prizeList[idx];
+        resultText.innerText = `🎉恭喜中奖：${winPrize}`;
+        addRecord(winPrize);
         startBtn.disabled = false;
     }, 4000);
 };
