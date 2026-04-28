@@ -406,18 +406,28 @@
     }, 30);
 
     setTimeout(() => {
-        // 精准计算指针指向区块【完全修复坐标系反向问题】
-        let finalRotate = total % 360;
-        // 指针在正上方，反向矫正，100%精准对应每一块
-        let checkAngle = (360 - finalRotate + itemAngle / 2) % 360;
-        let idx = Math.floor(checkAngle / itemAngle);
+    // 取转盘最终旋转角度
+    let finalDeg = allRotate % 360;
+    // 每一块角度 45°
+    const blockAngle = 45;
 
-        // 拿到对应奖品
-        let winPrize = prizeList[idx];
-        resultText.innerText = `🎉恭喜中奖：${winPrize}`;
-        addRecord(winPrize);
-        startBtn.disabled = false;
-    }, 4000);
+    // ========== 关键：和你 canvas 绘制方向精准绑定 ==========
+    // 矫正方向：指针朝上、转盘顺时针转
+    let calcDeg = (360 - finalDeg + 22.5) % 360;
+
+    // 算出当前指针指向 第几号板块
+    let blockIndex = Math.floor(calcDeg / blockAngle);
+
+    // ✅ 重点：板块下标 直接 = 奖品数组下标
+    // 第0块 → prizeList[0]
+    // 第1块 → prizeList[1]
+    // 完全一一绑定
+    let getPrize = prizeList[blockIndex];
+
+    resultText.innerText = `🎉恭喜中奖：${getPrize}`;
+    addRecord(getPrize);
+    startBtn.disabled = false;
+}, 4000);
 };
         function addCount(){
             count++;
