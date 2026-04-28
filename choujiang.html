@@ -32,15 +32,18 @@
             position: relative;
         }
         .right-box {
-            background: #fff;
-            border-radius: 20px;
-            padding: 25px;
-            box-shadow: 0 8px 25px #ffc8e080;
-            width: 300px;
-            height: 550px;
-            display: flex;
-            flex-direction: column;
-        }
+    background: #fff;
+    border-radius: 20px;
+    padding: 25px;
+    box-shadow: 0 8px 25px #ffc8e080;
+    width: 300px;
+    /* 固定高度+正常侧边并排 */
+    height: 550px;
+    display: flex;
+    flex-direction: column;
+    /* 关键：垂直置顶，不会被挤到下方 */
+    align-self: flex-start;
+}
         h2 {
             color: #ff6b9c;
             margin-bottom: 20px;
