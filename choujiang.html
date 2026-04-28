@@ -381,28 +381,43 @@
         drawWheel();
         let count = 2;
         startBtn.onclick = function () {
-            if (count <= 0) {
-                resultText.innerText = "❌ 次数用完啦，完成挑战加次数！";
-                return;
-            }
-            startBtn.disabled = true;
-            resultText.innerText = "抽奖中～";
-            count--;
-            countTip.innerText = `剩余抽奖次数：${count} 次`;
-            const perDeg = 360 / len;
-            let prizeIndex = Math.floor(Math.random() * len);
-            let targetDeg = prizeIndex * perDeg + perDeg / 2;
-            let offset = Math.random() * 20 - 10;
-            let totalRotate = 360 * 5 + targetDeg + offset;
-            rotateAngle += totalRotate;
-            wheelCanvas.style.transform = `rotate(${rotateAngle}deg)`;
-            setTimeout(() => {
-                let win = prizeList[len - 1 - prizeIndex];
-                resultText.innerText = `🎉恭喜中奖：${win}`;
-                addRecord(win);
-                startBtn.disabled = false;
-            }, 4000);
-        }
+    if (count <= 0) {
+        resultText.innerText = "❌ 次数用完啦，完成挑战加次数！";
+        return;
+    }
+    startBtn.disabled = true;
+    resultText.innerText = "抽奖中～";
+    count--;
+    countTip.innerText = `剩余抽奖次数：${count} 次`;
+
+    const perDeg = 360 / len;
+    // 随机停止基准角度 + 多圈旋转
+    let randomStop = Math.floor(Math.random() * 360);
+    // 每次固定6圈 + 随机落点，不会叠加卡死
+    let totalRotate = 360 * 6 + randomStop;
+
+    // 直接赋值，不累加，转盘永远顺滑
+    wheelCanvas.style.transform = `rotate(${totalRotate}deg)`;
+
+    setTimeout(() => {
+        // 1. 获取转盘最终旋转角度
+        let style = getComputedStyle(wheelCanvas);
+        let matrix = new DOMMatrix(style.transform);
+        let rotate = Math.atan2(matrix.b, matrix.a) * (180 / Math.PI);
+        if (rotate < 0) rotate += 360;
+
+        // 2. 计算指针落在第几块区域
+        // 指针在正上方(270°位置)，反向换算区块
+        let now = (360 - rotate + 270) % 360;
+        let index = Math.floor(now / perDeg);
+
+        // 3. 匹配对应奖品
+        let win = prizeList[index];
+        resultText.innerText = `🎉恭喜中奖：${win}`;
+        addRecord(win);
+        startBtn.disabled = false;
+    }, 4000);
+};
         function addCount(){
             count++;
             countTip.innerText = `剩余抽奖次数：${count} 次`;
