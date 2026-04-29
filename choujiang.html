@@ -482,7 +482,7 @@ function startClickGame(){
             clearInterval(clickTimer);
             clickAttempts++;
 
-            if(clickCount >= 30){
+            if(clickCount >= 60){
                 addCount();
                 clickCanGet = false;
                 clickTipDom.innerText = `✅ 成功！点击${clickCount}次`;
