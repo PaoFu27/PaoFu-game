@@ -56,7 +56,6 @@
             flex-direction: column;
         }
 
-        /* 左侧挑战分块样式 */
         .challenge-item {
             margin-bottom: 28px;
             padding-bottom: 20px;
@@ -190,43 +189,46 @@
             border-bottom: 1px solid #ffe6f2;
         }
 
-        /* 停表挑战专用样式 */
-.stop-bar-box{
-    width:100%;
-    height:28px;
-    background:#fce4ec;
-    border-radius:14px;
-    margin:10px 0;
-    position:relative;
-    overflow:hidden;
-}
-.stop-target{
-    position:absolute;
-    left:65%;
-    width:8%;
-    height:100%;
-    background:#a5e9cb;
-    z-index:1;
-}
-.stop-runner{
-    position:absolute;
-    left:0;
-    top:0;
-    width:12px;
-    height:100%;
-    background:#ff4477;
-    z-index:2;
-    border-radius:6px;
-}
+        .stop-bar-box{
+            width:100%;
+            height:28px;
+            background:#fce4ec;
+            border-radius:14px;
+            margin:10px 0;
+            position:relative;
+            overflow:hidden;
+        }
+        .stop-target{
+            position:absolute;
+            left:65%;
+            width:8%;
+            height:100%;
+            background:#a5e9cb;
+            z-index:1;
+        }
+        .stop-runner{
+            position:absolute;
+            left:0;
+            top:0;
+            width:12px;
+            height:100%;
+            background:#ff4477;
+            z-index:2;
+            border-radius:6px;
+        }
 
+        /* 烟花置顶 清晰不模糊 */
         #fireworks {
             position: fixed;
-            inset: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 1;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 999999;
             pointer-events: none;
+            background: transparent;
         }
+
         .popup-mask{
             position: fixed;
             inset: 0;
@@ -235,7 +237,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            z-index: 999;
+            z-index: 9999;
         }
         .popup-box{
             width: 360px;
@@ -267,11 +269,11 @@
 </head>
 <body>
 
-<!-- 左侧：挑战1 + 挑战2 + 挑战3 清晰分块 -->
+<canvas id="fireworks"></canvas>
+
 <div class="left-box">
     <h4>✅ 完成挑战 +1 抽奖次数</h4>
 
-    <!-- 挑战1：邀请码兑换 -->
     <div class="challenge-item">
         <div class="challenge-title"><span>1</span> 挑战一：输入专属邀请码</div>
         <div class="code-wrap">
@@ -281,7 +283,6 @@
         </div>
     </div>
 
-    <!-- 挑战2：10秒极速点击 -->
     <div class="challenge-item">
         <div class="challenge-title"><span>2</span> 挑战二：10秒极速点击</div>
         <button id="clickGameBtn" class="game-btn">开始挑战</button>
@@ -289,7 +290,6 @@
         <div id="clickTip" class="tip-text"></div>
     </div>
 
-    <!-- 挑战3：停表挑战 -->
     <div class="challenge-item">
         <div class="challenge-title"><span>3</span> 挑战三：停表挑战</div>
         <div class="stop-bar-box">
@@ -320,7 +320,6 @@
 </div>
 
 <div class="popup-mask" id="popupMask">
-    <canvas id="fireworks"></canvas>
     <div class="popup-box">
         <div class="bubble-area" id="bubbleArea"></div>
         <h2 style="color:#ff5f9a;margin-bottom:18px;">💖 泡芙太棒啦</h2>
@@ -387,7 +386,6 @@
     }
     drawWheel();
 
-    // ====================== 精准抽奖逻辑（完美版）======================
     startBtn.onclick = function(){
         if(count <= 0){
             resText.innerText = "❌ 次数不足，完成挑战获取次数";
@@ -415,15 +413,13 @@
                 startBtn.disabled = false;
             },4000);
         },30);
-    }
-    // ==================================================================
+    };
 
     function addCount(){
         count++;
         countTip.innerText = count;
     }
 
-    // ====================== 挑战1：邀请码 ======================
     let codeCanGet = true;
     const rightCode = "JK6S25BT8N";
     function checkInviteCode(){
@@ -445,158 +441,142 @@
         }
     }
 
-  // ===================== 共用增加次数 =====================
-function addCount(){
-    count++;
-    document.getElementById("countTip").innerText = count;
-}
+    let clickFinish = false;
+    let clickUsed = 0;
+    const clickMax = 10;
+    let clickTimer = null;
+    let clickLock = false;
+    let clickScore = 0;
+    let clickTimeLeft = 10;
 
-// ===================== 挑战2：10秒极速点击 彻底修复 =====================
-let clickFinish = false;
-let clickUsed = 0;
-const clickMax = 10;
-let clickTimer = null;
-let clickLock = false;
-let clickScore = 0;
-let clickTimeLeft = 10;
+    const clickGameBtn = document.getElementById("clickGameBtn");
+    const timeTip = document.getElementById("timeTip");
+    const clickTip = document.getElementById("clickTip");
 
-const clickGameBtn = document.getElementById("clickGameBtn");
-const timeTip = document.getElementById("timeTip");
-const clickTip = document.getElementById("clickTip");
+    clickGameBtn.addEventListener("click", function () {
+        if (clickLock) return;
+        if (clickFinish) {
+            clickTip.innerText = "✅ 已挑战成功";
+            clickTip.style.color = "#27ae60";
+            return;
+        }
+        if (clickUsed >= clickMax) {
+            clickTip.innerText = "❌ 10次机会已用完";
+            clickTip.style.color = "#f00";
+            return;
+        }
 
-// 固定只绑定一次点击
-clickGameBtn.addEventListener("click", function () {
-    // 对局中禁止重复开启
-    if (clickLock) return;
-
-    // 已成功锁定
-    if (clickFinish) {
-        clickTip.innerText = "✅ 已挑战成功";
-        clickTip.style.color = "#27ae60";
-        return;
-    }
-
-    // 次数用完
-    if (clickUsed >= clickMax) {
-        clickTip.innerText = "❌ 10次机会已用完";
-        clickTip.style.color = "#f00";
-        return;
-    }
-
-    // 初始化新一局
-    clickLock = true;
-    clickScore = 0;
-    clickTimeLeft = 10;
-    clickGameBtn.innerText = "疯狂点我";
-    clickTip.innerText = "";
-    timeTip.innerText = `剩余：${clickTimeLeft}s`;
-
-    // 倒计时
-    clickTimer = setInterval(() => {
-        clickTimeLeft--;
+        clickLock = true;
+        clickScore = 0;
+        clickTimeLeft = 10;
+        clickGameBtn.innerText = "疯狂点我";
+        clickTip.innerText = "";
         timeTip.innerText = `剩余：${clickTimeLeft}s`;
 
-        // 到0立刻结束，不负数
-        if (clickTimeLeft <= 0) {
-            clearInterval(clickTimer);
-            clickLock = false;
-            clickUsed++;
-            clickGameBtn.innerText = "开始挑战";
+        clickTimer = setInterval(() => {
+            clickTimeLeft--;
+            timeTip.innerText = `剩余：${clickTimeLeft}s`;
 
-            if (clickScore >= 60) {
-                addCount();
-                clickFinish = true;
-                clickTip.innerText = "✅ 挑战成功，获得抽奖机会";
-                clickTip.style.color = "#27ae60";
-            } else {
-                let left = clickMax - clickUsed;
-                clickTip.innerText = `❌ 挑战失败，剩余 ${left} 次`;
-                clickTip.style.color = "#f00";
+            if (clickTimeLeft <= 0) {
+                clearInterval(clickTimer);
+                clickLock = false;
+                clickUsed++;
+                clickGameBtn.innerText = "开始挑战";
+
+                if (clickScore >= 60) {
+                    addCount();
+                    clickFinish = true;
+                    clickTip.innerText = "✅ 挑战成功，获得抽奖机会";
+                    clickTip.style.color = "#27ae60";
+                } else {
+                    let left = clickMax - clickUsed;
+                    clickTip.innerText = `❌ 挑战失败，剩余 ${left} 次`;
+                    clickTip.style.color = "#f00";
+                }
             }
+        }, 1000);
+    });
+
+    document.addEventListener("click", function (e) {
+        if (e.target.id === "clickGameBtn" && clickLock && clickTimeLeft > 0) {
+            clickScore++;
         }
-    }, 1000);
-});
+    });
 
-// 单独全局监听 点击加分 不嵌套不冲突
-document.addEventListener("click", function (e) {
-    if (e.target.id === "clickGameBtn" && clickLock && clickTimeLeft > 0) {
-        clickScore++;
-    }
-});
+    let stopFinish = false;
+    let stopUsed = 0;
+    const stopMax = 10;
+    let stopMoveTimer = null;
+    let isRunning = false;
 
+    const stopBtn = document.getElementById("stopBtn");
+    const stopRunner = document.getElementById("stopRunner");
+    const stopTip = document.getElementById("stopTip");
 
-// 挑战3 停表 极简稳定版
-let stopFinish = false;
-let stopUsed = 0;
-const stopMax = 10;
-let stopMoveTimer = null;
-
-const stopBtn = document.getElementById("stopBtn");
-const stopRunner = document.getElementById("stopRunner");
-const stopTip = document.getElementById("stopTip");
-
-// 开始挑战
-function startStop(){
-    if(stopFinish){
-        stopTip.innerText = "✅ 已挑战成功";
-        stopTip.style.color = "#27ae60";
-        return;
-    }
-    if(stopUsed >= stopMax){
-        stopTip.innerText = "❌ 10次机会已用完";
-        stopTip.style.color = "#f00";
-        return;
-    }
-    // 先清旧定时器，防止卡住
-    if(stopMoveTimer) clearInterval(stopMoveTimer);
-
-    let pos = 0;
-    stopBtn.innerText = "点击停下";
-    stopTip.innerText = "";
-
-    // 指针跑动
-    stopMoveTimer = setInterval(()=>{
-        pos += 6;
-        if(pos > 100) pos = 0;
-        stopRunner.style.left = pos + "%";
-    },20);
-
-    // 一次性停下
-    stopBtn.onclick = function(){
-        clearInterval(stopMoveTimer);
-        stopBtn.onclick = null; // 解绑，防止叠加
-        stopUsed++;
-        stopBtn.innerText = "开始挑战";
-
-        if(pos >= 65 && pos <= 73){
-            addCount();
-            stopFinish = true;
-            stopTip.innerText = "✅ 完美命中，获得抽奖机会";
+    function startStop(){
+        if(stopFinish){
+            stopTip.innerText = "✅ 已挑战成功";
             stopTip.style.color = "#27ae60";
-        }else{
-            let left = stopMax - stopUsed;
-            stopTip.innerText = `❌ 未命中，剩余 ${left} 次`;
-            stopTip.style.color = "#f00";
+            return;
         }
-    };
-}
+        if(stopUsed >= stopMax){
+            stopTip.innerText = "❌ 10次机会已用完";
+            stopTip.style.color = "#f00";
+            return;
+        }
+        if(isRunning) return;
 
-    // ====================== 弹窗 & 特效 ======================
-    function closePopup(){
-        document.getElementById("popupMask").style.display = "none";
+        if(stopMoveTimer) clearInterval(stopMoveTimer);
+
+        isRunning = true;
+        let pos = 0;
+        stopBtn.innerText = "点击停下";
+        stopTip.innerText = "";
+        stopRunner.style.left = "0%";
+
+        stopMoveTimer = setInterval(()=>{
+            pos += 6;
+            if(pos > 100) pos = 0;
+            stopRunner.style.left = pos + "%";
+        },20);
+
+        stopBtn.onclick = function(){
+            if(!isRunning) return;
+
+            clearInterval(stopMoveTimer);
+            isRunning = false;
+            stopUsed++;
+            stopBtn.innerText = "开始挑战";
+
+            if(pos >= 65 && pos <= 73){
+                addCount();
+                stopFinish = true;
+                stopTip.innerText = "✅ 完美命中，获得抽奖机会";
+                stopTip.style.color = "#27ae60";
+            }else{
+                let left = stopMax - stopUsed;
+                stopTip.innerText = `❌ 未命中，剩余 ${left} 次`;
+                stopTip.style.color = "#f00";
+            }
+            stopBtn.onclick = null;
+        };
     }
 
+    // 烟花控制
     const fireCanvas = document.getElementById("fireworks");
     const fctx = fireCanvas.getContext("2d");
     fireCanvas.width = window.innerWidth;
     fireCanvas.height = window.innerHeight;
     let particles = [];
+    let fireInterval = null;
+    let fireAnimateRun = true;
 
     class PixelHeart{
         constructor(x,y,c){
             this.x=x;this.y=y;this.size=Math.random()*8+6;
             this.color=c;this.speedX=(Math.random()-0.5)*6;
-            this.speedY=(Math.random()-0.5)*6;this.alpha=1;
+            this.speedY=(Math.random()-0.5)*6;
+            this.alpha=1;
             this.rot=0;
         }
         update(){
@@ -622,7 +602,8 @@ function startStop(){
     class Ribbon{
         constructor(x,y,c){
             this.x=x;this.y=y;this.w=Math.random()*4+2;
-            this.h=Math.random()*25+10;this.color=c;
+            this.h=Math.random()*25+10;
+            this.color=c;
             this.speedX=(Math.random()-0.5)*8;this.speedY=(Math.random()-0.5)*8;
             this.alpha=1;this.rot=0;
         }
@@ -647,8 +628,23 @@ function startStop(){
         for(let i=0;i<10;i++) particles.push(new PixelHeart(x,y,colors[Math.floor(Math.random()*colors.length)]));
         for(let i=0;i<20;i++) particles.push(new Ribbon(x,y,colors[Math.floor(Math.random()*colors.length)]));
     }
-    setInterval(boom,700);
+    function startFire(){
+        if(fireInterval) return;
+        fireInterval = setInterval(boom,700);
+        fireAnimateRun = true;
+        animate();
+    }
+    function stopFire(){
+        if(fireInterval){
+            clearInterval(fireInterval);
+            fireInterval = null;
+        }
+        fireAnimateRun = false;
+        particles = [];
+        fctx.clearRect(0,0,fireCanvas.width,fireCanvas.height);
+    }
     function animate(){
+        if(!fireAnimateRun) return;
         fctx.clearRect(0,0,fireCanvas.width,fireCanvas.height);
         for(let i=particles.length-1;i>=0;i--){
             particles[i].update();
@@ -657,9 +653,15 @@ function startStop(){
         }
         requestAnimationFrame(animate);
     }
-    animate();
+
+    // 关闭弹窗 同时停止烟花
+    function closePopup(){
+        document.getElementById("popupMask").style.display = "none";
+        stopFire();
+    }
 
     window.onload = function(){
+        startFire();
         const area = document.getElementById("bubbleArea");
         const heartArr = ['♡','❥','✦','♡'];
         for(let i=0;i<8;i++){
@@ -672,5 +674,6 @@ function startStop(){
         }
     }
 </script>
+
 </body>
 </html>
