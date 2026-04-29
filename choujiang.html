@@ -301,7 +301,25 @@
 
     <!-- 挑战2 -->
     <div class="challenge-item">
-        <div class="challenge-title"><span>2</span> 挑战二：10秒极速点击</div>
+        <div class="challenge-title">
+    <span>2</span> 挑战二：10秒极速点击
+
+    <!-- ❓说明 -->
+    <div style="display:inline-block;position:relative;margin-left:8px;">
+        <span id="clickQuestionMark"
+              style="cursor:pointer;background:#ff6b9c;color:#fff;border-radius:50%;
+              width:18px;height:18px;display:inline-flex;align-items:center;justify-content:center;font-size:12px;">
+            ?
+        </span>
+
+        <div id="clickTipBox" class="tip-box">
+            点击挑战说明：<br>
+            在10秒内疯狂点击按钮<br>
+            点击次数 ≥ 60 次即成功<br>
+            成功获得抽奖次数
+        </div>
+    </div>
+</div>
         <button id="clickGameBtn" class="game-btn">开始挑战</button>
         <span id="timeTip" style="display:block;margin-top:8px;color:#d6336c;font-weight:bold;"></span>
         <div id="clickCountTip" style="margin-top:6px;color:#ff5f9a;font-weight:bold;"></div>
@@ -822,6 +840,18 @@ if(betQuestionMark && betTipBox2){
 
     betQuestionMark.addEventListener("mouseleave", function () {
         betTipBox2.style.display = "none";
+    });
+}
+        const clickQuestionMark = document.getElementById("clickQuestionMark");
+const clickTipBox = document.getElementById("clickTipBox");
+
+if(clickQuestionMark && clickTipBox){
+    clickQuestionMark.addEventListener("mouseenter", function () {
+        clickTipBox.style.display = "block";
+    });
+
+    clickQuestionMark.addEventListener("mouseleave", function () {
+        clickTipBox.style.display = "none";
     });
 }
 };
