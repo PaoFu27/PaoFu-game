@@ -340,7 +340,26 @@
 
     <!-- 挑战4（押注） -->
     <div class="challenge-item">
-        <div class="challenge-title"><span>4</span> 押注小游戏</div>
+        <div class="challenge-title">
+    <span>4</span> 押注小游戏
+
+    <!-- ❓说明 -->
+    <div style="display:inline-block;position:relative;margin-left:8px;">
+        <span id="betQuestionMark"
+              style="cursor:pointer;background:#ff6b9c;color:#fff;border-radius:50%;
+              width:18px;height:18px;display:inline-flex;align-items:center;justify-content:center;font-size:12px;">
+            ?
+        </span>
+
+        <div id="betTipBox2" class="tip-box">
+            押注小游戏说明：<br>
+            选择1~3次抽奖次数进行押注<br>
+            胜率约50%<br>
+            赢：获得双倍次数<br>
+            输：扣除押注次数
+        </div>
+    </div>
+</div>
 
         <div style="margin:10px 0;color:#555;font-size:13px;">
             选择押注抽奖次数
@@ -756,6 +775,28 @@ stopMoveTimer = setInterval(()=>{
         d.style.animationDelay = Math.random()*3+"s";
         area.appendChild(d);
     }
+        const betBtn = document.getElementById("betBtn");
+
+betBtn.addEventListener("click", function () {
+    const bet = parseInt(document.getElementById("betSelect").value);
+
+    if (count < bet) {
+        document.getElementById("betTip").innerText = "❌ 抽奖次数不足";
+        return;
+    }
+
+    const win = Math.random() < 0.5;
+
+    if (win) {
+        count += bet;
+        document.getElementById("betTip").innerText = `🎉 赢了！+${bet} 次`;
+    } else {
+        count -= bet;
+        document.getElementById("betTip").innerText = `❌ 输了！-${bet} 次`;
+    }
+
+    countTip.innerText = count;
+});
 
     // ✅ ⭐ 把问号逻辑放这里（关键）
     const questionMark = document.getElementById("questionMark");
@@ -770,6 +811,19 @@ stopMoveTimer = setInterval(()=>{
             betTipBox.style.display = "none";
         });
     }
+        // ⭐ 第4个问号（新增）
+const betQuestionMark = document.getElementById("betQuestionMark");
+const betTipBox2 = document.getElementById("betTipBox2");
+
+if(betQuestionMark && betTipBox2){
+    betQuestionMark.addEventListener("mouseenter", function () {
+        betTipBox2.style.display = "block";
+    });
+
+    betQuestionMark.addEventListener("mouseleave", function () {
+        betTipBox2.style.display = "none";
+    });
+}
 };
 </script>
 
