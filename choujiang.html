@@ -514,53 +514,60 @@
     const stopTip = document.getElementById("stopTip");
 
     function startStop(){
-        if(stopFinish){
-            stopTip.innerText = "✅ 已挑战成功";
-            stopTip.style.color = "#27ae60";
-            return;
-        }
-        if(stopUsed >= stopMax){
-            stopTip.innerText = "❌ 10次机会已用完";
-            stopTip.style.color = "#f00";
-            return;
-        }
-        if(isRunning) return;
-
-        if(stopMoveTimer) clearInterval(stopMoveTimer);
-
-        isRunning = true;
-        let pos = 0;
-        stopBtn.innerText = "点击停下";
-        stopTip.innerText = "";
-        stopRunner.style.left = "0%";
-
-        stopMoveTimer = setInterval(()=>{
-            pos += 6;
-            if(pos > 100) pos = 0;
-            stopRunner.style.left = pos + "%";
-        },20);
-
-        stopBtn.onclick = function(){
-            if(!isRunning) return;
-
-            clearInterval(stopMoveTimer);
-            isRunning = false;
-            stopUsed++;
-            stopBtn.innerText = "开始挑战";
-
-            if(pos >= 65 && pos <= 73){
-                addCount();
-                stopFinish = true;
-                stopTip.innerText = "✅ 完美命中，获得抽奖机会";
-                stopTip.style.color = "#27ae60";
-            }else{
-                let left = stopMax - stopUsed;
-                stopTip.innerText = `❌ 未命中，剩余 ${left} 次`;
-                stopTip.style.color = "#f00";
-            }
-            stopBtn.onclick = null;
-        };
+    if(stopFinish){
+        stopTip.innerText = "✅ 已挑战成功";
+        stopTip.style.color = "#27ae60";
+        return;
     }
+    if(stopUsed >= stopMax){
+        stopTip.innerText = "❌ 10次机会已用完";
+        stopTip.style.color = "#f00";
+        return;
+    }
+    if(isRunning) return;
+
+    if(stopMoveTimer) clearInterval(stopMoveTimer);
+
+    isRunning = true;
+    let pos = 0;
+
+    stopBtn.innerText = "点击停下";
+    stopTip.innerText = "";
+    stopRunner.style.left = "0%";
+
+    stopMoveTimer = setInterval(()=>{
+        pos += 6;
+        if(pos > 100) pos = 0;
+        stopRunner.style.left = pos + "%";
+    },20);
+
+    // ✅ 正确：只在这里绑定一次“点击停止”
+    const stopHandler = () => {
+        if(!isRunning) return;
+
+        clearInterval(stopMoveTimer);
+        isRunning = false;
+        stopUsed++;
+
+        stopBtn.innerText = "开始挑战";
+
+        if(pos >= 65 && pos <= 73){
+            addCount();
+            stopFinish = true;
+            stopTip.innerText = "✅ 完美命中，获得抽奖机会";
+            stopTip.style.color = "#27ae60";
+        }else{
+            let left = stopMax - stopUsed;
+            stopTip.innerText = `❌ 未命中，剩余 ${left} 次`;
+            stopTip.style.color = "#f00";
+        }
+
+        // ❗解绑，避免重复叠加
+        stopBtn.removeEventListener("click", stopHandler);
+    };
+
+    stopBtn.addEventListener("click", stopHandler, { once: true });
+}
 
     // 烟花控制
     const fireCanvas = document.getElementById("fireworks");
