@@ -445,99 +445,100 @@
         }
     }
 
-   // 挑战2：10秒极速点击 最多10次机会，失败可重玩，成功锁定
+   // 挑战2：10秒点击 修复版 10次机会 失败可重新开始
 let clickCanGet = true;
 let clickTryNum = 0;
 const clickMaxTry = 10;
-let clickCount = 0, clickTimer = null, timeLeft = 10;
 
 function startClickGame(){
+    // 成功过直接锁
+    if(!clickCanGet){
+        document.getElementById("clickTip").innerText = "✅ 已挑战成功";
+        document.getElementById("clickTip").style.color = "#27ae60";
+        return;
+    }
+    // 次数用完
+    if(clickTryNum >= clickMaxTry){
+        document.getElementById("clickTip").innerText = "❌ 10次机会已用完";
+        document.getElementById("clickTip").style.color = "#f00";
+        return;
+    }
+
+    let clickCount = 0;
+    let timeLeft = 10;
     const btn = document.getElementById("clickGameBtn");
     const timeTipDom = document.getElementById("timeTip");
     const clickTipDom = document.getElementById("clickTip");
 
-    // 已经成功
-    if(!clickCanGet){
-        clickTipDom.innerText = "✅ 已挑战成功，无需再玩";
-        clickTipDom.style.color = "#27ae60";
-        return;
-    }
-    // 10次用完
-    if(clickTryNum >= clickMaxTry){
-        clickTipDom.innerText = "❌ 10次挑战机会已用完";
-        clickTipDom.style.color = "#f00";
-        return;
-    }
-
-    clickCount = 0;
-    timeLeft = 10;
     btn.innerText = "疯狂点击我";
     clickTipDom.innerText = "";
     timeTipDom.innerText = `剩余：${timeLeft}s`;
 
-    clickTimer = setInterval(()=>{
+    let timer = setInterval(()=>{
         timeLeft--;
         timeTipDom.innerText = `剩余：${timeLeft}s`;
         if(timeLeft <= 0){
-            clearInterval(clickTimer);
-            btn.innerText = "开始挑战";
+            clearInterval(timer);
             clickTryNum++;
+            btn.innerText = "开始挑战";
 
             if(clickCount >= 30){
                 addCount();
                 clickCanGet = false;
-                clickTipDom.innerText = `✅ 成功！已领取抽奖机会`;
+                clickTipDom.innerText = `✅ 挑战成功，已领机会`;
                 clickTipDom.style.color = "#27ae60";
             }else{
                 let left = clickMaxTry - clickTryNum;
-                clickTipDom.innerText = `❌ 挑战失败，还剩 ${left} 次机会`;
+                clickTipDom.innerText = `❌ 失败，还剩 ${left} 次机会`;
                 clickTipDom.style.color = "#f00";
             }
         }
     },1000);
 
+    // 点击加分
     btn.onclick = function(){
-        if(timeLeft > 0) clickCount++;
-    }
+        if(timeLeft > 0){
+            clickCount++;
+        }
+    };
 }
 
-    // 挑战3：停表挑战 最多10次机会，失败可重玩，成功锁定
+    // 挑战3：停表挑战 修复版 10次机会 失败可重新开始
 let stopCanGet = true;
 let stopTryNum = 0;
 const stopMaxTry = 10;
-let stopRunning = false;
-let stopPos = 0;
-let stopInterval;
-const runner = document.getElementById("stopRunner");
-const stopBtn = document.getElementById("stopBtn");
-const stopTip = document.getElementById("stopTip");
 
 function startStopGame(){
     if(!stopCanGet){
-        stopTip.innerText = "✅ 已挑战成功，无需再玩";
-        stopTip.style.color = "#27ae60";
+        document.getElementById("stopTip").innerText = "✅ 已挑战成功";
+        document.getElementById("stopTip").style.color = "#27ae60";
         return;
     }
     if(stopTryNum >= stopMaxTry){
-        stopTip.innerText = "❌ 10次挑战机会已用完";
-        stopTip.style.color = "#f00";
+        document.getElementById("stopTip").innerText = "❌ 10次机会已用完";
+        document.getElementById("stopTip").style.color = "#f00";
         return;
     }
-    if(stopRunning) return;
+
+    const runner = document.getElementById("stopRunner");
+    const stopBtn = document.getElementById("stopBtn");
+    const stopTip = document.getElementById("stopTip");
+
+    let stopRunning = true;
+    let stopPos = 0;
 
     stopBtn.innerText = "点击停下";
-    stopRunning = true;
-    stopPos = 0;
 
-    stopInterval = setInterval(()=>{
+    let interval = setInterval(()=>{
         stopPos += 6;
         if(stopPos > 100) stopPos = 0;
         runner.style.left = stopPos + "%";
     },20);
 
+    // 停下事件只绑定一次，不覆盖
     stopBtn.onclick = function(){
         if(!stopRunning) return;
-        clearInterval(stopInterval);
+        clearInterval(interval);
         stopRunning = false;
         stopTryNum++;
         stopBtn.innerText = "开始挑战";
@@ -545,14 +546,14 @@ function startStopGame(){
         if(stopPos >= 65 && stopPos <= 73){
             addCount();
             stopCanGet = false;
-            stopTip.innerText = "✅ 完美命中！已领取抽奖机会";
+            stopTip.innerText = "✅ 完美命中，已领机会";
             stopTip.style.color = "#27ae60";
         }else{
             let left = stopMaxTry - stopTryNum;
             stopTip.innerText = `❌ 未命中，还剩 ${left} 次机会`;
             stopTip.style.color = "#f00";
         }
-    }
+    };
 }
 
     // ====================== 弹窗 & 特效 ======================
