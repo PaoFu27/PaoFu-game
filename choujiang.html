@@ -191,33 +191,33 @@
         }
 
         /* 停表挑战专用样式 */
-        .stop-bar-box{
-            width:100%;
-            height:28px;
-            background:#fce4ec;
-            border-radius:14px;
-            margin:10px 0;
-            position:relative;
-            overflow:hidden;
-        }
-        .stop-target{
-            position:absolute;
-            left:60%;
-            width:18%;
-            height:100%;
-            background:#a5e9cb;
-            z-index:1;
-        }
-        .stop-runner{
-            position:absolute;
-            left:0;
-            top:0;
-            width:12px;
-            height:100%;
-            background:#ff4477;
-            z-index:2;
-            border-radius:6px;
-        }
+.stop-bar-box{
+    width:100%;
+    height:28px;
+    background:#fce4ec;
+    border-radius:14px;
+    margin:10px 0;
+    position:relative;
+    overflow:hidden;
+}
+.stop-target{
+    position:absolute;
+    left:65%;
+    width:8%;
+    height:100%;
+    background:#a5e9cb;
+    z-index:1;
+}
+.stop-runner{
+    position:absolute;
+    left:0;
+    top:0;
+    width:12px;
+    height:100%;
+    background:#ff4477;
+    z-index:2;
+    border-radius:6px;
+}
 
         #fireworks {
             position: fixed;
@@ -470,13 +470,13 @@
             timeTipDom.innerText = `剩余：${timeLeft}s`;
             if(timeLeft <= 0){
                 clearInterval(clickTimer);
-                if(clickCount >= 30){
+                if(clickCount >= 60){
                     addCount();
                     clickCanGet = false;
                     clickTipDom.innerText = `✅ 成功！点击${clickCount}次`;
                     clickTipDom.style.color = "#27ae60";
                 }else{
-                    clickTipDom.innerText = `❌ 失败，仅${clickCount}次(需≥30)`;
+                    clickTipDom.innerText = `❌ 失败，仅${clickCount}次(需≥60)`;
                     clickTipDom.style.color = "#f00";
                 }
                 btn.innerText = "开始挑战";
@@ -518,10 +518,10 @@
         stopPos = 0;
 
         stopInterval = setInterval(()=>{
-            stopPos += 2.5;
-            if(stopPos > 100) stopPos = 0;
-            runner.style.left = stopPos + "%";
-        },30);
+    stopPos += 6;
+    if(stopPos > 100) stopPos = 0;
+    runner.style.left = stopPos + "%";
+},20);
 
         stopBtn.onclick = function(){
             if(!stopRunning) return;
@@ -531,7 +531,7 @@
             stopBtn.innerText = "开始挑战";
 
             // 判断是否落在绿色区间
-            if(stopPos >= 60 && stopPos <= 78){
+            if(stopPos >= 65 && stopPos <= 73){
                 addCount();
                 stopCanGet = false;
                 stopTip.innerText = "✅ 完美命中！次数+1";
