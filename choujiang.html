@@ -296,7 +296,7 @@
             <div class="stop-target"></div>
             <div class="stop-runner" id="stopRunner"></div>
         </div>
-        <button id="stopBtn" class="game-btn">开始挑战</button>
+        <button id="stopBtn" class="game-btn" onclick="startStop()">开始挑战</button>
         <span id="stopTip" style="display:block;margin-top:8px;font-size:12px;color:#555;"></span>
     </div>
 </div>
@@ -503,7 +503,7 @@ clickGameBtn.addEventListener("click", function () {
             clickUsed++;
             clickGameBtn.innerText = "开始挑战";
 
-            if (clickScore >= 30) {
+            if (clickScore >= 60) {
                 addCount();
                 clickFinish = true;
                 clickTip.innerText = "✅ 挑战成功，获得抽奖机会";
@@ -525,68 +525,61 @@ document.addEventListener("click", function (e) {
 });
 
 
-// ===================== 挑战3：停表挑战 彻底修复 每次开始指针都能动 =====================
+// 挑战3 停表 极简稳定版
 let stopFinish = false;
 let stopUsed = 0;
 const stopMax = 10;
 let stopMoveTimer = null;
-let stopLock = false;
-let stopPos = 0;
 
 const stopBtn = document.getElementById("stopBtn");
 const stopRunner = document.getElementById("stopRunner");
 const stopTip = document.getElementById("stopTip");
 
-// 开始游戏 只绑定一次
-stopBtn.addEventListener("click", function () {
-    if (stopLock) return;
-
-    if (stopFinish) {
+// 开始挑战
+function startStop(){
+    if(stopFinish){
         stopTip.innerText = "✅ 已挑战成功";
         stopTip.style.color = "#27ae60";
         return;
     }
-
-    if (stopUsed >= stopMax) {
+    if(stopUsed >= stopMax){
         stopTip.innerText = "❌ 10次机会已用完";
         stopTip.style.color = "#f00";
         return;
     }
+    // 先清旧定时器，防止卡住
+    if(stopMoveTimer) clearInterval(stopMoveTimer);
 
-    // 开局初始化
-    stopLock = true;
-    stopPos = 0;
+    let pos = 0;
     stopBtn.innerText = "点击停下";
     stopTip.innerText = "";
 
-    stopMoveTimer = setInterval(() => {
-        stopPos += 6;
-        if (stopPos > 100) stopPos = 0;
-        stopRunner.style.left = stopPos + "%";
-    }, 20);
-});
+    // 指针跑动
+    stopMoveTimer = setInterval(()=>{
+        pos += 6;
+        if(pos > 100) pos = 0;
+        stopRunner.style.left = pos + "%";
+    },20);
 
-// 单独全局监听 停下 不嵌套不覆盖
-document.addEventListener("click", function (e) {
-    if (e.target.id !== "stopBtn") return;
-    if (!stopLock) return;
+    // 一次性停下
+    stopBtn.onclick = function(){
+        clearInterval(stopMoveTimer);
+        stopBtn.onclick = null; // 解绑，防止叠加
+        stopUsed++;
+        stopBtn.innerText = "开始挑战";
 
-    clearInterval(stopMoveTimer);
-    stopLock = false;
-    stopUsed++;
-    stopBtn.innerText = "开始挑战";
-
-    if (stopPos >= 65 && stopPos <= 73) {
-        addCount();
-        stopFinish = true;
-        stopTip.innerText = "✅ 完美命中，获得抽奖机会";
-        stopTip.style.color = "#27ae60";
-    } else {
-        let left = stopMax - stopUsed;
-        stopTip.innerText = `❌ 未命中，剩余 ${left} 次`;
-        stopTip.style.color = "#f00";
-    }
-});
+        if(pos >= 65 && pos <= 73){
+            addCount();
+            stopFinish = true;
+            stopTip.innerText = "✅ 完美命中，获得抽奖机会";
+            stopTip.style.color = "#27ae60";
+        }else{
+            let left = stopMax - stopUsed;
+            stopTip.innerText = `❌ 未命中，剩余 ${left} 次`;
+            stopTip.style.color = "#f00";
+        }
+    };
+}
 
     // ====================== 弹窗 & 特效 ======================
     function closePopup(){
