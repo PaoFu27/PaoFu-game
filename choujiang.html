@@ -397,7 +397,24 @@
 </div>
 
 <div class="center-box">
-    <h2>专属幸运抽奖</h2>
+    <h2 style="display:flex;align-items:center;justify-content:center;gap:8px;">
+    泡芙专属幸运抽奖
+
+    <!-- ❓说明 -->
+    <div style="position:relative;display:inline-block;">
+        <span id="wheelQuestionMark"
+              style="cursor:pointer;background:#ff6b9c;color:#fff;border-radius:50%;
+              width:18px;height:18px;display:inline-flex;align-items:center;justify-content:center;font-size:12px;">
+            ?
+        </span>
+
+        <div id="wheelTipBox" class="tip-box">
+            抽奖说明：<br>
+            只有前 8 个奖品为有效奖励<br>
+            后续抽取结果为无效娱乐结果
+        </div>
+    </div>
+</h2>
     <div class="count-text">剩余次数：<span id="countTip">2</span> 次</div>
 
     <div class="wheel-box">
@@ -852,6 +869,18 @@ if(clickQuestionMark && clickTipBox){
 
     clickQuestionMark.addEventListener("mouseleave", function () {
         clickTipBox.style.display = "none";
+    });
+}
+    const wheelQuestionMark = document.getElementById("wheelQuestionMark");
+const wheelTipBox = document.getElementById("wheelTipBox");
+
+if(wheelQuestionMark && wheelTipBox){
+    wheelQuestionMark.addEventListener("mouseenter", function () {
+        wheelTipBox.style.display = "block";
+    });
+
+    wheelQuestionMark.addEventListener("mouseleave", function () {
+        wheelTipBox.style.display = "none";
     });
 }
 };
