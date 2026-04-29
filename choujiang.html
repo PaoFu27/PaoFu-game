@@ -546,10 +546,10 @@ let stopFrame = null;
     if(stopMoveTimer) clearInterval(stopMoveTimer);
 
 stopMoveTimer = setInterval(()=>{
-        pos += 5;
+        pos += 4;
         if(pos > 100) pos = 0;
         stopRunner.style.left = pos + "%";
-    },20);
+    },30);
 
     // ✅ 正确：只在这里绑定一次“点击停止”
     const stopHandler = () => {
