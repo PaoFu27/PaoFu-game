@@ -504,10 +504,11 @@
 });
 
     document.addEventListener("click", function (e) {
-        if (e.target.id === "clickGameBtn" && clickLock && clickTimeLeft > 0) {
-            clickScore++;
-        }
-    });
+    if (e.target.id === "clickGameBtn" && clickLock && clickTimeLeft > 0) {
+        clickScore++;
+        clickCountTip.innerText = `当前点击次数：${clickScore}`;
+    }
+});
 
     let stopFinish = false;
     let stopUsed = 0;
