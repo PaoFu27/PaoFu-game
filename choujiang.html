@@ -515,6 +515,7 @@
     const stopMax = 10;
     let stopMoveTimer = null;
     let isRunning = false;
+let stopFrame = null;
 
     const stopBtn = document.getElementById("stopBtn");
     const stopRunner = document.getElementById("stopRunner");
@@ -542,7 +543,9 @@
     stopTip.innerText = "";
     stopRunner.style.left = "0%";
 
-    stopMoveTimer = setInterval(()=>{
+    if(stopMoveTimer) clearInterval(stopMoveTimer);
+
+stopMoveTimer = setInterval(()=>{
         pos += 5;
         if(pos > 100) pos = 0;
         stopRunner.style.left = pos + "%";
@@ -658,15 +661,23 @@
         fctx.clearRect(0,0,fireCanvas.width,fireCanvas.height);
     }
     function animate(){
-        if(!fireAnimateRun) return;
-        fctx.clearRect(0,0,fireCanvas.width,fireCanvas.height);
-        for(let i=particles.length-1;i>=0;i--){
-            particles[i].update();
-            particles[i].draw();
-            if(particles[i].alpha<=0) particles.splice(i,1);
-        }
-        requestAnimationFrame(animate);
+    if(!fireAnimateRun) return;
+
+    fctx.clearRect(0,0,fireCanvas.width,fireCanvas.height);
+
+    // 🔥 限制粒子数量（防止爆掉）
+    if(particles.length > 200){
+        particles.splice(0,50);
     }
+
+    for(let i=particles.length-1;i>=0;i--){
+        particles[i].update();
+        particles[i].draw();
+        if(particles[i].alpha<=0) particles.splice(i,1);
+    }
+
+    requestAnimationFrame(animate);
+}
 
     // 关闭弹窗 同时停止烟花
     function closePopup(){
