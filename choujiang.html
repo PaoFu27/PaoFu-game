@@ -286,6 +286,7 @@
     <div class="challenge-item">
         <div class="challenge-title"><span>2</span> 挑战二：10秒极速点击</div>
         <button id="clickGameBtn" class="game-btn">开始挑战</button>
+        <div id="clickCountTip" style="margin-top:8px;color:#ff5f9a;font-weight:bold;"></div>
         <span id="timeTip" style="margin-left:0px;color:#d6336c;font-weight:bold;display:block;margin-top:8px;"></span>
         <div id="clickTip" class="tip-text"></div>
     </div>
@@ -452,50 +453,55 @@
     const clickGameBtn = document.getElementById("clickGameBtn");
     const timeTip = document.getElementById("timeTip");
     const clickTip = document.getElementById("clickTip");
+    const clickCountTip = document.getElementById("clickCountTip");
 
     clickGameBtn.addEventListener("click", function () {
-        if (clickLock) return;
-        if (clickFinish) {
-            clickTip.innerText = "✅ 已挑战成功";
-            clickTip.style.color = "#27ae60";
-            return;
-        }
-        if (clickUsed >= clickMax) {
-            clickTip.innerText = "❌ 10次机会已用完";
-            clickTip.style.color = "#f00";
-            return;
-        }
+    if (clickLock) return;
+    if (clickFinish) {
+        clickTip.innerText = "✅ 已挑战成功";
+        clickTip.style.color = "#27ae60";
+        return;
+    }
+    if (clickUsed >= clickMax) {
+        clickTip.innerText = "❌ 10次机会已用完";
+        clickTip.style.color = "#f00";
+        return;
+    }
 
-        clickLock = true;
-        clickScore = 0;
-        clickTimeLeft = 10;
-        clickGameBtn.innerText = "疯狂点我";
-        clickTip.innerText = "";
+    clickLock = true;
+    clickScore = 0;
+    clickTimeLeft = 10;
+
+    // ✅ 每次重新开始清零显示
+    clickCountTip.innerText = "当前点击次数：0";
+
+    clickGameBtn.innerText = "疯狂点我";
+    clickTip.innerText = "";
+    timeTip.innerText = `剩余：${clickTimeLeft}s`;
+
+    clickTimer = setInterval(() => {
+        clickTimeLeft--;
         timeTip.innerText = `剩余：${clickTimeLeft}s`;
 
-        clickTimer = setInterval(() => {
-            clickTimeLeft--;
-            timeTip.innerText = `剩余：${clickTimeLeft}s`;
+        if (clickTimeLeft <= 0) {
+            clearInterval(clickTimer);
+            clickLock = false;
+            clickUsed++;
+            clickGameBtn.innerText = "开始挑战";
 
-            if (clickTimeLeft <= 0) {
-                clearInterval(clickTimer);
-                clickLock = false;
-                clickUsed++;
-                clickGameBtn.innerText = "开始挑战";
-
-                if (clickScore >= 60) {
-                    addCount();
-                    clickFinish = true;
-                    clickTip.innerText = "✅ 挑战成功，获得抽奖机会";
-                    clickTip.style.color = "#27ae60";
-                } else {
-                    let left = clickMax - clickUsed;
-                    clickTip.innerText = `❌ 挑战失败，剩余 ${left} 次`;
-                    clickTip.style.color = "#f00";
-                }
+            if (clickScore >= 60) {
+                addCount();
+                clickFinish = true;
+                clickTip.innerText = "✅ 挑战成功，获得抽奖机会";
+                clickTip.style.color = "#27ae60";
+            } else {
+                let left = clickMax - clickUsed;
+                clickTip.innerText = `❌ 挑战失败，剩余 ${left} 次`;
+                clickTip.style.color = "#f00";
             }
-        }, 1000);
-    });
+        }
+    }, 1000);
+});
 
     document.addEventListener("click", function (e) {
         if (e.target.id === "clickGameBtn" && clickLock && clickTimeLeft > 0) {
