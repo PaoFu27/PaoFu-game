@@ -289,6 +289,7 @@
 <div class="left-box">
     <h4>✅ 完成挑战 +1 抽奖次数</h4>
 
+    <!-- 挑战1 -->
     <div class="challenge-item">
         <div class="challenge-title"><span>1</span> 挑战一：输入专属邀请码</div>
         <div class="code-wrap">
@@ -298,55 +299,64 @@
         </div>
     </div>
 
+    <!-- 挑战2 -->
     <div class="challenge-item">
         <div class="challenge-title"><span>2</span> 挑战二：10秒极速点击</div>
         <button id="clickGameBtn" class="game-btn">开始挑战</button>
-        <div id="clickCountTip" style="margin-top:8px;color:#ff5f9a;font-weight:bold;"></div>
-        <span id="timeTip" style="margin-left:0px;color:#d6336c;font-weight:bold;display:block;margin-top:8px;"></span>
+        <span id="timeTip" style="display:block;margin-top:8px;color:#d6336c;font-weight:bold;"></span>
+        <div id="clickCountTip" style="margin-top:6px;color:#ff5f9a;font-weight:bold;"></div>
         <div id="clickTip" class="tip-text"></div>
     </div>
 
+    <!-- 挑战3 -->
     <div class="challenge-item">
-        <div class="challenge-title"><span>3</span> 挑战三：停表挑战</div>
+        <div class="challenge-title">
+            <span>3</span> 挑战三：停表挑战
+
+            <!-- ❓说明 -->
+            <div style="display:inline-block;position:relative;margin-left:8px;">
+                <span id="questionMark"
+                      style="cursor:pointer;background:#ff6b9c;color:#fff;border-radius:50%;
+                      width:18px;height:18px;display:inline-flex;align-items:center;justify-content:center;font-size:12px;">
+                    ?
+                </span>
+
+                <div id="betTipBox" class="tip-box">
+                    停表挑战说明：<br>
+                    红色指针停在绿色区域内即成功<br>
+                    成功获得抽奖次数
+                </div>
+            </div>
+        </div>
+
         <div class="stop-bar-box">
             <div class="stop-target"></div>
             <div class="stop-runner" id="stopRunner"></div>
         </div>
+
         <button id="stopBtn" class="game-btn" onclick="startStop()">开始挑战</button>
         <span id="stopTip" style="display:block;margin-top:8px;font-size:12px;color:#555;"></span>
     </div>
+
+    <!-- 挑战4（押注） -->
     <div class="challenge-item">
-    <div class="challenge-title">
-        <span>4</span> 押注小游戏
+        <div class="challenge-title"><span>4</span> 押注小游戏</div>
 
-        <div style="display:inline-block;position:relative;margin-left:8px;">
-            <span id="questionMark"
-                  style="cursor:pointer;background:#ff6b9c;color:#fff;border-radius:50%;
-                  width:18px;height:18px;display:inline-flex;align-items:center;justify-content:center;font-size:12px;">
-                ?
-            </span>
-
-            <div id="betTipBox" class="tip-box">
-                押注1~3次抽奖机会，50%概率赢或输<br>
-                赢：次数×2返还<br>
-                输：扣除押注次数
-            </div>
+        <div style="margin:10px 0;color:#555;font-size:13px;">
+            选择押注抽奖次数
         </div>
+
+        <select id="betSelect" style="width:100%;padding:8px;border-radius:6px;border:1px solid #ffc2e0;">
+            <option value="1">押 1 次</option>
+            <option value="2">押 2 次</option>
+            <option value="3">押 3 次</option>
+        </select>
+
+        <button class="game-btn" id="betBtn" style="margin-top:10px;">开始押注</button>
+
+        <div id="betTip" style="margin-top:10px;font-size:13px;color:#d6336c;font-weight:bold;"></div>
     </div>
 
-    <div style="margin:10px 0;color:#555;font-size:13px;">
-        选择押注抽奖次数
-    </div>
-
-    <select id="betSelect" style="width:100%;padding:8px;border-radius:6px;border:1px solid #ffc2e0;">
-        <option value="1">押 1 次</option>
-        <option value="2">押 2 次</option>
-        <option value="3">押 3 次</option>
-    </select>
-
-    <button class="game-btn" id="betBtn" style="margin-top:10px;">开始押注</button>
-
-    <div id="betTip" style="margin-top:10px;font-size:13px;color:#d6336c;font-weight:bold;"></div>
 </div>
 
 <div class="center-box">
