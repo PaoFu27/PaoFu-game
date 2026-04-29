@@ -445,140 +445,143 @@
         }
     }
 
-  // ========== 通用增加次数 ==========
+  // ===================== 共用增加次数 =====================
 function addCount(){
     count++;
-    countTip.innerText = count;
+    document.getElementById("countTip").innerText = count;
 }
 
-// ========== 挑战2 10秒点击 终极修复版 无负数 不重启 次数正常 ==========
+// ===================== 挑战2：10秒极速点击 彻底修复 =====================
 let clickFinish = false;
 let clickUsed = 0;
 const clickMax = 10;
 let clickTimer = null;
 let clickLock = false;
+let clickScore = 0;
+let clickTimeLeft = 10;
 
 const clickGameBtn = document.getElementById("clickGameBtn");
 const timeTip = document.getElementById("timeTip");
 const clickTip = document.getElementById("clickTip");
 
-clickGameBtn.addEventListener("click", function(){
-    // 正在进行中禁止重复开
-    if(clickLock) return;
-    // 已成功
-    if(clickFinish){
+// 固定只绑定一次点击
+clickGameBtn.addEventListener("click", function () {
+    // 对局中禁止重复开启
+    if (clickLock) return;
+
+    // 已成功锁定
+    if (clickFinish) {
         clickTip.innerText = "✅ 已挑战成功";
         clickTip.style.color = "#27ae60";
         return;
     }
+
     // 次数用完
-    if(clickUsed >= clickMax){
+    if (clickUsed >= clickMax) {
         clickTip.innerText = "❌ 10次机会已用完";
         clickTip.style.color = "#f00";
         return;
     }
 
+    // 初始化新一局
     clickLock = true;
-    let score = 0;
-    let t = 10;
+    clickScore = 0;
+    clickTimeLeft = 10;
     clickGameBtn.innerText = "疯狂点我";
     clickTip.innerText = "";
-    timeTip.innerText = `剩余：${t}s`;
+    timeTip.innerText = `剩余：${clickTimeLeft}s`;
 
     // 倒计时
-    clickTimer = setInterval(()=>{
-        t--;
-        timeTip.innerText = `剩余：${t}s`;
+    clickTimer = setInterval(() => {
+        clickTimeLeft--;
+        timeTip.innerText = `剩余：${clickTimeLeft}s`;
 
-        // 到0直接结束，不往下减
-        if(t <= 0){
+        // 到0立刻结束，不负数
+        if (clickTimeLeft <= 0) {
             clearInterval(clickTimer);
             clickLock = false;
             clickUsed++;
             clickGameBtn.innerText = "开始挑战";
 
-            if(score >= 30){
+            if (clickScore >= 30) {
                 addCount();
                 clickFinish = true;
                 clickTip.innerText = "✅ 挑战成功，获得抽奖机会";
                 clickTip.style.color = "#27ae60";
-            }else{
+            } else {
                 let left = clickMax - clickUsed;
                 clickTip.innerText = `❌ 挑战失败，剩余 ${left} 次`;
                 clickTip.style.color = "#f00";
             }
         }
-    },1000);
-
-    // 本局点击加分
-    clickGameBtn.onclick = function(){
-        if(t > 0 && clickLock){
-            score++;
-        }
-    };
+    }, 1000);
 });
 
-// 挑战3 停表 最终修复版 每次开始指针都能动
+// 单独全局监听 点击加分 不嵌套不冲突
+document.addEventListener("click", function (e) {
+    if (e.target.id === "clickGameBtn" && clickLock && clickTimeLeft > 0) {
+        clickScore++;
+    }
+});
+
+
+// ===================== 挑战3：停表挑战 彻底修复 每次开始指针都能动 =====================
 let stopFinish = false;
 let stopUsed = 0;
 const stopMax = 10;
 let stopMoveTimer = null;
 let stopLock = false;
-let pos = 0;
+let stopPos = 0;
 
 const stopBtn = document.getElementById("stopBtn");
 const stopRunner = document.getElementById("stopRunner");
 const stopTip = document.getElementById("stopTip");
 
-// 固定只绑定一次开始
-stopBtn.addEventListener("click", function(){
-    // 正在游戏中禁止重复开启
-    if(stopLock) return;
+// 开始游戏 只绑定一次
+stopBtn.addEventListener("click", function () {
+    if (stopLock) return;
 
-    // 已成功
-    if(stopFinish){
+    if (stopFinish) {
         stopTip.innerText = "✅ 已挑战成功";
         stopTip.style.color = "#27ae60";
         return;
     }
-    // 次数用完
-    if(stopUsed >= stopMax){
+
+    if (stopUsed >= stopMax) {
         stopTip.innerText = "❌ 10次机会已用完";
         stopTip.style.color = "#f00";
         return;
     }
 
-    // 初始化本局
+    // 开局初始化
     stopLock = true;
-    pos = 0;
+    stopPos = 0;
     stopBtn.innerText = "点击停下";
     stopTip.innerText = "";
 
-    // 指针跑动
-    stopMoveTimer = setInterval(()=>{
-        pos += 6;
-        if(pos > 100) pos = 0;
-        stopRunner.style.left = pos + "%";
-    },20);
+    stopMoveTimer = setInterval(() => {
+        stopPos += 6;
+        if (stopPos > 100) stopPos = 0;
+        stopRunner.style.left = stopPos + "%";
+    }, 20);
 });
 
-// 单独监听停下，不覆盖任何事件
-document.addEventListener("click", function(e){
-    if(e.target.id !== "stopBtn") return;
-    if(!stopLock) return;
+// 单独全局监听 停下 不嵌套不覆盖
+document.addEventListener("click", function (e) {
+    if (e.target.id !== "stopBtn") return;
+    if (!stopLock) return;
 
-    // 停下
     clearInterval(stopMoveTimer);
     stopLock = false;
     stopUsed++;
     stopBtn.innerText = "开始挑战";
 
-    if(pos >= 65 && pos <= 73){
+    if (stopPos >= 65 && stopPos <= 73) {
         addCount();
         stopFinish = true;
         stopTip.innerText = "✅ 完美命中，获得抽奖机会";
         stopTip.style.color = "#27ae60";
-    }else{
+    } else {
         let left = stopMax - stopUsed;
         stopTip.innerText = `❌ 未命中，剩余 ${left} 次`;
         stopTip.style.color = "#f00";
